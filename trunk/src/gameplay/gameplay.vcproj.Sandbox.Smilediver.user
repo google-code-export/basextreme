@@ -38,7 +38,7 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="D:\games.bak\d3basejumper\game"
+				WorkingDirectory="P:\Base eXtreme\Work\game"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"

@@ -228,7 +228,7 @@ static LocationInfo::ExitPoint elCapitanExitPoints[] =
 
 static LocationInfo::ExitPoint testLevelExitPoints[] = 
 {
-    { 769, "Enclosure01", 8.0f },
+    { 769, "Enclosure01", 2.0f },
     { 0, NULL }
 };
 
@@ -638,9 +638,12 @@ static LocationInfo locations[] =
         testLevelAssets,
         NULL, // no extra textures
         { 0.0275f, 0.8f },
-        { &kvlyGrass, "corn", "./res/particles/corn.dds", "./usr/cache/kvly.grass", "GrassSurface", 7500, 10000 },
+
+        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
+        //{ &kvlyGrass, "corn", "./res/particles/corn.dds", "./usr/cache/kvly.grass", "GrassSurface", 7500, 10000 },
+
         testLevelExitPoints,
-        casting::castingCallbackKVLY,
+        casting::castingCallbackTestLevel,
         { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./res/sounds/footsteps/metal/walk.ogg", "./res/sounds/footsteps/metal/turn.ogg" },
         testLevelWeatherOptions,
         &kvlyReverberation

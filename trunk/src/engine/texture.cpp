@@ -663,6 +663,8 @@ AssetObjectT Texture::read(IResource* resource, AssetObjectM& assetObjects)
     Chunk chunk;
     fread( &chunk, sizeof(Chunk), 1, resource->getFile() );
     
+    printf("  Texture: %s\n", chunk.name);
+
     TextureI textureI = Texture::textures.find( chunk.name );
     if( textureI != Texture::textures.end() )
     {

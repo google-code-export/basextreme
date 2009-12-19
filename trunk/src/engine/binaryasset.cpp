@@ -12,6 +12,32 @@
 ChunkHeader::ChunkHeader(IResource* resource)
 {
     fread( this, sizeof(ChunkHeader), 1, resource->getFile() );
+/*
+    const char* typeName = "Unknown";
+    switch (type) {
+        case BA_ASSET     : typeName = "Asset"; break;
+        case BA_TEXTURE   : typeName = "Texture"; break;
+        case BA_CLUMP     : typeName = "Clump"; break;
+        case BA_FRAME     : typeName = "Frame"; break;
+        case BA_GEOMETRY  : typeName = "Geometry"; break;
+        case BA_SKIN      : typeName = "Skin"; break;
+        case BA_BONE      : typeName = "Bone"; break;
+        case BA_SHADER    : typeName = "Shader"; break;
+        case BA_ATOMIC    : typeName = "Atomic"; break;
+        case BA_LIGHT     : typeName = "Light"; break;
+        case BA_BSP       : typeName = "Bsp"; break;
+        case BA_SECTOR    : typeName = "Sector"; break;
+        case BA_OCTREE    : typeName = 0; break;
+        case BA_EFFECT    : typeName = "Effect"; break;
+        case BA_BINARY    : typeName = 0; break;
+        case BA_EXTENSION : typeName = "Extension"; break;
+        case BAEXT_LIGHTMAPS: typeName = "Lightmaps"; break;
+    }
+
+    if (typeName != 0) {
+          printf("  Chunk: %s (%d, size: %d)\n", typeName, type, size);
+    }
+*/
 } 
 
 ChunkHeader::ChunkHeader(int t, int s)
@@ -50,6 +76,8 @@ BinaryAsset::BinaryAsset(IResource* resource)
     // read asset chunk
     Chunk chunk;
     fread( &chunk, sizeof(Chunk), 1, resource->getFile() );
+
+    printf("Asset. Textures: %d, bsps: %d, clumps: %d\n", chunk.numTextures, chunk.numBSPs, chunk.numClumps);
 
     // read textures
     int i;
@@ -142,10 +170,12 @@ void BinaryAsset::readLightmaps(unsigned int numLightmaps, IResource* resource)
 {
     LightmapChunk  lightmap;
 
+    printf("  Lightmaps: %d\n", numLightmaps);
+
     for( unsigned int i=0; i<numLightmaps; i++ )
     {
         // read chunk header
-        ChunkHeader lightmapHeader( resource );        
+        ChunkHeader lightmapHeader( resource );    
         assert( lightmapHeader.type == BA_BINARY );
         assert( lightmapHeader.size = sizeof( LightmapChunk ) );
 

@@ -379,6 +379,7 @@ void Atomic::onUpdate(void)
         if( _boneMatrices == NULL )
         {
             // obtain LTM of atomic
+            assert(_frame != 0);
             Matrix* ltm = &_frame->LTM;
             // transform geometry bounding sphere with LTM
             D3DXVec3TransformCoord(

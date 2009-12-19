@@ -344,6 +344,7 @@ AssetObjectT Clump::read(IResource* resource, AssetObjectM& assetObjects)
 
     Chunk chunk;
     fread( &chunk, sizeof(chunk), 1, resource->getFile() );
+    printf("  Clump: %s, atomics: %d, frames: %d, geometries: %d, lights: %d\n", chunk.name, chunk.numAtomics, chunk.numFrames, chunk.numGeometries, chunk.numLights);
 
     Clump* clump = new Clump( chunk.name );
 
