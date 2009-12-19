@@ -32,7 +32,8 @@ class ExporterAsset: public Asset
         void                    ExportScene();
         void                    ExportSceneRecursively(MayaNode* parentNode, Clump* clump, Frame* parentFrame);
         bool                    ExportModel(Clump* clump, Frame* frame, MayaModel* model);
-        Geometry*               ExportMesh(MayaMesh* mesh);
+        void                    ExportMesh(Geometry* geometry, MayaMesh* mesh, int materialId, int* vertexOffset, int* triangleOffset);
+//        Geometry*               ExportMesh(MayaMesh* mesh);
         bool                    ExportLight(Clump* clump, Frame* frame, MayaLight* mayaLight);
         Shader*                 ExportMayaMaterial(MayaMaterial* material);
 
@@ -119,47 +120,48 @@ void ExporterAsset::ExportSceneRecursively(MayaNode* parentNode, Clump* clump, F
 
 bool ExporterAsset::ExportModel(Clump* clump, Frame* frame, MayaModel* model)
 {
+        int vertexCount = 0;
+        int triangleCount = 0;
+        int uvCount = 1;
+        int shaderCount = model->m_apcMeshes.size();
+
         int i;
         int meshCount = model->m_apcMeshes.size();
         for (i = 0; i < meshCount; ++i) {
                 MayaMesh* mesh = model->m_apcMeshes[i];
-
-                Geometry* geometry = ExportMesh(mesh);
-
-                Frame* meshFrame = new Frame(model->m_strName.asChar());
-                Matrix4f transform;
-                transform.buildIdentity();
-                meshFrame->setMatrix(transform);
-
-                AssetObjectT assetObjectT((auid)meshFrame, meshFrame);
-                mAssetObjects.insert(assetObjectT);
-
-                meshFrame->setParent(frame);
-
-                Atomic* atomic = new Atomic();
-                atomic->setFrame(meshFrame);
-                atomic->setGeometry(geometry);
-                clump->add(atomic);
+                vertexCount += mesh->m_acVertices.size();
+                triangleCount += mesh->m_acTriangles.size();
         }
+
+        Geometry* geometry = new Geometry(vertexCount, triangleCount, uvCount, shaderCount, 0, false, model->m_strName.asChar());
+
+        int vertexOffset = 0;
+        int triangleOffset = 0;
+
+        for (i = 0; i < meshCount; ++i) {
+                MayaMesh* mesh = model->m_apcMeshes[i];
+
+                ExportMesh(geometry, mesh, i, &vertexOffset, &triangleOffset);
+        }
+
+        Atomic* atomic = new Atomic();
+        atomic->setFrame(frame);
+        atomic->setGeometry(geometry);
+        clump->add(atomic);
         return true;
 }
 
 
-Geometry* ExporterAsset::ExportMesh(MayaMesh* mesh)
+void ExporterAsset::ExportMesh(Geometry* geometry, MayaMesh* mesh, int materialId, int* vertexOffset, int* triangleOffset)
 {
         int vertexCount = mesh->m_acVertices.size();
         int triangleCount = mesh->m_acTriangles.size();
 
-        Geometry* geometry = new Geometry(vertexCount, triangleCount, 1, 1, 0, false, mesh->mName.asChar());
-        AssetObjectT assetObjectT((auid)geometry, geometry);
-        geometry->instance();
-        mAssetObjects.insert(assetObjectT);
-
         // Fill vertex data
         int i;
-        Vector* vertices = geometry->getVertices();
-        Vector* normals = geometry->getNormals();
-        Flector* uvs = geometry->getUVSet(0);
+        Vector* vertices = geometry->getVertices() + *vertexOffset;
+        Vector* normals = geometry->getNormals() + *vertexOffset;
+        Flector* uvs = geometry->getUVSet(0) + *vertexOffset;
         for (i = 0; i < vertexCount; ++i) {
                 vertices[i].x = mesh->m_acVertices[i].x;
                 vertices[i].y = mesh->m_acVertices[i].y;
@@ -174,17 +176,23 @@ Geometry* ExporterAsset::ExportMesh(MayaMesh* mesh)
         }
 
         // Fill triangle data
-        Triangle* triangles = geometry->getTriangles();
+        Triangle* triangles = geometry->getTriangles() + *triangleOffset;
         for (i = 0; i < triangleCount; i++) {
                 const MayaTriangle& triangle = mesh->m_acTriangles[i];
-                triangles[i].set(triangle.v[0], triangle.v[1], triangle.v[2], 0);
+                triangles[i].set(
+                        triangle.v[0] + *vertexOffset, 
+                        triangle.v[1] + *vertexOffset, 
+                        triangle.v[2] + *vertexOffset, 
+                        materialId
+                );
         }
+
+        *vertexOffset = *vertexOffset + vertexCount;
+        *triangleOffset = *triangleOffset + triangleCount;
 
         // Setup shaders
         Shader* shader = ExportMayaMaterial(mesh->m_pcMaterial);
-        geometry->setShader(0, shader);
-
-        return geometry;
+        geometry->setShader(materialId, shader);
 }
 
 
