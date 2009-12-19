@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "exporter.h"
-#include "exporthms.h"
 #include "mayamesh.h"
 #include "mayamaterial.h"
 #include "profiler.h"
@@ -160,13 +159,13 @@ bool SceneExporter::ExportModels(MString& rsPath)
 	// Export materials
 	n = apcMaterials.size();
 	for (i = 0; i < n; i++) {
-		ExportMayaMaterialAsHMS(m_hFile, rsPath, *apcMaterials[i]);
+//		ExportMayaMaterialAsHMS(m_hFile, rsPath, *apcMaterials[i]);
 	}
 
 	// Export meshes
 	n = apcModels.size();
 	for (i = 0; i < n; i++) {
-		ExportMayaMeshAsHMS(m_hFile, *apcModels[i]);
+//		ExportMayaMeshAsHMS(m_hFile, *apcModels[i]);
 	}
 
 	return true;

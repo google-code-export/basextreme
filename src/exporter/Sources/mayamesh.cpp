@@ -197,7 +197,9 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 	MVector kNormal;
 	int iVertexId;
 
-	ritPolygon.getTriangle(iTriangleId, kPoints, kVerticeIdList, MSpace::kWorld);
+        pcPolygonMesh->mName = rcMeshFn.name();
+
+	ritPolygon.getTriangle(iTriangleId, kPoints, kVerticeIdList, MSpace::kObject);
 
 	if (kPoints.length() != 3) {
 		printf("WARNING: Triangle has %d points instead of 3. Skipping!\n", kPoints.length());
@@ -213,7 +215,7 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 		MayaVertex kVertex;
 
 		iVertexId = kVerticeIdList[uiPoint];
-		rcMeshFn.getPoint(iVertexId, kPoint, MSpace::kWorld);
+		rcMeshFn.getPoint(iVertexId, kPoint, MSpace::kObject);
 
 		// Get vertex pos
 		kVertex.x = float(kPoint.x);
@@ -232,7 +234,7 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 		}
 
 		// Get normal
-		ritPolygon.getNormal(uiLocalVertexId, kNormal, MSpace::kWorld);
+		ritPolygon.getNormal(uiLocalVertexId, kNormal, MSpace::kObject);
 		kVertex.nx = float(kNormal.x);
 		kVertex.ny = float(kNormal.y);
 		kVertex.nz = float(kNormal.z);
@@ -241,9 +243,10 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 		int iUVIndex = -1;
 		ritPolygon.getUVIndex(uiLocalVertexId, iUVIndex, kVertex.u, kVertex.v, NULL);
 
+                // TODO: check this out if we need it
 		// Transform UVs based on place 2d texture settings
-		kVertex.u *= pcPolygonMesh->m_pcMaterial->m_fRepeatU;
-		kVertex.v *= pcPolygonMesh->m_pcMaterial->m_fRepeatV;
+//		kVertex.u *= pcPolygonMesh->m_pcMaterial->m_fRepeatU;
+//		kVertex.v *= pcPolygonMesh->m_pcMaterial->m_fRepeatV;
 
 		// Check if we have same vertex already added to the vertex list
 		// We go backwards, since same vertices should be more often on the end of list
@@ -325,7 +328,6 @@ void ExtractTriangles(MayaModel* pcModel, MFnMesh& rkMeshFn, MObjectArray& racSh
 //			apcMeshes[i]->m_strMaterial = GetShaderName(racShaders[i]);
 			apcMeshes[i]->m_pcMaterial = GetMaterial(papcMayaMaterial, GetShaderName(racShaders[i]));
 			assert(apcMeshes[i]->m_pcMaterial); // Materials are parsed before, and should be there!
-			pcModel->m_apcMeshes.push_back(apcMeshes[i]);
 		}
 	}
 	
@@ -371,6 +373,16 @@ void ExtractTriangles(MayaModel* pcModel, MFnMesh& rkMeshFn, MObjectArray& racSh
 		for (iTriangleId = 0; iTriangleId < iTriangles; iTriangleId++) {
 			ExtractTriangle(pcPolygonMesh, rkMeshFn, kPolygonIter, iTriangleId);
 		}
+	}
+
+        // Add meshes that have triangles
+	unsigned int i;
+	for (i = 0; i < racShaders.length(); i++) {
+                if(apcMeshes[i]->m_acTriangles.size() > 0) {
+		        pcModel->m_apcMeshes.push_back(apcMeshes[i]);
+                } else {
+                        delete apcMeshes[i];
+                }
 	}
 
 //	printf("\tTriangles: %d, Optimized vertices: %d\n", uiNumTriangles, uiNumVerticesSaved);

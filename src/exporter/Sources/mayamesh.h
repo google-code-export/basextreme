@@ -105,6 +105,7 @@ public:
 class MayaMesh
 {
 public:
+        MString                         mName;
 	MayaMaterial*			m_pcMaterial;
 
 	std::vector<MayaVertex>		m_acVertices;

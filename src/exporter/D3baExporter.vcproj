@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;;D:\games.bak\d3basejumper\src\Includes\TinyXML\include;D:\games.bak\d3basejumper\src"
+				AdditionalIncludeDirectories="..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;;..\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -51,6 +51,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -65,7 +66,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/nodefaultlib:libc.lib /nodefaultlib:libcp.lib "
 				AdditionalDependencies="../mainwnd/Debug/mainwnd.lib ../ccorlogic/Debug/ccorlogic.lib ../ccor/Debug/ccor.lib ../engine/Debug/engine.lib usp10.lib dxguid.lib dxerr9.lib dinput8.lib comctl32.lib d3dxof.lib d3dx9dt.lib d3d9.lib odbc32.lib odbccp32.lib Iphlpapi.lib tinyxml.lib NxPhysics.lib NxCooking.lib"
-				OutputFile="..\..\exporter\D3baExporter.mll"
+				OutputFile="C:\Program Files\Autodesk\Maya2009\bin\plug-ins\D3baExporter.mll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libraries"
 				GenerateDebugInformation="true"
@@ -204,19 +205,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Sources\exporthms.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Sources\exporthms.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Sources\matrix.h"
 			>
 		</File>
 		<File
 			RelativePath=".\Sources\matrix.inl"
+			>
+		</File>
+		<File
+			RelativePath="E:\Projects\Base eXtreme\Work\src\exporter\Sources\mayalight.cpp"
+			>
+		</File>
+		<File
+			RelativePath="E:\Projects\Base eXtreme\Work\src\exporter\Sources\mayalight.h"
 			>
 		</File>
 		<File
@@ -233,6 +234,14 @@
 		</File>
 		<File
 			RelativePath=".\Sources\mayamesh.h"
+			>
+		</File>
+		<File
+			RelativePath="E:\Projects\Base eXtreme\Work\src\exporter\Sources\mayanode.cpp"
+			>
+		</File>
+		<File
+			RelativePath="E:\Projects\Base eXtreme\Work\src\exporter\Sources\mayanode.h"
 			>
 		</File>
 		<File
