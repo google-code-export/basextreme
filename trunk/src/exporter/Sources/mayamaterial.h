@@ -7,18 +7,20 @@
 #include <maya/MFnLambertShader.h>
 
 
+class MayaTexture
+{
+public:
+	MString				mName;
+	float				mRepeatU;
+	float				mRepeatV;
+};
+
+
 class MayaMaterial
 {
 public:
 	MString				m_strName;
-
-	MString				m_strTechnique;
-
-	MString				m_strDiffuseTexture;
-
-	float				m_fRepeatU;
-
-	float				m_fRepeatV;
+        std::vector<MayaTexture*>	mTextures;
 };
 
 

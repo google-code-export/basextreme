@@ -19,7 +19,7 @@ public:
 
 	~ProfilePoint()
 	{
-		printf("PROFILE %s %f\n", m_szName, g_cTimer.GetTime() - m_fTime);
+		//printf("PROFILE %s %f\n", m_szName, g_cTimer.GetTime() - m_fTime);
 	}
 };
 

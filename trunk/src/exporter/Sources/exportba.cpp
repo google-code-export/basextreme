@@ -3,10 +3,16 @@
 #include "engine/bsp.h"
 #include "ccor/Core.h"
 #include "shared/engine.h"
-#include "mayamaterial.h"
-#include "mayamesh.h"
 #include "profiler.h"
 #include "exporter.h"
+
+#include <maya/MFnDagNode.h>
+#include <maya/MMatrix.h>
+
+#include "mayamaterial.h"
+#include "mayalight.h"
+#include "mayamesh.h"
+#include "mayanode.h"
 
 
 using namespace engine;
@@ -14,13 +20,22 @@ using namespace engine;
 
 class ExporterAsset: public Asset
 {
-	std::vector<MayaMaterial*> mMaterials;
-	std::vector<MayaModel*> mModels;
+	std::vector<MayaMaterial*>      mMaterials;
 
+        MayaNode*               mRootNode;
 
-        bool                    GatherMayaModels();
-        bool                    ExportMayaModels();
-                
+        AssetObjectM            mAssetObjects;
+
+        void                    TraverseMayaScene();
+        bool                    TraverseMayaSceneRecurse(MayaNode* parentNode, MDagPath& parentPath);
+
+        void                    ExportScene();
+        void                    ExportSceneRecursively(MayaNode* parentNode, Clump* clump, Frame* parentFrame);
+        bool                    ExportModel(Clump* clump, Frame* frame, MayaModel* model);
+        Geometry*               ExportMesh(MayaMesh* mesh);
+        bool                    ExportLight(Clump* clump, Frame* frame, MayaLight* mayaLight);
+        Shader*                 ExportMayaMaterial(MayaMaterial* material);
+
 public:
         virtual void __stdcall release(void) { delete this; };
         virtual void __stdcall serialize(void) { };
@@ -29,89 +44,301 @@ public:
 };
 
 
-bool ExporterAsset::GatherMayaModels()
+Matrix4f MayaToBaMatrix(MMatrix matrix) {
+        Matrix4f m;
+
+        int x, y;
+        for (y = 0; y < 4; ++y) {
+                for (x = 0; x < 4; ++x) {
+                        m[x][y] = matrix.matrix[x][y];
+                }
+        }
+
+        return m;
+}
+
+
+void ExporterAsset::ExportScene()
 {
-	PROFILE(SceneExporter::ExportModels);
+        AABB boundingBox( wrap( Vector3f(-1000000.0f, -1000000.0f, -1000000.0f) ), wrap( Vector3f(1000000.0f, 1000000.0f, 1000000.0f) ) );
+
+        BSP* bsp = new BSP( "blabsp", boundingBox, 0 );
+        _bsps.push_back(bsp);
+        BSPSector* rootSector = new BSPSector( bsp, NULL, boundingBox, NULL );
+
+        int i;
+        int count = mRootNode->mChilds.size();
+        for (i = 0; i < count; ++i) {
+                MayaNode* node = mRootNode->mChilds[i];
+
+                Clump* clump = new Clump(node->mName.asChar());
+                Frame* frame = new Frame(node->mName.asChar());
+
+                Matrix4f transform(MayaToBaMatrix(node->mTransform));
+                frame->setMatrix(transform);
+
+                AssetObjectT assetObjectT((auid)frame, frame);
+                mAssetObjects.insert(assetObjectT);
+
+                clump->setFrame(frame);
+                
+                _clumps.push_back(clump);
+
+                ExportSceneRecursively(node, clump, frame);
+        }
+}
+
+void ExporterAsset::ExportSceneRecursively(MayaNode* parentNode, Clump* clump, Frame* parentFrame) {
+        int i;
+        int count = parentNode->mChilds.size();
+        for (i = 0; i < count; ++i) {
+                MayaNode* node = parentNode->mChilds[i];
+
+                Frame* frame = new Frame(node->mName.asChar());
+
+                Matrix4f transform(MayaToBaMatrix(node->mTransform));
+                frame->setMatrix(transform);
+
+                AssetObjectT assetObjectT((auid)frame, frame);
+                mAssetObjects.insert(assetObjectT);
+
+                frame->setParent(parentFrame);
+
+                ExportSceneRecursively(node, clump, frame);
+        }
+
+        if (parentNode->mModel) {
+                ExportModel(clump, parentFrame, parentNode->mModel);
+        }
+
+        if (parentNode->mLight) {
+                ExportLight(clump, parentFrame, parentNode->mLight);
+        }
+}
+
+
+bool ExporterAsset::ExportModel(Clump* clump, Frame* frame, MayaModel* model)
+{
+        int i;
+        int meshCount = model->m_apcMeshes.size();
+        for (i = 0; i < meshCount; ++i) {
+                MayaMesh* mesh = model->m_apcMeshes[i];
+
+                Geometry* geometry = ExportMesh(mesh);
+
+                Frame* meshFrame = new Frame(model->m_strName.asChar());
+                Matrix4f transform;
+                transform.buildIdentity();
+                meshFrame->setMatrix(transform);
+
+                AssetObjectT assetObjectT((auid)meshFrame, meshFrame);
+                mAssetObjects.insert(assetObjectT);
+
+                meshFrame->setParent(frame);
+
+                Atomic* atomic = new Atomic();
+                atomic->setFrame(meshFrame);
+                atomic->setGeometry(geometry);
+                clump->add(atomic);
+        }
+        return true;
+}
+
+
+Geometry* ExporterAsset::ExportMesh(MayaMesh* mesh)
+{
+        int vertexCount = mesh->m_acVertices.size();
+        int triangleCount = mesh->m_acTriangles.size();
+
+        Geometry* geometry = new Geometry(vertexCount, triangleCount, 1, 1, 0, false, mesh->mName.asChar());
+        AssetObjectT assetObjectT((auid)geometry, geometry);
+        geometry->instance();
+        mAssetObjects.insert(assetObjectT);
+
+        // Fill vertex data
+        int i;
+        Vector* vertices = geometry->getVertices();
+        Vector* normals = geometry->getNormals();
+        Flector* uvs = geometry->getUVSet(0);
+        for (i = 0; i < vertexCount; ++i) {
+                vertices[i].x = mesh->m_acVertices[i].x;
+                vertices[i].y = mesh->m_acVertices[i].y;
+                vertices[i].z = mesh->m_acVertices[i].z;
+
+                normals[i].x = mesh->m_acVertices[i].nx;
+                normals[i].y = mesh->m_acVertices[i].ny;
+                normals[i].z = mesh->m_acVertices[i].nz;
+
+                uvs[i].x = mesh->m_acVertices[i].u;
+                uvs[i].y = mesh->m_acVertices[i].v;
+        }
+
+        // Fill triangle data
+        Triangle* triangles = geometry->getTriangles();
+        for (i = 0; i < triangleCount; i++) {
+                const MayaTriangle& triangle = mesh->m_acTriangles[i];
+                triangles[i].set(triangle.v[0], triangle.v[1], triangle.v[2], 0);
+        }
+
+        // Setup shaders
+        Shader* shader = ExportMayaMaterial(mesh->m_pcMaterial);
+        geometry->setShader(0, shader);
+
+        return geometry;
+}
+
+
+bool ExporterAsset::ExportLight(Clump* clump, Frame* frame, MayaLight* mayaLight)
+{
+        engine::LightType lightType;
+        switch (mayaLight->mType) {
+                case MayaLightType::Ambient:    lightType = engine::ltAmbient; break;
+                case MayaLightType::Directional: lightType = engine::ltDirectional; break;
+                case MayaLightType::Point:      lightType = engine::ltPoint; break;
+                case MayaLightType::Spot:       lightType = engine::ltSpot; break;
+        }
+
+        Light* light = new Light(lightType);
+
+        Vector3x diffuseLight(mayaLight->mRed, mayaLight->mGreen, mayaLight->mBlue);
+        diffuseLight *= mayaLight->mIntensity;
+        light->setDiffuseColor(Vector4f(diffuseLight.x, diffuseLight.y, diffuseLight.z, 1.0f));
+        light->setAttenuation(Vector3f(mayaLight->mAttenuation[0], mayaLight->mAttenuation[1], mayaLight->mAttenuation[2]));
+        light->setRange(10000000.0f);
+
+        clump->add(light);
+        light->setFrame(frame);
+
+        return true;
+}
+
+
+void ExporterAsset::TraverseMayaScene()
+{
+	PROFILE(ExporterAsset::TraverseMayaScene);
 
 	MStatus kStatus;
 
 	printf("---------------------------------------------\n");
-	printf("Gathering models\n");
+	printf("Traversing scene.\n");
 
-	// Get iterator for meshes
-	MItDag kDagIter(MItDag::kDepthFirst, MFn::kMesh, &kStatus);
+        MItDag kDagIter(MItDag::kBreadthFirst, MFn::kInvalid, &kStatus);
 
 	if (kStatus != MStatus::kSuccess) {
 		printf("Error: Unable to get DAG iterator\n");
-		return false;
+		return;
 	}
 
-	// Iterate through all meshes and extract their materials and meshes
+        mRootNode = new MayaNode();
+
+	// Iterate through all nodes
 	for(; !kDagIter.isDone(); kDagIter.next()) {
-		MDagPath kDagPath;
-		if (kDagIter.getPath(kDagPath) != MStatus::kSuccess) {
+		MDagPath path;
+		if (kDagIter.getPath(path) != MStatus::kSuccess) {
 			printf("Error: Unable to get path to mesh node\n");
-			return false;
+			return;
 		}
 
-		MayaModel* pcModel = new MayaModel();
-		pcModel->m_strName = kDagPath.partialPathName();
+                MFnDagNode dagNode(path);
 
-		ExtractMayaMesh(&mMaterials, pcModel, kDagPath);
-		mModels.push_back(pcModel);
+                if (dagNode.isIntermediateObject() || dagNode.isDefaultNode()) {
+                        continue;
+                }
+
+                if (kDagIter.depth() != 1) {
+                        continue;
+                }
+
+                bool exp = false;
+                if (path.hasFn(MFn::kMesh)) exp = true;
+                if (path.hasFn(MFn::kLight)) exp = true;
+
+                TraverseMayaSceneRecurse(mRootNode, path);
+
+                fflush(stdout);
 	}
-
-	//unsigned int i;
-	//unsigned int n;
-	//
-	//// Export materials
-	//n = apcMaterials.size();
-	//for (i = 0; i < n; i++) {
-	//	ExportMayaMaterialAsHMS(m_hFile, rsPath, *apcMaterials[i]);
-	//}
-
-	//// Export meshes
-	//n = apcModels.size();
-	//for (i = 0; i < n; i++) {
-	//	ExportMayaMeshAsHMS(m_hFile, *apcModels[i]);
-	//}
-
-	return true;
 }
 
 
-bool ExporterAsset::GatherMayaModels()
-{
-	unsigned int i;
-	unsigned int n;
-	
-	//// Export materials
-	//n = apcMaterials.size();
-	//for (i = 0; i < n; i++) {
-	//	ExportMayaMaterialAsHMS(m_hFile, rsPath, *apcMaterials[i]);
-	//}
+bool ExporterAsset::TraverseMayaSceneRecurse(MayaNode* parentNode, MDagPath& path) {
+        printf("Checking: %s\n", path.fullPathName().asChar());
 
-	// Export meshes
-	n = apcModels.size();
-	for (i = 0; i < n; i++) {
-		MayaModel* model = mModels[i];
-                
-	}
+        bool hasSomething = false;
+
+        if (path.hasFn(MFn::kTransform)) {
+                MayaNode* node = new MayaNode();
+                MFnTransform transform(path);
+                node->mName = path.partialPathName();
+                node->mTransform = transform.transformationMatrix();
+
+                int i;
+                for (i = 0; i < path.childCount(); ++i) {
+                        MObject child = path.child(i);
+                        path.push(child);
+                        if (TraverseMayaSceneRecurse(node, path)) {
+                                hasSomething = true;
+                        }
+                        path.pop();
+                }
+
+                if (hasSomething) {
+                        printf("Node: %s\n", path.partialPathName().asChar());
+                        parentNode->mChilds.push_back(node);
+                } else {
+                        delete node;
+                }
+        } else if (path.hasFn(MFn::kMesh)) {
+                printf("Mesh: %s\n", path.partialPathName().asChar());
+                hasSomething = true;
+
+                MayaModel* model = new MayaModel();
+                if (ExtractMayaMesh(&mMaterials, model, path)) {
+                        model->m_strName = parentNode->mName;
+                        parentNode->mModel = model;
+                } else {
+                        delete model;
+                }
+        } else if (path.hasFn(MFn::kLight)) {
+                printf("Light: %s\n", path.partialPathName().asChar());
+                hasSomething = true;
+
+                MayaLight* light = new MayaLight();
+
+                if (ExtractMayaLight(light, path)) {
+		        light->mName = path.partialPathName().asChar();
+                        parentNode->mLight = light;
+                } else {
+                        delete light;
+                }
+        }
+
+        return hasSomething;
+}
+
+
+
+
+Shader* ExporterAsset::ExportMayaMaterial(MayaMaterial* material)
+{
+        Shader* shader = new Shader(material->mTextures.size(), material->m_strName.asChar());
+
+        int i;
+        int textureCount = material->mTextures.size();
+        for (i = 0; i < textureCount; ++i) {
+                Texture* texture = texture->createTexture(material->mTextures[i]->mName.asChar());
+                shader->setLayerTexture(i, texture);
+        }
+
+        return shader;
 }
 
 
 ExporterAsset::ExporterAsset()
 {
-        GatherMayaModels();
-        ExportMayaModels();
+        TraverseMayaScene();
+        ExportScene();
 
-        engine::IEngine* iEngine;
-
-        if(askInterfaceT("Engine", &iEngine)) {
-                BSP* bsp = dynamic_cast<BSP*>(iEngine->createBSP("Land", Vector3f(0.0f, 0.0f, 0.0f), Vector3f(0.0f, 0.0f, 0.0f)));
-
-                _bsps.push_back(bsp);
-        }
+        fflush(stdout);
 }
 
 
@@ -135,9 +362,9 @@ void ExportBa(const char* fileName)
                         printf("Couldn't get engine interface.");
                 }
         }
-        rcode = CoreShutdownEngine(0);
+        rcode = CoreShutdownEngine(rcode);
 }
 
 void main() {
-                ExportBa("test.ba");
+        ExportBa("test.ba");
 }

@@ -62,9 +62,6 @@ MayaMaterial* ExtractShader(MFnLambertShader &rcLambert)
 	MayaMaterial *pcMaterial = new MayaMaterial();
 
 	pcMaterial->m_strName = rcLambert.name();
-	pcMaterial->m_strTechnique = "diffuse";
-	pcMaterial->m_fRepeatU = 1.0f;
-	pcMaterial->m_fRepeatV = 1.0f;
 
 	printf("\tExtracting lambert shader: %s\n", rcLambert.name().asChar());
 
@@ -72,18 +69,21 @@ MayaMaterial* ExtractShader(MFnLambertShader &rcLambert)
 	MObject cColor;
 	MPlugArray cColorPlugs;
 	rcLambert.findPlug("color").connectedTo(cColorPlugs, true, false);
-	if (cColorPlugs.length() > 0) {
-		if (cColorPlugs[0].node().hasFn(MFn::kFileTexture)) {
+        int i;
+        int colorPlugsCount = cColorPlugs.length();
+        for (i = 0; i < colorPlugsCount; ++i) {
+		if (cColorPlugs[i].node().hasFn(MFn::kFileTexture)) {
+                        MayaTexture* texture = new MayaTexture();
 			MFnDependencyNode cFile(cColorPlugs[0].node());
-			cFile.findPlug("fileTextureName").getValue(pcMaterial->m_strDiffuseTexture);
 
-			cFile.findPlug("repeatU").getValue(pcMaterial->m_fRepeatU);
-			cFile.findPlug("repeatV").getValue(pcMaterial->m_fRepeatV);
+                        cFile.findPlug("fileTextureName").getValue(texture->mName);
+			cFile.findPlug("repeatU").getValue(texture->mRepeatU);
+			cFile.findPlug("repeatV").getValue(texture->mRepeatV);
+
+                        pcMaterial->mTextures.push_back(texture);
 		} else {
 			printf("WARNING: color plug is not MFn::kFileTexture: %s\n", cColorPlugs[0].node().apiTypeStr());
 		}
-	} else {
-		printf("WARNING!: color plug is empty for shader: %s\n", rcLambert.name().asChar());
 	}
 
 	return pcMaterial;

@@ -9,10 +9,10 @@
 			Name="Debug|Win32"
 			>
 			<DebugSettings
-				Command="$(TargetPath)"
-				WorkingDirectory="D:\games.bak\d3basejumper\exporter"
+				Command="C:\Program Files\Autodesk\Maya2009\bin\maya.exe"
+				WorkingDirectory=""
 				CommandArguments=""
-				Attach="false"
+				Attach="true"
 				DebuggerType="3"
 				Remote="1"
 				RemoteMachine="SANDBOX"
