@@ -759,6 +759,7 @@ AssetObjectT Shader::read(IResource* resource, AssetObjectM& assetObjects)
 
     Chunk chunk;
     fread( &chunk, sizeof(Chunk), 1, resource->getFile() );
+    printf("    Shader: %s, layers: %d\n", chunk.name, chunk.numLayers);
 
     Shader* shader = new Shader( chunk.numLayers, chunk.name );
     for( int i=0; i<chunk.numLayers; i++ )

@@ -1009,6 +1009,7 @@ AssetObjectT BSP::read(IResource* resource, AssetObjectM& assetObjects)
 
     Chunk chunk;
     fread( &chunk, sizeof(Chunk), 1, resource->getFile() );
+    printf("  Bsp: %s, shaders: %d, sectors: %d\n", chunk.name, chunk.numShaders, chunk.numSectors);
 
     BSP* bsp = new BSP( chunk.name, chunk.boundingBox, chunk.numShaders );
 

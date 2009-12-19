@@ -322,6 +322,7 @@ AssetObjectT Frame::read(IResource* resource, AssetObjectM& assetObjects)
 
     Chunk chunk;
     fread( &chunk, sizeof(chunk), 1, resource->getFile() );
+    printf("    Frame: %s\n", chunk.name);
 
     Frame* frame = new Frame( chunk.name );
     frame->TransformationMatrix = chunk.matrix;
