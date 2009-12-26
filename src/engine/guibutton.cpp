@@ -83,7 +83,9 @@ void GuiButton::onMessage(gui::Message* message)
         _color = _inactiveColor;
         break;
     case gui::onMouseDown:
-        if( message->mouseButton == gui::mbLeft ) Gui::instance->pushMessage( &gui::Message( this, gui::onButtonClick ) );
+        if( message->mouseButton == gui::mbLeft ) Gui::instance->pushMessage( &gui::Message( this, gui::onButtonClick, gui::mbLeft ) );
+        if( message->mouseButton == gui::mbRight ) Gui::instance->pushMessage( &gui::Message( this, gui::onButtonClick, gui::mbRight ) );
+        if( message->mouseButton == gui::mbMiddle ) Gui::instance->pushMessage( &gui::Message( this, gui::onButtonClick, gui::mbMiddle ) );
         break;
     }
 }

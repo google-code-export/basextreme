@@ -301,12 +301,6 @@ unsigned int TournamentInfo::getMinimalRank(void)
 }
 
 
-unsigned int TournamentInfo::getDemoTournament(void)
-{
-    return 0;
-}
-
-
 TournamentType TournamentTypeFromString(const char* str)
 {
     string name(str);

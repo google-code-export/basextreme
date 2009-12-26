@@ -217,9 +217,7 @@ BrowserSource* MissionSource::browse(unsigned int itemId, Scene* scene, MissionB
 				{
 					// start mission
 					#ifndef GAMEPLAY_DEVELOPER_EDITION
-						#ifndef GAMEPLAY_DEMOVERSION
-							scene->passHoldingTime( missionInfo->missionTime );
-						#endif
+						scene->passHoldingTime( missionInfo->missionTime );
 					#endif
 				}
                 // equip is needed?

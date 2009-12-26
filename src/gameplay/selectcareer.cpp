@@ -326,11 +326,7 @@ void SelectCareer::messageCallback(gui::Message* message, void* userData)
                 }
                 else
                 {
-                    #ifdef GAMEPLAY_DEMOVERSION
-                        Gameplay::iGameplay->pushActivity( new Demo( __this->_items[0].career ) );
-                    #else
-                        Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[0].career ) );
-                    #endif
+                    Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[0].career ) );
                 }
             }
         }
@@ -344,11 +340,7 @@ void SelectCareer::messageCallback(gui::Message* message, void* userData)
                 }
                 else
                 {
-                    #ifdef GAMEPLAY_DEMOVERSION
-                        Gameplay::iGameplay->pushActivity( new Demo( __this->_items[1].career ) );
-                    #else
-                        Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[1].career ) );
-                    #endif
+                    Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[1].career ) );
                 }
             }
         }
@@ -362,11 +354,7 @@ void SelectCareer::messageCallback(gui::Message* message, void* userData)
                 }
                 else
                 {
-                    #ifdef GAMEPLAY_DEMOVERSION
-                        Gameplay::iGameplay->pushActivity( new Demo( __this->_items[2].career ) );
-                    #else
-                        Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[2].career ) );
-                    #endif
+                    Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[2].career ) );
                 }
             }
         }
@@ -380,11 +368,7 @@ void SelectCareer::messageCallback(gui::Message* message, void* userData)
                 }
                 else
                 {
-                    #ifdef GAMEPLAY_DEMOVERSION
-                        Gameplay::iGameplay->pushActivity( new Demo( __this->_items[3].career ) );
-                    #else
-                        Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[3].career ) );
-                    #endif
+                    Gameplay::iGameplay->pushActivity( new Geoscape( __this->_items[3].career ) );
                 }
             }
         }

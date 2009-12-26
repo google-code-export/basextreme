@@ -9,9 +9,6 @@
 // uncomment this macro to compile developer's version
 //#define GAMEPLAY_DEVELOPER_EDITION
 
-// uncomment this macro to compile demo version
-//#define GAMEPLAY_DEMOVERSION
-
 // uncomment one of these macros to compile specific retail edition
 // or comment each of these macros to compile web-edition
 //#define GAMEPLAY_EDITION_ND
