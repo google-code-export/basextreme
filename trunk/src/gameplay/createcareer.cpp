@@ -145,23 +145,10 @@ void CreateCareer::messageCallback(gui::Message* message, void* userData)
             __this->_career->getVirtues()->predisp.tracking = __this->_predTracking->getSlider()->getPosition();
             __this->_career->getVirtues()->predisp.rigging = __this->_predRigging->getSlider()->getPosition();
             // startup skills            
-            #ifdef GAMEPLAY_DEMOVERSION
-                // rande-up predispositions (due to restrictions of skill nature)
-                if( __this->_career->getVirtues()->predisp.perception > 0.99f ) __this->_career->getVirtues()->predisp.perception = 0.99f;
-                if( __this->_career->getVirtues()->predisp.endurance > 0.99f ) __this->_career->getVirtues()->predisp.endurance = 0.99f;
-                if( __this->_career->getVirtues()->predisp.tracking > 0.99f ) __this->_career->getVirtues()->predisp.tracking = 0.99f;
-                if( __this->_career->getVirtues()->predisp.rigging > 0.99f ) __this->_career->getVirtues()->predisp.rigging = 0.99f;
-                // setup skills for demo mode
-                __this->_career->getVirtues()->setPerceptionSkill( __this->_career->getVirtues()->predisp.perception );
-                __this->_career->getVirtues()->setEnduranceSkill( __this->_career->getVirtues()->predisp.endurance );
-                __this->_career->getVirtues()->setTrackingSkill( __this->_career->getVirtues()->predisp.tracking );
-                __this->_career->getVirtues()->setRiggingSkill( __this->_career->getVirtues()->predisp.rigging );
-            #else
-                __this->_career->getVirtues()->skills.perception = 0;
-                __this->_career->getVirtues()->skills.endurance = 0;
-                __this->_career->getVirtues()->skills.tracking = 0;
-                __this->_career->getVirtues()->skills.rigging = 0;
-            #endif
+            __this->_career->getVirtues()->skills.perception = 0;
+            __this->_career->getVirtues()->skills.endurance = 0;
+            __this->_career->getVirtues()->skills.tracking = 0;
+            __this->_career->getVirtues()->skills.rigging = 0;
             // read malfunctions
             __this->_career->getVirtues()->equipment.malfunctions = ( __this->_malfunctions->getTextureRect().left > 0 );
             // generate startup gears
@@ -366,17 +353,4 @@ void CreateCareer::generateStartupGearStock(void)
 
     // select skydiving rig (Harpy) and add to gear stock
     _career->addGear( Gear( ::gtRig, 17 ) );
-
-    // in demo mode - include wingsuit 
-    #ifdef GAMEPLAY_DEMOVERSION
-        _career->addGear( Gear( ::gtSuit, 21 ) );
-    #endif
-
-    // in demo mode - enable acrobatics
-    #ifdef GAMEPLAY_DEMOVERSION
-        _career->setAcrobaticsSkill( acroJumpFromRun, true );
-        _career->setAcrobaticsSkill( acroFrontFlip, true );
-        _career->setAcrobaticsSkill( acroFrontBackFlip, true );
-        _career->setAcrobaticsSkill( acroBackFlip, true );
-    #endif
 }

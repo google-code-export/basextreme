@@ -9,8 +9,8 @@
 #include "version.h"
 
 /**
- * class implementation
- */
+* class implementation
+*/
 
 CareerCourse::CareerCourse(Geoscape* geoscape) : GeoscapeMode( geoscape )
 {
@@ -38,11 +38,11 @@ CareerCourse::CareerCourse(Geoscape* geoscape) : GeoscapeMode( geoscape )
     if( _geoscape->getCareer()->getLicensedFlag() ) faceTexture = Gameplay::iEngine->getTexture( "face00" );
     assert( faceTexture );
     panel->getButton()->getPanel()->setTexture( faceTexture );
-    
+
     gui::Rect panelRect = panel->getRect();    
     float wAspect = float( faceTexture->getWidth() ) / float( panelRect.getWidth() );
     float hAspect = float( faceTexture->getHeight() ) / float( panelRect.getHeight() );
-    
+
     unsigned int width, height;
     if( wAspect < hAspect )
     {
@@ -186,7 +186,7 @@ CareerCourse::~CareerCourse()
         {
             event->getWindow()->getPanel()->getParent()->removePanel( 
                 event->getWindow()->getPanel()
-            );
+                );
         } 
     }
 
@@ -201,8 +201,8 @@ CareerCourse::~CareerCourse()
 }
 
 /**
- * private behaviour
- */
+* private behaviour
+*/
 
 static bool eventSort(Event*& event1, Event*& event2)
 {
@@ -249,7 +249,7 @@ void CareerCourse::updateGui(void)
             credit->setHint( wstrformat( 
                 Gameplay::iLanguage->getUnicodeString( 446 ), 
                 career->getVirtues()->evolution.credits 
-            ).c_str() );
+                ).c_str() );
         }
         else
         {
@@ -281,7 +281,7 @@ void CareerCourse::updateGui(void)
     assert( time && time->getStaticText() );
     time->getStaticText()->setText( wstrformat( 
         L"%d/%d/%d/%d %02d:%02d", dateTime.year, dateTime.month, dateTime.week, dateTime.day, dateTime.hour, dateTime.minute
-    ).c_str() );
+        ).c_str() );
 
     // calculate number of events under group icon
     unsigned int numIconedEvents = 0;    
@@ -405,7 +405,7 @@ void CareerCourse::updateGui(void)
             {
                 Gameplay::iGui->getDesktop()->insertPanel(
                     visibleEvents[i]->getWindow()->getPanel()
-                );
+                    );
             }
         }
 
@@ -524,7 +524,7 @@ gui::IGuiPanel* CareerCourse::getRankProgressBox(unsigned int id)
         result = _skillsScreen->getPanel()->find( "Rank10" );
         break;
     }
-    
+
     assert( result );
     return result;
 }
@@ -566,7 +566,7 @@ gui::IGuiPanel* CareerCourse::getPromoProgressBox(unsigned int id)
         result = _fundsScreen->getPanel()->find( "Promotion10" );
         break;
     }
-    
+
     assert( result );
     return result;
 }
@@ -580,7 +580,7 @@ void CareerCourse::updateSkillsScreen(void)
     int mm = int( playingTime / 60.0f );
     playingTime -= mm * 60;
     int ss = int( playingTime );
-    
+
     // walk through value
     float walkthrough = _geoscape->getCareer()->getWalkthroughPercent();
     assert( walkthrough >= 0 && walkthrough <= 1 );
@@ -774,7 +774,7 @@ void CareerCourse::updateShopScreen(void)
         }       
         _marketOffer.push_back( _unsorted[bestId] );
         //_unsorted.erase( &_unsorted[bestId] );
-	_unsorted.erase(_unsorted.begin() + bestId);
+        _unsorted.erase(_unsorted.begin() + bestId);
     }
 
     // update player offer
@@ -797,7 +797,7 @@ void CareerCourse::updateShopScreen(void)
         }
         _playerOffer.push_back( _unsorted[bestId] );
         //_unsorted.erase( &_unsorted[bestId] );
-	_unsorted.erase(_unsorted.begin() + bestId);
+        _unsorted.erase(_unsorted.begin() + bestId);
     }
 
     // update shop slider
@@ -980,8 +980,8 @@ void CareerCourse::updateEventProgress(Event* event)
 }
 
 /**
- * shopping
- */
+* shopping
+*/
 
 void CareerCourse::sellItem(unsigned int itemId)
 {
@@ -1011,9 +1011,9 @@ void CareerCourse::buyItem(unsigned int itemId)
 }
 
 /**
- * GeoscapeMode
- */
-   
+* GeoscapeMode
+*/
+
 bool CareerCourse::endOfMode(void)
 {
     return false;
@@ -1034,28 +1034,36 @@ void CareerCourse::onGuiMessage(gui::Message* message)
                     _geoscape->centerGeoscape( 
                         _geoscape->getCareer()->getHomeX(),
                         _geoscape->getCareer()->getHomeY()
-                    );
+                        );
                 }
                 else
                 {
                     _geoscape->centerGeoscape( locationInfo->worldX, locationInfo->worldY );
                 }
             }
-			// Cheats to enable full health, increase score and add $100 when clicking on character icon
-			if ( Gameplay::iGameplay->_cheatsEnabled )
-			{
-				_geoscape->getCareer()->getVirtues()->evolution.funds += 100.0f;
-                _geoscape->getCareer()->getVirtues()->evolution.score += 100.0f;
-                _geoscape->getCareer()->getVirtues()->evolution.health = 1.0f;
-				_geoscape->getCareer()->getVirtues()->evolution.credits = 3;
-                _geoscape->addHistory( Gameplay::iLanguage->getUnicodeString(631), Vector4f( 1, 0.25f, 0.25f, 1 ) );
-			}
-            #ifdef GAMEPLAY_DEVELOPER_EDITION
-                _geoscape->getCareer()->getVirtues()->evolution.funds += 100.0f;
-                _geoscape->getCareer()->getVirtues()->evolution.score += 100.0f;
-                _geoscape->getCareer()->getVirtues()->evolution.health = 1.0f;
-                _geoscape->addHistory( Gameplay::iLanguage->getUnicodeString(631), Vector4f( 1, 0.25f, 0.25f, 1 ) );
-            #endif
+            // Cheats to enable full health, increase score and add $1000 when clicking on character icon
+            if ( Gameplay::iGameplay->_cheatsEnabled )
+            {
+                if (message->mouseButton == gui::mbLeft) {
+                    _geoscape->getCareer()->getVirtues()->evolution.funds += 1000.0f;
+                    _geoscape->getCareer()->getVirtues()->evolution.score += 100.0f;
+                    _geoscape->getCareer()->getVirtues()->evolution.health = 1.0f;
+                    _geoscape->getCareer()->getVirtues()->evolution.credits = 3;
+                    _geoscape->addHistory( Gameplay::iLanguage->getUnicodeString(631), Vector4f( 1, 0.25f, 0.25f, 1 ) );
+                } else if (message->mouseButton == gui::mbMiddle) {
+                    Virtues* virtues = _geoscape->getCareer()->getVirtues();
+                    virtues->setEnduranceSkill(0.99f * virtues->predisp.endurance);
+                    virtues->setPerceptionSkill(0.99f * virtues->predisp.perception);
+                    virtues->setRiggingSkill(0.99f * virtues->predisp.rigging);
+                    virtues->setTrackingSkill(0.99f * virtues->predisp.tracking);
+                }
+            }
+#ifdef GAMEPLAY_DEVELOPER_EDITION
+            _geoscape->getCareer()->getVirtues()->evolution.funds += 100.0f;
+            _geoscape->getCareer()->getVirtues()->evolution.score += 100.0f;
+            _geoscape->getCareer()->getVirtues()->evolution.health = 1.0f;
+            _geoscape->addHistory( Gameplay::iLanguage->getUnicodeString(631), Vector4f( 1, 0.25f, 0.25f, 1 ) );
+#endif
         }
         else if( strcmp( message->origin->getName(), "Skills" ) == 0 )
         {
@@ -1073,7 +1081,7 @@ void CareerCourse::onGuiMessage(gui::Message* message)
         {
             // trade feature is avaiable by default
             bool shopScreenIsAvaiable = true;
-            
+
             // trade feature is not avaiable for licensed character
             shopScreenIsAvaiable = !_geoscape->getCareer()->getLicensedFlag();                
 
@@ -1107,12 +1115,12 @@ void CareerCourse::onGuiMessage(gui::Message* message)
             setCareerDialog( NULL );
         }
         else if( message->origin->getParent() &&
-                 strcmp( message->origin->getParent()->getName(), "ComingEventsIcon" ) == 0 )
+            strcmp( message->origin->getParent()->getName(), "ComingEventsIcon" ) == 0 )
         {
             _displayMode = ::edmComing;
         }
         else if( message->origin->getParent() &&
-                 strcmp( message->origin->getParent()->getName(), "ActiveEventsIcon" ) == 0 )
+            strcmp( message->origin->getParent()->getName(), "ActiveEventsIcon" ) == 0 )
         {
             _displayMode = ::edmActive;
         }
@@ -1157,7 +1165,7 @@ void CareerCourse::onGuiMessage(gui::Message* message)
             _gearFilter = ::gtCanopy;
         }
         else if( message->origin->getParent() && 
-                 strcmp( message->origin->getName(), "Name" ) == 0 )
+            strcmp( message->origin->getName(), "Name" ) == 0 )
         {
             // player item?            
             if( strcmp( message->origin->getParent()->getName(), "PlayerItem01" ) == 0 )
@@ -1206,12 +1214,12 @@ void CareerCourse::onGuiMessage(gui::Message* message)
         {
             Location* location = _geoscape->getLocation( message->origin );
             assert( location );
-			if ( Gameplay::iGameplay->_freeModeIsEnabled )
-			{
-				// enter to location
+            if ( Gameplay::iGameplay->_freeModeIsEnabled )
+            {
+                // enter to location
                 setTimeSpeed( ::tsPause );
                 setCareerDialog( new EnterLocationDialog( _geoscape, location ) );
-			}
+            }
             // click on current location?
             else if( !Gameplay::iGameplay->_freeModeIsEnabled && location->getPlayer() )
             {
@@ -1361,7 +1369,7 @@ void CareerCourse::updateBlinking(float dt)
     // update blinking
     _timeBlink += dt;
     float alpha = 0.5f * ( 1 + sin( _timeBlink * 10 ) );
-    
+
     gui::IGuiPanel* buttonPanel = _careerCourse->getPanel()->find( "Pause" );    
     assert( buttonPanel && buttonPanel->getButton() );
     if( _timeSpeed == ::tsPause ) updateBlinkingButton( buttonPanel, alpha );
@@ -1406,7 +1414,7 @@ void CareerCourse::travelToLocation(Location* location)
 {
     // retrieve player location
     Location* playerLocation = _geoscape->getPlayerLocation();
-    
+
     // in there are no player location, then player is travels
     if( !playerLocation )
     {
@@ -1444,7 +1452,7 @@ float CareerCourse::simulateCourse(float minutes, bool guiFeedback)
 
     // SHIFT press
     bool shift = ( Gameplay::iGameplay->getKeyboardState()->keyState[0x2A] & 0x80 ) || 
-                 ( Gameplay::iGameplay->getKeyboardState()->keyState[0x36] & 0x80 );
+        ( Gameplay::iGameplay->getKeyboardState()->keyState[0x36] & 0x80 );
 
     // pass all of events, determine step time and event to handle
     float  stepTime = minutes;
@@ -1459,7 +1467,7 @@ float CareerCourse::simulateCourse(float minutes, bool guiFeedback)
         {
             // if event is inactive, and event activation is coming
             if( !( event->getFlags() & efActive ) && 
-                 ( event->getTimeTo() - event->getDuration() <= stepTime ) )
+                ( event->getTimeTo() - event->getDuration() <= stepTime ) )
             {
                 stepTime = event->getTimeTo() - event->getDuration();
                 eventToHandle = event;
@@ -1505,7 +1513,7 @@ float CareerCourse::simulateCourse(float minutes, bool guiFeedback)
             {
                 eventToHandle->getWindow()->getPanel()->getParent()->removePanel( 
                     eventToHandle->getWindow()->getPanel()
-                );
+                    );
             }
             career->removeEvent( eventToHandle );
         }        
@@ -1519,7 +1527,7 @@ float CareerCourse::simulateCourse(float minutes, bool guiFeedback)
         for( i=0; i<career->getNumEvents(); i++ )
         {
             if( ( career->getEvent(i)->getTimeTo() == 0.0f ||
-                  career->getEvent(i)->getTimeTo() - career->getEvent(i)->getDuration() == 0.0f ) &&
+                career->getEvent(i)->getTimeTo() - career->getEvent(i)->getDuration() == 0.0f ) &&
                 !( career->getEvent(i)->getFlags() & efActive ) )
             {
                 hotEventsFound = true;

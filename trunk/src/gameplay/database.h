@@ -422,8 +422,6 @@ public:
     unsigned int                getMinimalRank(void);
 
 public:
-    static unsigned int         getDemoTournament(void);
-
     static void                 loadMissions(LocationInfo* location, const char* fileName);
     static bool                 loadMission(ConfigReader& cfg, MissionInfo* mission);
 };

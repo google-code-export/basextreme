@@ -811,29 +811,13 @@ void Scene::updateActivity(float dt)
     // check player health
     if( _career->getVirtues()->evolution.health < 0.75f && !Gameplay::iGameplay->_freeModeIsEnabled )
     {
-        #ifdef GAMEPLAY_DEMOVERSION
-            // check top mode is not mission and not interrupt mode
-            if( dynamic_cast<Mission*>( _modes.top() ) == NULL &&
-                dynamic_cast<Interrupt*>( _modes.top() ) == NULL )
-            {
-                if( _career->getVirtues()->evolution.health > 0 )
-                {
-                    _career->getVirtues()->evolution.health = 1.0f;
-                }
-                else
-                {
-                    _endOfActivity = true;
-                }
-            }
-        #else
-            // check top mode is not mission and not interrupt mode
-            if( dynamic_cast<Mission*>( _modes.top() ) == NULL &&
-                dynamic_cast<Interrupt*>( _modes.top() ) == NULL )
-            {
-                // force exit to career course
-                _endOfActivity = true;
-            }
-        #endif
+        // check top mode is not mission and not interrupt mode
+        if( dynamic_cast<Mission*>( _modes.top() ) == NULL &&
+            dynamic_cast<Interrupt*>( _modes.top() ) == NULL )
+        {
+            // force exit to career course
+            _endOfActivity = true;
+        }
     }
 }
 

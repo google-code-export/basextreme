@@ -153,18 +153,12 @@ TournamentSource::TournamentSource(unsigned int locationId, Career* career)
             }
             // arbitrary tournament are enabled:
             //  - if there is no other events in location
-            //  - if this is not a demo tournament
-            if( !eventInLocation && i != database::TournamentInfo::getDemoTournament() )
+            if( !eventInLocation )
             {
                  _tournaments.push_back( i );
             }
         }
     }
-
-    #ifdef GAMEPLAY_DEMOVERSION
-        _tournaments.clear();
-        _tournaments.push_back( database::TournamentInfo::getDemoTournament() );
-    #endif
 }
 
 TournamentSource::~TournamentSource()
