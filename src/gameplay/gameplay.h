@@ -48,12 +48,10 @@ private:
     float                 _musicVolumeTune;
     float                 _globalTimeIT;        // input treshold
     float                 _globalTimeSpeed;     // subj
-    bool                  _isAegisActive;       // evaluation protection
     bool                  _isUnsafeCleanup;     // unsafe to perform gameplay cleanup
     bool                  _pitchShiftIsEnabled; // pitch shift is enabled
     TiXmlDocuments        _userTournaments;     // container for user tournament files
     StringPointers        _userStrings;         // strings cache (random usage)
-    Missions              _userMissions;        // container for user missions
 public:
 	bool                  _freeModeIsEnabled; // allow all events at all locations
 	bool                  _cheatsEnabled; // jumping in all weathers is enabled
@@ -106,8 +104,6 @@ public:
 public:
     // module local : gameplay inlines
     inline RenderTarget* getRenderTarget(void) { return _renderTarget; }
-    inline bool getAegisActive(void) { return _isAegisActive; }
-    inline void setAegisActive(bool isAegisActive) { _isAegisActive = isAegisActive; }
     inline bool getUnsafeCleanup(void) { return _isUnsafeCleanup; }
     inline void setUnsafeCleanup(bool isUnsafeCleanup) { _isUnsafeCleanup = isUnsafeCleanup; }
     inline bool pitchShiftIsEnabled(void) { return _pitchShiftIsEnabled; }

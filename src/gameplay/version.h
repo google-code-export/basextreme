@@ -9,10 +9,6 @@
 // uncomment this macro to compile developer's version
 //#define GAMEPLAY_DEVELOPER_EDITION
 
-// uncomment and designate this macro to compile evaluation version
-// actually its value is a SYSTEMTIME initializer
-//#define GAMEPLAY_EVALUATION_TIME { 2007, 5, 0, 1, 0, 0, 0, 0 }
-
 // uncomment this macro to compile demo version
 //#define GAMEPLAY_DEMOVERSION
 
@@ -42,7 +38,7 @@ struct Version
 {
 public:
     enum Status { alpha, beta, release };
-    enum Edition { oem, retail, web };
+    enum Edition { oem, retail, web, eXtreme };
 private:
     Status          _status;
     Edition         _edition;
@@ -72,11 +68,8 @@ public:
         case oem: editionString = L"oem"; break; 
         case retail: editionString = L"retail"; break; 
         case web: editionString = L"web"; break; 
+        case eXtreme: editionString = L"eXtreme"; break; 
         }
-        
-        #ifdef GAMEPLAY_EVALUATION_TIME
-            editionString = L"evaluation";
-        #endif
 
         // build result string
         swprintf( _versionString, L"v%d.%d.%d (%s,%s,%s)",
@@ -96,11 +89,14 @@ public:
 };
 
 // version info
-static Version version( Version::release, Version::web, L"en", 1, 3, 25 );
+static Version version( Version::release, Version::eXtreme, L"en", 2, 0, 0 );
 
 /**
  * version history
  */
+
+// v2.0.0
+// - marks the official start of B.A.S.E. eXtreme Edition
 
 // v1.3.25 (en)
 // - official boost update

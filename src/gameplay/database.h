@@ -8,6 +8,7 @@
 
 class Actor;
 class Career;
+class ConfigReader;
 
 /**
  * (outside database) - types of weather
@@ -20,12 +21,15 @@ enum WeatherType
     wtCloudy,
     wtLightRain,
     wtHardRain,
-    wtThunder,
-    wtDatabaseEnding // used for database enumeration of weather options
+    wtThunder
 };
 
 namespace database
 {
+
+struct LocationInfo;
+typedef void (*CastingCallback)(Actor* parent);
+
 
 /**
  * wind constants
@@ -357,129 +361,6 @@ public:
     static EventInfo* getRecord(unsigned int id);
 };
 
-/**
- * location database
- */
-
-typedef void (*CastingCallback)(Actor* parent);
-
-struct LocationInfo
-{
-public:
-    bool          accessible;  // location is accessible
-    unsigned int  nameId;      // id of text, naming the location
-    int           worldX;      // "longitude"
-    int           worldY;      // "lattitude"
-    const char*   gameData;    // name of entry in game data pool (serialization)    
-    const char*   thumbnail;   // thumbnail resource (NULL if no)
-    bool          wind;        // wind flag (false for indoor & cave locations)
-    float         stayFee;     // "stay-in-location" fee (collected by Divine event)
-    unsigned int  boogieId;    // (language) id of boogie event (0 for no boogies)
-    unsigned int  festivalId;  // (language) id of festival event (0 for no festivals)
-    unsigned int  climbingId;  // (language) id of climbing event (0 for no climbings)
-    unsigned int  smokeballId; // (language) id of smokeball event (0 for no smokeballs)
-    unsigned int  communityId; // (language) id of user community event (0 for no events)
-public:
-    struct PhysicsLimits
-    {
-    public:
-        unsigned int numActors;
-        unsigned int numBodies;
-        unsigned int numStaticShapes;
-        unsigned int numDynamicShapes;
-        unsigned int numJoints;
-    }
-    physicsLimits;
-public:
-    struct RegularAsset
-    {
-    public:
-        const char* resource;
-        float       zNear;
-        float       zFar;
-    }
-    stage, extras;
-public:
-    struct AssetInfo
-    {
-    public:
-        const char* name;
-        const char* resource;
-    }* localAssets;
-public:
-    const char** localTextures;
-public:
-    struct AfterFx
-    {
-    public:
-        float brightPass;
-        float bloom;
-    }
-    afterFx;
-public:
-    struct Grass
-    {
-    public:
-        engine::GrassScheme* scheme;
-        const char*          textureName;
-        const char*          textureResource;
-        const char*          cache;
-        const char*          templ;
-        float                fadeStart;
-        float                fadeEnd;
-    }
-    grass;
-public:
-    struct ExitPoint
-    {
-    public:
-        unsigned int nameId;
-        const char*  extras;
-        float        delay;  // reference delay (in seconds)
-    }
-    *exitPoints;
-public:
-    CastingCallback castingCallback;
-public:
-    struct Footsteps
-    {
-    public:
-        float refdist;
-        float maxdist;
-        float rolloff;
-        float walkPitch;
-        float backPitch;
-        float turnPitch;
-        const char* walkSound;
-        const char* turnSound;
-    } 
-    footsteps;
-public:
-    struct Weather
-    {
-    public:
-        WeatherType     weather;      // weather option
-        engine::FogType fogType;      // fog type for this weather (Exp or Exp2 only)
-        float           fogDensity;   // fog density
-        Vector4f        fogColor;     // fog color
-        float           sunMute;      // sun light muting factor (0..1)
-        float           ambientMute;  // ambient light muting factor (0..1)
-        RegularAsset    panorama;     // subj
-    }
-    *weathers;
-public:
-    struct Reverberation
-    {
-        float inGain;
-        float reverbMixDB;
-        float reverbTime;
-        float hfTimeRatio;
-    }
-    *reverberation;
-public:
-    static unsigned int getNumRecords(void);
-    static LocationInfo* getRecord(unsigned int id);
-};
 
 /**
  * mission database
@@ -508,7 +389,7 @@ public:
     unsigned int     flags;            // mission flags
     unsigned int     exitPointId;      // mission exit point (or AIRPLANE_EXIT)
     float            missionTime;      // career time taken when playing this mission
-    const char*      thumbnail;        // thumbnail resource    
+    std::string      thumbnail;        // thumbnail resource    
     WeatherClearance weatherClearance; // function checks mission clearance by weather
     WindClearance    windClearance;    // function checks mission clearance by wind
     CastingCallback  castingCallback;  // mission casting procedure
@@ -529,21 +410,22 @@ enum TournamentType
 struct TournamentInfo
 {
 public:
-    unsigned int   nameId;     // (language) tournament name id
-    unsigned int   briefId;    // (language) tournament briefing text id
-    unsigned int   locationId; // tournament location
-    TournamentType type;       // tournament flags
-    const char*    gameData;   // name of gamedata record
-    const char*    thumbnail;  // thumbnail resource
-    MissionInfo*   missions;   // tournament missions
+    unsigned int                nameId;     // (language) tournament name id
+    unsigned int                briefId;    // (language) tournament briefing text id
+    TournamentType              type;       // tournament flags
+    std::string                 gameData;   // name of gamedata record
+    std::string                 thumbnail;  // thumbnail resource
+    std::vector<MissionInfo>    missions;   // tournament missions
+
 public:
-    unsigned int getNumMissions(void);
-    unsigned int getMinimalRank(void);
+    unsigned int                getNumMissions(void);
+    unsigned int                getMinimalRank(void);
+
 public:
-    static unsigned int getNumRecords(void);
-    static unsigned int getDemoTournament(void);
-    static TournamentInfo* getRecord(unsigned int id);
-    static void addRecord(TournamentInfo* tournamentInfo);
+    static unsigned int         getDemoTournament(void);
+
+    static void                 loadMissions(LocationInfo* location, const char* fileName);
+    static bool                 loadMission(ConfigReader& cfg, MissionInfo* mission);
 };
 
 /**
@@ -569,6 +451,133 @@ public:
     static unsigned int getRandomNonLicensedCharacter(float level, float epsilon);
     static void select(float level, float epsilon, bool licensed, std::vector<unsigned int>& result);
     static void addRecord(NPCInfo* npc);
+};
+
+
+/**
+ * location database
+ */
+
+struct LocationInfo
+{
+public:
+    unsigned int  nameId;      // id of text, naming the location
+    int           worldX;      // "longitude"
+    int           worldY;      // "lattitude"
+    std::string   gameData;    // name of entry in game data pool (serialization)    
+    std::string   thumbnail;   // thumbnail resource (NULL if no)
+    bool          wind;        // wind flag (false for indoor & cave locations)
+    float         stayFee;     // "stay-in-location" fee (collected by Divine event)
+    unsigned int  boogieId;    // (language) id of boogie event (0 for no boogies)
+    unsigned int  festivalId;  // (language) id of festival event (0 for no festivals)
+    unsigned int  climbingId;  // (language) id of climbing event (0 for no climbings)
+    unsigned int  smokeballId; // (language) id of smokeball event (0 for no smokeballs)
+    unsigned int  communityId; // (language) id of user community event (0 for no events)
+public:
+    struct PhysicsLimits
+    {
+    public:
+        unsigned int numActors;
+        unsigned int numBodies;
+        unsigned int numStaticShapes;
+        unsigned int numDynamicShapes;
+        unsigned int numJoints;
+    }
+    physicsLimits;
+public:
+    struct RegularAsset
+    {
+    public:
+        std::string resource;
+        float       zNear;
+        float       zFar;
+    }
+    stage, extras;
+public:
+    struct AssetInfo
+    {
+    public:
+        std::string name;
+        std::string resource;
+    };
+    std::vector<AssetInfo> localAssets;
+public:
+    std::vector<std::string> localTextures;
+public:
+    struct AfterFx
+    {
+    public:
+        float brightPass;
+        float bloom;
+    }
+    afterFx;
+public:
+    struct Grass
+    {
+    public:
+        engine::GrassScheme* scheme;
+        std::string          textureName;
+        std::string          textureResource;
+        std::string          cache;
+        std::string          templ;
+        float                fadeStart;
+        float                fadeEnd;
+    }
+    grass;
+public:
+    struct ExitPoint
+    {
+    public:
+        unsigned int nameId;
+        std::string  extras;
+        float        delay;  // reference delay (in seconds)
+    };
+    std::vector<ExitPoint> exitPoints;
+public:
+    CastingCallback castingCallback;
+public:
+    struct Footsteps
+    {
+    public:
+        float refdist;
+        float maxdist;
+        float rolloff;
+        float walkPitch;
+        float backPitch;
+        float turnPitch;
+        std::string walkSound;
+        std::string turnSound;
+    } 
+    footsteps;
+public:
+    struct Weather
+    {
+    public:
+        WeatherType     weather;      // weather option
+        engine::FogType fogType;      // fog type for this weather (Exp or Exp2 only)
+        float           fogDensity;   // fog density
+        Vector4f        fogColor;     // fog color
+        float           sunMute;      // sun light muting factor (0..1)
+        float           ambientMute;  // ambient light muting factor (0..1)
+        RegularAsset    panorama;     // subj
+    };
+    std::vector<Weather> weathers;
+public:
+    struct Reverberation
+    {
+        float inGain;
+        float reverbMixDB;
+        float reverbTime;
+        float hfTimeRatio;
+    }
+    reverberation;
+    std::vector<TournamentInfo> tournaments;
+public:
+    static unsigned int         getNumRecords(void);
+    static LocationInfo*        getRecord(unsigned int id);
+    static void                 loadLocations(const char* fileName);
+    static LocationInfo*        loadLocation(const char* fileName);
+    static void                 deleteLocations();
 };
 
 }

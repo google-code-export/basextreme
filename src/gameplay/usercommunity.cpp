@@ -7,7 +7,6 @@
 #include "unicode.h"
 #include "communitymission.h"
 
-database::MissionInfo nullTerminator = { 0, 0, 0, 0, 0, 0.0f, NULL, NULL, NULL, NULL };
 
 /**
  * user community events globals
@@ -15,6 +14,8 @@ database::MissionInfo nullTerminator = { 0, 0, 0, 0, 0, 0.0f, NULL, NULL, NULL, 
 
 void Gameplay::generateUserCommunityEvents(void)
 {    
+// TODO
+/*
     WIN32_FIND_DATA fileFindData;
     HANDLE fileFindHandle;
     std::string filePath;
@@ -114,7 +115,8 @@ void Gameplay::generateUserCommunityEvents(void)
                 );
                 // tournament location
                 static_cast<TiXmlElement*>( child )->Attribute( "locationId", &ivalue );
-                tournamentInfo.locationId = ivalue;
+                // TODO:
+                //tournamentInfo.locationId = ivalue;
                 // gamedata identifier
                 pstr = new std::string;
                 *pstr = static_cast<TiXmlElement*>( child )->Attribute( "gameData" );
@@ -137,6 +139,7 @@ void Gameplay::generateUserCommunityEvents(void)
         }
         while( child != NULL );
     }
+*/
 }
 
 void Gameplay::generateMissions(TiXmlElement* node, database::TournamentInfo* tournamentInfo)
@@ -156,63 +159,54 @@ void Gameplay::generateMissions(TiXmlElement* node, database::TournamentInfo* to
     }
     while( child != NULL );
 
-    // allocate space for missions
-    database::MissionInfo* missions = new database::MissionInfo[numMissions+1];
-
-    // write NULL-terminator
-    missions[numMissions] = nullTerminator;
-
     // read missions
-    unsigned int index = 0;
     std::string* pstr;
     child = node->FirstChild();
     if( child ) do 
     {
         if( child->Type() == TiXmlNode::ELEMENT && strcmp( child->Value(), "mission" ) == 0 )
         {
+            // allocate space for missions
+            database::MissionInfo mission;
+
             // mission rank
             static_cast<TiXmlElement*>( child )->Attribute( "rank", &ivalue );
-            missions[index].rank = ivalue;
+            mission.rank = ivalue;
             // mission name
-            missions[index].nameId = Gameplay::iLanguage->addUnicodeString(
+            mission.nameId = Gameplay::iLanguage->addUnicodeString(
                 asciizToUnicode( static_cast<TiXmlElement*>( child )->Attribute( "name" ) ).c_str()
             );
             // mission briefing
-            missions[index].briefId = Gameplay::iLanguage->addUnicodeString(
+            mission.briefId = Gameplay::iLanguage->addUnicodeString(
                 asciizToUnicode( static_cast<TiXmlElement*>( child )->Attribute( "brief" ) ).c_str()
             );
             // mission exit point
-            missions[index].exitPointId = AIRPLANE_EXIT;
+            mission.exitPointId = AIRPLANE_EXIT;
             // mission time
             static_cast<TiXmlElement*>( child )->Attribute( "missionTime", &ivalue );
             if( ivalue < 1 ) ivalue = 1;
-            missions[index].missionTime = float( ivalue ) * 60;
+            mission.missionTime = float( ivalue ) * 60;
             // mission thumbnail
             pstr = new std::string;
             *pstr = static_cast<TiXmlElement*>( child )->Attribute( "thumbnail" );
             _userStrings.push_back( pstr );
-            missions[index].thumbnail = pstr->c_str();
+            mission.thumbnail = pstr->c_str();
             // mission flags 
-            missions[index].flags = 0;
+            mission.flags = 0;
             // mission node
-            missions[index].missionNode = child;
+            mission.missionNode = child;
             // mission callbacks
-            missions[index].weatherClearance = weatherClearanceCommunity;
-            missions[index].windClearance = windClearanceCommunity;
-            missions[index].castingCallback = castingCallback_CommunityMission;
-            missions[index].equipCallback = equipCallback_CommunityMission;
-            // next mission
-            index++;
+            mission.weatherClearance = weatherClearanceCommunity;
+            mission.windClearance = windClearanceCommunity;
+            mission.castingCallback = castingCallback_CommunityMission;
+            mission.equipCallback = equipCallback_CommunityMission;
+
+            // update tournament
+            tournamentInfo->missions.push_back(mission);
         }
         child = child->NextSibling();
     }
     while( child != NULL );
-
-    // cache missions
-    _userMissions.push_back( missions );
-
-    // update tournament
-    tournamentInfo->missions = missions;
 }
 
 void Gameplay::cleanupUserCommunityEvents(void)
@@ -227,10 +221,5 @@ void Gameplay::cleanupUserCommunityEvents(void)
     for( i=0; i<_userStrings.size(); i++ )
     {
         delete _userStrings[i];
-    }
-    // delete mission cache
-    for( i=0; i<_userMissions.size(); i++ )
-    {
-        delete[] _userMissions[i];
     }
 }

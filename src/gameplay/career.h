@@ -193,8 +193,8 @@ public:
 public:
     // career walk-through management
     float getWalkthroughPercent(void);
-    bool getMissionWalkthroughFlag(unsigned int tournamentId, unsigned int missionId);
-    void setMissionWalkthroughFlag(unsigned int tournamentId, unsigned int missionId, bool flag);
+    bool getMissionWalkthroughFlag(database::TournamentInfo* tournament, unsigned int missionId);
+    void setMissionWalkthroughFlag(database::TournamentInfo* tournament, unsigned int missionId, bool flag);
 public:
     // baggage of acrobatics 
     bool getAcrobaticsSkill(Acrobatics skill);

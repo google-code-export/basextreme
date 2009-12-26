@@ -35,12 +35,8 @@ Gameplay::Gameplay()
     _fadedSoundTrack = NULL;
     _musicVolumeTune = 0.0f;
 
-    _isAegisActive = false;
     _isUnsafeCleanup = false;
     _pitchShiftIsEnabled = false;
-
-    // zhulikotester
-    //checkKey( "7LGQ-3F9H-C7LT-Q3W4-FR9F-CX9H", "WD-WMAJ94914315" );
 }
 
 Gameplay::~Gameplay()
@@ -82,6 +78,8 @@ Gameplay::~Gameplay()
 
         // delete user events
         cleanupUserCommunityEvents();
+
+        database::LocationInfo::deleteLocations();
     
         // delete render target
         delete _renderTarget;
@@ -371,6 +369,8 @@ void Gameplay::entityInit(Object * p)
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_STATIC, 1 );
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_DYNAMIC,1 );
 
+    database::LocationInfo::loadLocations("./res/locations.cfg");
+
     // generate user community events from XML documents
     generateUserCommunityEvents();
 
@@ -418,48 +418,13 @@ void Gameplay::entityInit(Object * p)
     // play menu music
     playSoundtrack( "./res/sounds/music/dirty_moleculas_execution.ogg" );
 
-    // evaluation protection
-    #ifdef GAMEPLAY_EVALUATION_TIME
-        SYSTEMTIME evaluationTime = GAMEPLAY_EVALUATION_TIME;
-        SYSTEMTIME latestFileTime;
-        if( getLatestFileTimeB( &latestFileTime ) )
-        {
-            if( isGreaterTime( &latestFileTime, &evaluationTime ) )
-            {
-                pushActivity( new Messagebox( Gameplay::iLanguage->getUnicodeString( 765 ) ) );
-            }
-            else
-            {
-                // startup
-                _preloaded = new Preloaded();
-                pushActivity( _preloaded );
-            }
-        }
-    #else
-        // determine if licence is required to play game
-        bool licenceIsRequired = false;
-        #ifndef GAMEPLAY_EDITION_ND
-            #ifndef GAMEPLAY_EDITION_ATARI
-                #ifndef GAMEPLAY_EDITION_POLISH
-                    licenceIsRequired = false;
-                #endif
-            #endif
-        #endif
-
-        // startup        
-        _preloaded = new Preloaded();
-        pushActivity( _preloaded );
-    #endif   
+    // startup        
+    _preloaded = new Preloaded();
+    pushActivity( _preloaded );
 }
 
 void Gameplay::entityAct(float dt)
 {
-    // pro-tection
-    if( _isAegisActive ) 
-    {
-        Sleep( unsigned int( getCore()->getRandToolkit()->getUniform( 250, 500 ) ) );
-    }
-
     _globalTimeIT -= dt;
     dt *= _globalTimeSpeed;
 

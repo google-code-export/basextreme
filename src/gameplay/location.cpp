@@ -40,13 +40,7 @@ Location::Location(Geoscape* geoscape, unsigned int databaseId)
     database::LocationInfo* locationInfo = database::LocationInfo::getRecord( _databaseId );
 
     // create location window
-    _window = Gameplay::iGui->createWindow( "CareerLocation" );
-
-    // hide inaccessible location
-    if( !locationInfo->accessible )
-    {
-        _window->getPanel()->setVisible( false );
-    }
+    _window = Gameplay::iGui->createWindow("CareerLocation");
 
     // setup caption
     gui::IGuiPanel* caption       = _window->getPanel()->find( "Caption" );
@@ -81,7 +75,7 @@ Location::Location(Geoscape* geoscape, unsigned int databaseId)
     GameData* gameData = NULL;
     if( geoscape )
     {
-        gameData = geoscape->getCareer()->getGameData( locationInfo->gameData );
+        gameData = geoscape->getCareer()->getGameData( locationInfo->gameData.c_str() );
     }
     else
     {
@@ -91,7 +85,7 @@ Location::Location(Geoscape* geoscape, unsigned int databaseId)
     {
         gameData = new GameData( sizeof( LocationData ) );
         _gameData = reinterpret_cast<LocationData*>( gameData->getData() );
-        geoscape->getCareer()->addGameData( locationInfo->gameData, gameData );        
+        geoscape->getCareer()->addGameData( locationInfo->gameData.c_str(), gameData );        
         setPlayer( false );
         // random weather
         unsigned int dice = unsigned int( getCore()->getRandToolkit()->getUniform( 0, 6 ) );

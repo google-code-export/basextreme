@@ -61,10 +61,11 @@ public:
 class MissionSource : public BrowserSource
 {
 private:
-    unsigned int _tournamentId;
+    database::TournamentInfo* mTournament;
+
 public:
     // class implementation
-    MissionSource(unsigned int tournamentId);
+    MissionSource(database::TournamentInfo* tournament);
     virtual ~MissionSource();
     // BrowserSource
     virtual const char* getDefaultThumbnail(void);

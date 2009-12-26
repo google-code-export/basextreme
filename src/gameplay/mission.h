@@ -116,7 +116,7 @@ private:
     };
 private:    
     database::MissionInfo* _missionInfo;
-    unsigned int           _wttid;
+    database::TournamentInfo* _tournamentInfo;
     unsigned int           _wtmid;
     bool                   _endOfMission;
     bool                   _endOfPlayerActivity;
@@ -140,7 +140,7 @@ public:
     virtual bool endOfMode(void);
 public:
     // class implementation
-    Mission(Scene* scene, database::MissionInfo* missionInfo, unsigned int wttid, unsigned int wtmid);
+    Mission(Scene* scene, database::MissionInfo* missionInfo, database::TournamentInfo* tournament, unsigned int wtmid);
     virtual ~Mission();
 public:
     // complex behaviour

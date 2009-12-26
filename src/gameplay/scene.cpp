@@ -56,30 +56,20 @@ Scene::Scene(Career* career, Location* location, float holdingTime)
 
     // database record for scene location 
     _locationInfo = database::LocationInfo::getRecord( _location->getDatabaseId() );    
-    _reverberation = NULL;
-    if( _locationInfo->reverberation )
-    {
-        _reverberation = new database::LocationInfo::Reverberation;
-        *_reverberation = *_locationInfo->reverberation;
-    }
+    _reverberation = new database::LocationInfo::Reverberation();
+    *_reverberation = _locationInfo->reverberation;
     
     // retrieve weather option
-    if( _locationInfo->weathers )
+    _locationWeather = NULL;
+    if( _locationInfo->weathers.size() > 0 )
     {
-        _locationWeather = _locationInfo->weathers;
-        while( _locationWeather->weather != _location->getWeather() &&
-               _locationWeather->weather != ::wtDatabaseEnding )
-        {
-            _locationWeather++;
+        int i;
+        int count = (int)_locationInfo->weathers.size();
+        for (i = 0; i < count; ++i) {
+            if (_location->getWeather() == _locationInfo->weathers[i].weather) {
+                _locationWeather = &_locationInfo->weathers[i];
+            }
         }
-        if( _locationWeather->weather == ::wtDatabaseEnding )
-        {
-            _locationWeather = NULL;
-        }
-    }
-    else
-    {
-        _locationWeather = NULL;
     }
 
     setCamera( NULL );
@@ -269,19 +259,20 @@ void Scene::load(void)
     database::LocationInfo* locationInfo = database::LocationInfo::getRecord( _location->getDatabaseId() );
 
     // load local textures
-    if( locationInfo->localTextures )
+    if( locationInfo->localTextures.size() > 0 )
     {
-        const char** resourceName = locationInfo->localTextures;
-        while( *resourceName != NULL )
-        {
-            engine::ITexture* texture = Gameplay::iEngine->createTexture( *resourceName );
+        int i;
+        int count = (int)locationInfo->localTextures.size();
+        for (i = 0; i < count; ++i) {
+            const char* resourceName = locationInfo->localTextures[i].c_str();
+
+            engine::ITexture* texture = Gameplay::iEngine->createTexture( resourceName );
             assert( texture );
             texture->addReference();
             texture->setMagFilter( engine::ftLinear );
             texture->setMinFilter( engine::ftLinear );
             texture->setMipFilter( engine::ftLinear );
             _localTextures.push_back( texture );
-            resourceName++;
         }
     }
 
@@ -291,7 +282,7 @@ void Scene::load(void)
         // load panorama
         _panoramaNearClip = _locationWeather->panorama.zNear;
         _panoramaFarClip  = _locationWeather->panorama.zFar;
-        _panoramaAsset    = Gameplay::iEngine->createAsset( engine::atBinary, _locationWeather->panorama.resource ); assert( _panoramaAsset );
+        _panoramaAsset    = Gameplay::iEngine->createAsset( engine::atBinary, _locationWeather->panorama.resource.c_str() ); assert( _panoramaAsset );
         _panoramaAsset->forAllBSPs( callback::enumerateBSPs, &bsps ); assert( bsps.size() );
         _panoramaAsset->forAllClumps( callback::enumerateClumps, &clumps );
         _panorama = *( bsps.begin() );
@@ -306,7 +297,7 @@ void Scene::load(void)
     // load stage
     _stageNearClip = locationInfo->stage.zNear;
     _stageFarClip = locationInfo->stage.zFar;
-    _stageAsset = Gameplay::iEngine->createAsset( engine::atBinary, locationInfo->stage.resource ); assert( _stageAsset );
+    _stageAsset = Gameplay::iEngine->createAsset( engine::atBinary, locationInfo->stage.resource.c_str() ); assert( _stageAsset );
     _stageAsset->forAllBSPs( callback::enumerateBSPs, &bsps ); assert( bsps.size() );
     _stageAsset->forAllClumps( callback::enumerateClumps, &clumps );
     _stage = *( bsps.begin() );
@@ -319,17 +310,15 @@ void Scene::load(void)
 
     // retrieve weather options
     database::LocationInfo::Weather* weatherOption = NULL;
-    if( locationInfo->weathers )
+    if( locationInfo->weathers.size() > 0 )
     {
-        database::LocationInfo::Weather* currentOption = locationInfo->weathers;
-        while( currentOption->weather != ::wtDatabaseEnding )
-        {
-            if( currentOption->weather == _location->getWeather() )
-            {
-                weatherOption = currentOption;
+        int i;
+        int count = locationInfo->weathers.size();
+        for (i = 0; i < count; ++i) {
+            if( _location->getWeather() == locationInfo->weathers[i].weather ) {
+                weatherOption = &locationInfo->weathers[i];
                 break;
             }
-            currentOption++;
         }
     }
 
@@ -345,27 +334,28 @@ void Scene::load(void)
     }
 
     // load extras
-    _extrasAsset = Gameplay::iEngine->createAsset( engine::atBinary, locationInfo->extras.resource ); assert( _extrasAsset );
+    _extrasAsset = Gameplay::iEngine->createAsset( engine::atBinary, locationInfo->extras.resource.c_str() ); assert( _extrasAsset );
 
     // load local assets
-    database::LocationInfo::AssetInfo* assetInfo = locationInfo->localAssets;
-    while( assetInfo->name != NULL )
-    {
+    int i;
+    int count = locationInfo->localAssets.size();
+    for (i = 0; i < count; ++i) {
+        database::LocationInfo::AssetInfo* assetInfo = &locationInfo->localAssets[i];
+
         // load asset
-        engine::IAsset* asset = Gameplay::iEngine->createAsset( engine::atXFile, assetInfo->resource );
+        engine::IAsset* asset = Gameplay::iEngine->createAsset( engine::atXFile, assetInfo->resource.c_str() );
         assert( asset );
         // rename clumps
         asset->forAllClumps( callback::enumerateClumps, &clumps );        
         for( clumpI = clumps.begin(); clumpI != clumps.end(); clumpI++ ) 
         {
-            (*( clumpI ))->setName( assetInfo->name );
+            (*( clumpI ))->setName( assetInfo->name.c_str() );
         }
         // preprocess asset
         xpp::preprocessXAsset( asset );
         // insert asset in scene storage
         _localAssets.push_back( asset );
         clumps.clear();
-        assetInfo++;
     }
 
     // initialize afterfx
@@ -382,10 +372,10 @@ void Scene::load(void)
         if( locationInfo->grass.scheme != NULL )
         {
             // load grass texture
-            _grassTexture = Gameplay::iEngine->getTexture( locationInfo->grass.textureName );
+            _grassTexture = Gameplay::iEngine->getTexture( locationInfo->grass.textureName.c_str() );
             if( !_grassTexture )
             {
-                _grassTexture = Gameplay::iEngine->createTexture( locationInfo->grass.textureResource );
+                _grassTexture = Gameplay::iEngine->createTexture( locationInfo->grass.textureResource.c_str() );
                 assert( _grassTexture );
             }            
             _grassTexture->addReference();
@@ -396,7 +386,7 @@ void Scene::load(void)
 
             // locate template atomic
             callback::Locator locator;
-            engine::IClump* templateClump = locator.locate( _extrasAsset, locationInfo->grass.templ ); 
+            engine::IClump* templateClump = locator.locate( _extrasAsset, locationInfo->grass.templ.c_str() ); 
             assert( templateClump );
             templateClump->getFrame()->translate( Vector3f(0,0,0) );
             templateClump->getFrame()->getLTM();
@@ -405,7 +395,7 @@ void Scene::load(void)
 
             // generate (load) grass
             _grass = Gameplay::iEngine->createGrass( 
-                locationInfo->grass.cache, 
+                locationInfo->grass.cache.c_str(), 
                 *atomicL.begin(), 
                 _grassTexture,
                 locationInfo->grass.scheme, 
@@ -453,14 +443,15 @@ void Scene::load(void)
     // initialize exit points
     clumps.clear();
     _extrasAsset->forAllClumps( callback::enumerateClumps, &clumps );
-    database::LocationInfo::ExitPoint* exitPoint = locationInfo->exitPoints;
-    while( exitPoint->nameId != 0 )
-    {
+    count = locationInfo->exitPoints.size();
+    for (i = 0; i < count; ++i) {
+        database::LocationInfo::ExitPoint* exitPoint = &locationInfo->exitPoints[i];
+
         // search for enclosure clump
         bool creationFlag = false;
         for( clumpI = clumps.begin(); clumpI != clumps.end(); clumpI++ )
         {            
-            if( strcmp( (*clumpI)->getName(), exitPoint->extras ) == 0 )
+            if( strcmp( (*clumpI)->getName(), exitPoint->extras.c_str() ) == 0 )
             {
                 _enclosures.insert( EnclosureT( exitPoint, new Enclosure( *clumpI, exitPoint->delay ) ) );
                 creationFlag = true;
@@ -469,7 +460,6 @@ void Scene::load(void)
         }
         assert( creationFlag );
         // next exit point
-        exitPoint++;
     }
 
     // initialize physics
@@ -991,10 +981,10 @@ void Scene::setTimeSpeedMultiplier(float value)
 audio::ISound* Scene::createWalkSound(void)
 {
     database::LocationInfo* locationInfo = database::LocationInfo::getRecord( _location->getDatabaseId() );
-    assert( locationInfo->footsteps.walkSound );
+    assert( !locationInfo->footsteps.walkSound.empty() );
     
     audio::ISound* sound;
-    sound = Gameplay::iAudio->createStaticSound( locationInfo->footsteps.walkSound );
+    sound = Gameplay::iAudio->createStaticSound( locationInfo->footsteps.walkSound.c_str() );
     assert( sound );
     sound->setLoop( true );
     sound->setDistanceModel( 
@@ -1008,10 +998,10 @@ audio::ISound* Scene::createWalkSound(void)
 audio::ISound* Scene::createTurnSound(void)
 {
     database::LocationInfo* locationInfo = database::LocationInfo::getRecord( _location->getDatabaseId() );
-    assert( locationInfo->footsteps.turnSound );
+    assert( !locationInfo->footsteps.turnSound.empty() );
     
     audio::ISound* sound;
-    sound = Gameplay::iAudio->createStaticSound( locationInfo->footsteps.turnSound );
+    sound = Gameplay::iAudio->createStaticSound( locationInfo->footsteps.turnSound.c_str() );
     assert( sound );
     sound->setLoop( true );
     sound->setDistanceModel( 
