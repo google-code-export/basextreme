@@ -50,19 +50,6 @@ Geoscape::Geoscape(Career* career)
         if( marketOffer.isTradeable() ) addGearToMarket( marketOffer );
     }
 
-    // MULTIVERSION ISSUE ¹1
-    // if player is in inaccessible location
-    if( _career->isHomeDefined() )
-    {
-        Location* location = getPlayerLocation();
-        if( location && !database::LocationInfo::getRecord( location->getDatabaseId() )->accessible )
-        {
-            // move player to the dropzone
-            location->setPlayer( false );
-            getLocation( unsigned int( 0 ) )->setPlayer( true );
-        }
-    }
-
     // MULTIVERSION ISSUE ¹2
     // determine player availability
     if( _career->isHomeDefined() )

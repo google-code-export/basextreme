@@ -359,24 +359,26 @@ void Career::save(TiXmlDocument* xmlDocument)
 
 void Career::initializeWalkthroughMeter(void)
 {
+    unsigned int i, locationId;
+
     // for all tournaments...
-    for( unsigned int i=0; i<database::TournamentInfo::getNumRecords(); i++ )
-    {
-        // except for demo tournament
-        if( i == database::TournamentInfo::getDemoTournament() ) continue;
+    for (locationId = 0; locationId < database::LocationInfo::getNumRecords(); ++locationId) {
+        database::LocationInfo* location = database::LocationInfo::getRecord(locationId);
 
-        // retrieve tournament record
-        database::TournamentInfo* tournamentInfo = database::TournamentInfo::getRecord( i );
-        assert( tournamentInfo->gameData );
+        for( i=0; i<location->tournaments.size(); i++ ) {
+            // retrieve tournament record
+            database::TournamentInfo* tournamentInfo = &location->tournaments[i];
+            assert( !tournamentInfo->gameData.empty() );
 
-        // check there is gamedata record for "tournament walkthrough"
-        GameData* gameData = getGameData( tournamentInfo->gameData );
-        if( !gameData )
-        {
-            // create gamedata for tournament & reset its content
-            gameData = new GameData( sizeof( Bitfield32 ) );
-            memset( gameData->getData(), 0, gameData->getSize() );
-            addGameData( tournamentInfo->gameData, gameData );
+            // check there is gamedata record for "tournament walkthrough"
+            GameData* gameData = getGameData( tournamentInfo->gameData.c_str() );
+            if( !gameData )
+            {
+                // create gamedata for tournament & reset its content
+                gameData = new GameData( sizeof( Bitfield32 ) );
+                memset( gameData->getData(), 0, gameData->getSize() );
+                addGameData( tournamentInfo->gameData.c_str(), gameData );
+            }
         }
     }
 }
@@ -386,60 +388,53 @@ float Career::getWalkthroughPercent(void)
     unsigned int numMissions = 0;
     unsigned int numCompletedMissions = 0;
 
-    unsigned int i,j;
+    unsigned int i,j, locationId;
 
     // for all tournaments...
-    for( i=0; i<database::TournamentInfo::getNumRecords(); i++ )
-    {
-        // except for demo tournament
-        if( i == database::TournamentInfo::getDemoTournament() ) continue;
+    for (locationId = 0; locationId < database::LocationInfo::getNumRecords(); ++locationId) {
+        database::LocationInfo* location = database::LocationInfo::getRecord(locationId);
 
-        // retrieve tournament record
-        database::TournamentInfo* tournamentInfo = database::TournamentInfo::getRecord( i );
-
-        // for all tournament missions
-        for( j=0; j<tournamentInfo->getNumMissions(); j++ )
+        for( i=0; i<location->tournaments.size(); i++ )
         {
-            numMissions++;
-            if( getMissionWalkthroughFlag( i, j ) ) numCompletedMissions++;
+            // retrieve tournament record
+            database::TournamentInfo* tournamentInfo = &location->tournaments[i];
+
+            // for all tournament missions
+            for( j=0; j<tournamentInfo->getNumMissions(); j++ )
+            {
+                numMissions++;
+                if( getMissionWalkthroughFlag( tournamentInfo, j ) ) numCompletedMissions++;
+            }
         }
+    }
+
+    if (numMissions == 0) {
+        return 1.0f;
     }
 
     return ( float( numCompletedMissions ) / float( numMissions ) );
 }
 
-bool Career::getMissionWalkthroughFlag(unsigned int tournamentId, unsigned int missionId)
+bool Career::getMissionWalkthroughFlag(database::TournamentInfo* tournament, unsigned int missionId)
 {
-    // this feature is not available for demo tournament
-    if( tournamentId == database::TournamentInfo::getDemoTournament() ) return false;
-
-    // retrieve tournament record
-    database::TournamentInfo* tournamentInfo = database::TournamentInfo::getRecord( tournamentId );
-
     // check mission index is valid
-    assert( missionId < tournamentInfo->getNumMissions() );
+    assert( missionId < tournament->getNumMissions() );
 
     // retrieve correspoding gamedata
-    GameData* gameData = getGameData( tournamentInfo->gameData ); assert( gameData );
+    GameData* gameData = getGameData( tournament->gameData.c_str() ); assert( gameData );
     Bitfield32* bitfield = reinterpret_cast<Bitfield32*>( gameData->getData() );
 
     // return result
     return ( bitfield->getBit( missionId ) != 0 );
 }
 
-void Career::setMissionWalkthroughFlag(unsigned int tournamentId, unsigned int missionId, bool flag)
+void Career::setMissionWalkthroughFlag(database::TournamentInfo* tournament, unsigned int missionId, bool flag)
 {
-    // this feature is not available for demo tournament
-    if( tournamentId == database::TournamentInfo::getDemoTournament() ) return;
-
-    // retrieve tournament record
-    database::TournamentInfo* tournamentInfo = database::TournamentInfo::getRecord( tournamentId );
-
     // check mission index is valid
-    assert( missionId < tournamentInfo->getNumMissions() );
+    assert( missionId < tournament->getNumMissions() );
 
     // retrieve correspoding gamedata
-    GameData* gameData = getGameData( tournamentInfo->gameData ); assert( gameData );
+    GameData* gameData = getGameData( tournament->gameData.c_str() ); assert( gameData );
     Bitfield32* bitfield = reinterpret_cast<Bitfield32*>( gameData->getData() );
 
     // save result

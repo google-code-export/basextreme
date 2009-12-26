@@ -135,16 +135,15 @@ void Divine::castBoogieEvent(void)
 	unsigned int i;
         for( i=0; i<numLocations; i++ )
         {
-            if( database::LocationInfo::getRecord(i)->accessible && 
-                database::LocationInfo::getRecord(i)->boogieId )
+            database::LocationInfo* location = database::LocationInfo::getRecord(i);
+            if( location->boogieId )
             {
                 // check boogie is available by character rank
                 bool isAvailable = false;
-                for( unsigned int j=0; j<database::TournamentInfo::getNumRecords(); j++ )
+                for( unsigned int j=0; j<location->tournaments.size(); j++ )
                 {
-                    if( database::TournamentInfo::getRecord( j )->locationId == i &&
-                        database::TournamentInfo::getRecord( j )->type == database::tfBoogie && 
-                        database::TournamentInfo::getRecord( j )->getMinimalRank() <= _career->getVirtues()->getRank() )
+                    if( location->tournaments[j].type == database::tfBoogie && 
+                        location->tournaments[j].getMinimalRank() <= _career->getVirtues()->getRank() )
                     {
                         isAvailable = true;
                     }
@@ -203,16 +202,15 @@ void Divine::castFestivalEvent(void)
 	unsigned int i;
         for( i=0; i<numLocations; i++ )
         {
-            if( database::LocationInfo::getRecord(i)->accessible && 
-                database::LocationInfo::getRecord(i)->festivalId )
+            database::LocationInfo* location = database::LocationInfo::getRecord(i);
+            if( location->festivalId )
             {
                 // check festival is available by character rank
                 bool isAvailable = false;
-                for( unsigned int j=0; j<database::TournamentInfo::getNumRecords(); j++ )
+                for( unsigned int j=0; j<location->tournaments.size(); j++ )
                 {
-                    if( database::TournamentInfo::getRecord( j )->locationId == i &&
-                        database::TournamentInfo::getRecord( j )->type == database::tfFestival && 
-                        database::TournamentInfo::getRecord( j )->getMinimalRank() <= _career->getVirtues()->getRank() )
+                    if( location->tournaments[j].type == database::tfFestival && 
+                        location->tournaments[j].getMinimalRank() <= _career->getVirtues()->getRank() )
                     {
                         isAvailable = true;
                     }
@@ -271,16 +269,15 @@ void Divine::castClimbingEvent(void)
 	unsigned int i;
         for( i=0; i<numLocations; i++ )
         {
-            if( database::LocationInfo::getRecord(i)->accessible && 
-                database::LocationInfo::getRecord(i)->climbingId )
+            database::LocationInfo* location = database::LocationInfo::getRecord(i);
+            if( location->climbingId )
             {
                 // check climbing is available by character rank
                 bool isAvailable = false;
-                for( unsigned int j=0; j<database::TournamentInfo::getNumRecords(); j++ )
+                for( unsigned int j=0; j<location->tournaments.size(); j++ )
                 {
-                    if( database::TournamentInfo::getRecord( j )->locationId == i &&
-                        database::TournamentInfo::getRecord( j )->type == database::tfClimbing && 
-                        database::TournamentInfo::getRecord( j )->getMinimalRank() <= _career->getVirtues()->getRank() )
+                    if( location->tournaments[j].type == database::tfClimbing && 
+                        location->tournaments[j].getMinimalRank() <= _career->getVirtues()->getRank() )
                     {
                         isAvailable = true;
                     }
@@ -339,21 +336,18 @@ void Divine::castSmokeballEvent(void)
 	unsigned int i;
         for( i=0; i<numLocations; i++ )
         {
-            if( database::LocationInfo::getRecord(i)->accessible && 
-                database::LocationInfo::getRecord(i)->smokeballId )
+            database::LocationInfo* location = database::LocationInfo::getRecord(i);
+            if( location->smokeballId )
             {
                 // check smokeball is available by character rank
                 bool isAvailable = false;
-                for( unsigned int j=0; j<database::TournamentInfo::getNumRecords(); j++ )
+                for( unsigned int j=0; j<location->tournaments.size(); j++ )
                 {
-                    database::TournamentInfo* tournamentInfo = database::TournamentInfo::getRecord( j );
-                    if( tournamentInfo->locationId == i )
+                    database::TournamentInfo* tournamentInfo = &location->tournaments[j];
+                    if( tournamentInfo->type == database::tfSmokeball && 
+                        tournamentInfo->getMinimalRank() <= _career->getVirtues()->getRank() )
                     {
-                        if( tournamentInfo->type == database::tfSmokeball && 
-                            tournamentInfo->getMinimalRank() <= _career->getVirtues()->getRank() )
-                        {
-                            isAvailable = true;
-                        }
+                        isAvailable = true;
                     }
                 }
                 // add pretender

@@ -95,7 +95,7 @@ void Equip::onUpdateActivity(float dt)
             virtues->skills.rigging += virtues->predisp.rigging *
                                        5 * sqr( getCore()->getRandToolkit()->getUniform( 0.0f, 1.0f ) );
             // start mission
-            new Mission( _scene, _missionInfo, _wttid, _wtmid );
+            new Mission( _scene, _missionInfo, _tournamentInfo, _wtmid );
         }
     }
 }
@@ -438,12 +438,12 @@ static engine::IClump* cloneClumpLightSourcesCB(engine::IClump* clump, void* dat
     return clump;
 }
 
-Equip::Equip(Scene* scene, database::MissionInfo* missionInfo, unsigned int wttid, unsigned int wtmid) : Mode(scene)
+Equip::Equip(Scene* scene, database::MissionInfo* missionInfo, database::TournamentInfo* tournament, unsigned int wtmid) : Mode(scene)
 {
     _endOfMode = false;
     _missionInfo = missionInfo;
     _camera = new Camera( scene, this );    
-    _wttid = wttid;
+    _tournamentInfo = tournament;
     _wtmid = wtmid;
     _cordBatch = NULL;
 

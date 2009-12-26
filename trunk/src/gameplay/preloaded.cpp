@@ -36,19 +36,6 @@ Preloaded::Preloaded()
     _preloadedAssets.push_back( PreloadedAsset( "LandingCircle", engine::atBinary, "./res/others/landingzone.ba", NULL ) );
     _preloadedAssets.push_back( PreloadedAsset( "BaseJumper01", engine::atXFile, "./res/x/character05.x", NULL ) );
 #endif
-
-    // additional evaluation protection
-    #ifdef GAMEPLAY_EVALUATION_TIME
-        SYSTEMTIME evaluationTime = GAMEPLAY_EVALUATION_TIME;
-        SYSTEMTIME latestFileTime;
-        if( getLatestFileTimeB( &latestFileTime ) )
-        {
-            if( isGreaterTime( &latestFileTime, &evaluationTime ) )
-            {
-                Gameplay::iGameplay->setAegisActive( true );
-            }
-        }
-    #endif
 }
 
 Preloaded::~Preloaded()

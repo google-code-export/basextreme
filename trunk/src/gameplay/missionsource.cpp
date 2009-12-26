@@ -11,10 +11,10 @@
  * class implementation
  */
 
-MissionSource::MissionSource(unsigned int tournamentId)
+MissionSource::MissionSource(database::TournamentInfo* tournament)
 {
-    // store tournament
-    _tournamentId = tournamentId;
+    assert(tournament);
+    mTournament = tournament;
 }
 
 MissionSource::~MissionSource()
@@ -27,12 +27,12 @@ MissionSource::~MissionSource()
 
 const char* MissionSource::getDefaultThumbnail(void)
 {
-    return database::TournamentInfo::getRecord( _tournamentId )->thumbnail;
+    return mTournament->thumbnail.c_str();
 }
 
 unsigned int MissionSource::getNumItems(void)
 {
-    return database::TournamentInfo::getRecord( _tournamentId )->getNumMissions() + 1;
+    return mTournament->getNumMissions() + 1;
 }
 
 const wchar_t* MissionSource::getName(unsigned int itemId)
@@ -40,7 +40,7 @@ const wchar_t* MissionSource::getName(unsigned int itemId)
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return Gameplay::iLanguage->getUnicodeString(database::TournamentInfo::getRecord( _tournamentId )->missions[itemId-1].nameId);
+        return Gameplay::iLanguage->getUnicodeString(mTournament->missions[itemId-1].nameId);
     }
     else
     {
@@ -53,7 +53,7 @@ const wchar_t* MissionSource::getBriefing(unsigned int itemId)
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return Gameplay::iLanguage->getUnicodeString(database::TournamentInfo::getRecord( _tournamentId )->missions[itemId-1].briefId);
+        return Gameplay::iLanguage->getUnicodeString(mTournament->missions[itemId-1].briefId);
     }
     else
     {
@@ -66,7 +66,7 @@ const char* MissionSource::getThumbnail(unsigned int itemId)
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return database::TournamentInfo::getRecord( _tournamentId )->missions[itemId-1].thumbnail;
+        return mTournament->missions[itemId-1].thumbnail.c_str();
     }
     else
     {
@@ -79,7 +79,7 @@ float MissionSource::getDuration(unsigned int itemId)
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return database::TournamentInfo::getRecord( _tournamentId )->missions[itemId-1].missionTime;
+        return mTournament->missions[itemId-1].missionTime;
     }
     else
     {
@@ -92,7 +92,7 @@ bool MissionSource::getWalkthroughFlag(Career* career, unsigned int itemId)
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return career->getMissionWalkthroughFlag( _tournamentId, itemId-1 );
+        return career->getMissionWalkthroughFlag( mTournament, itemId-1 );
     }
     else
     {
@@ -105,7 +105,7 @@ bool MissionSource::getWeatherClearance(unsigned int itemId, WeatherType weather
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return database::TournamentInfo::getRecord( _tournamentId )->missions[itemId-1].weatherClearance( weatherType );
+        return mTournament->missions[itemId-1].weatherClearance( weatherType );
     }
     else
     {
@@ -118,7 +118,7 @@ bool MissionSource::getWindClearance(unsigned int itemId, Vector3f dir, float am
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        return database::TournamentInfo::getRecord( _tournamentId )->missions[itemId-1].windClearance( dir, ambient, blast );
+        return mTournament->missions[itemId-1].windClearance( dir, ambient, blast );
     }
     else
     {
@@ -131,7 +131,7 @@ bool MissionSource::equip(unsigned int itemId, Career* career, float ambient, fl
     assert( itemId < getNumItems() );
     if( itemId )
     {
-        database::MissionInfo* missionInfo = database::TournamentInfo::getRecord( _tournamentId )->missions + itemId - 1;
+        database::MissionInfo* missionInfo = &mTournament->missions[itemId - 1];
         if( missionInfo->equipCallback == NULL )
         {
             return true;
@@ -158,7 +158,7 @@ BrowserSource* MissionSource::browse(unsigned int itemId, Scene* scene, MissionB
 
     if( itemId )
     {
-        database::MissionInfo* missionInfo = database::TournamentInfo::getRecord( _tournamentId )->missions + itemId - 1;
+        database::MissionInfo* missionInfo = &mTournament->missions[itemId - 1];
 
         // define minimal rank to play this mission
         unsigned int missionRank = missionInfo->rank;
@@ -225,11 +225,11 @@ BrowserSource* MissionSource::browse(unsigned int itemId, Scene* scene, MissionB
                 // equip is needed?
                 if( missionInfo->flags & database::mfForcedEquipment )
                 {
-                    new Mission( scene, missionInfo, _tournamentId, ( itemId - 1 ) );                        
+                    new Mission( scene, missionInfo, mTournament, ( itemId - 1 ) );                        
                 }
                 else
                 {
-                    new Equip( scene, missionInfo, _tournamentId, ( itemId - 1 ) );
+                    new Equip( scene, missionInfo, mTournament, ( itemId - 1 ) );
                 }
             }
             else

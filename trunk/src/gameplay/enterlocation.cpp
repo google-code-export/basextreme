@@ -64,28 +64,27 @@ void EnterLocationDialog::onGuiMessage(gui::Message* message)
         if( strcmp( message->origin->getName(), "Enter" ) == 0 )
         {
             database::LocationInfo* locationInfo = database::LocationInfo::getRecord( _location->getDatabaseId() );
-            if( locationInfo->accessible )
+
+            // determine holding time in scene
+            DateTime dateTime = _geoscape->getDateTime();
+            float currentDayTime = HOURS_TO_MINUTES( float( dateTime.hour ) ) + float( dateTime.minute );
+			float leftDayTime;
+			// set time left to jump to max if were in freemode
+			if ( Gameplay::iGameplay->_freeModeIsEnabled )
+			{
+				leftDayTime = 720.0f;
+			}
+			else
+			{
+				leftDayTime = maxHoldingTime - currentDayTime + HOURS_TO_MINUTES( 6 );
+			}
+            //float leftDayTime = maxHoldingTime - currentDayTime + HOURS_TO_MINUTES( 6 );
+            if( leftDayTime > maxHoldingTime )
             {
-                // determine holding time in scene
-                DateTime dateTime = _geoscape->getDateTime();
-                float currentDayTime = HOURS_TO_MINUTES( float( dateTime.hour ) ) + float( dateTime.minute );
-				float leftDayTime;
-				// set time left to jump to max if were in freemode
-				if ( Gameplay::iGameplay->_freeModeIsEnabled )
-				{
-					leftDayTime = 720.0f;
-				}
-				else
-				{
-					leftDayTime = maxHoldingTime - currentDayTime + HOURS_TO_MINUTES( 6 );
-				}
-                //float leftDayTime = maxHoldingTime - currentDayTime + HOURS_TO_MINUTES( 6 );
-                if( leftDayTime > maxHoldingTime )
-                {
-                    leftDayTime = maxHoldingTime;
-                }
-                _geoscape->requestActivity( new Scene( _geoscape->getCareer(), _location, leftDayTime ) );
+                leftDayTime = maxHoldingTime;
             }
+            _geoscape->requestActivity( new Scene( _geoscape->getCareer(), _location, leftDayTime ) );
+
             _isComplete = true;
         }
         else if( strcmp( message->origin->getName(), "Leave" ) == 0 )

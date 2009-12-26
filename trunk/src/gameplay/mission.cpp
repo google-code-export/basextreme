@@ -274,10 +274,10 @@ void Mission::FirstPersonCamera::onUpdateActivity(float dt)
  * Mission : class implementation
  */
 
-Mission::Mission(Scene* scene, database::MissionInfo* missionInfo, unsigned int wttid, unsigned int wtmid) : Mode(scene)
+Mission::Mission(Scene* scene, database::MissionInfo* missionInfo, database::TournamentInfo* tournament, unsigned int wtmid) : Mode(scene)
 {
     _missionInfo         = missionInfo;
-    _wttid               = wttid;
+    _tournamentInfo      = tournament;
     _wtmid               = wtmid;
     _endOfMission        = false;
     _endOfPlayerActivity = false;
@@ -295,7 +295,7 @@ Mission::Mission(Scene* scene, database::MissionInfo* missionInfo, unsigned int 
     database::LocationInfo::ExitPoint* exitPoint = NULL;
     if( missionInfo->exitPointId != AIRPLANE_EXIT )
     {
-        exitPoint = locationInfo->exitPoints + missionInfo->exitPointId;
+        exitPoint = &locationInfo->exitPoints[missionInfo->exitPointId];
     }
    
     // enclosure
@@ -367,7 +367,7 @@ void Mission::onUpdateActivity(float dt)
     {
         if( _endOfPlayerActivity )
         {
-            _scene->getCareer()->setMissionWalkthroughFlag( _wttid, _wtmid, true );
+            _scene->getCareer()->setMissionWalkthroughFlag( _tournamentInfo, _wtmid, true );
             _endOfMission = true;
         }
         else if( _interruptTimeout < 0 )

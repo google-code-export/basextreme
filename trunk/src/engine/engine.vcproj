@@ -49,7 +49,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;"
+				AdditionalIncludeDirectories="..\;..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RWDEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -1397,6 +1397,18 @@
 			</File>
 			<File
 				RelativePath="..\Includes\TinyXML\include\tinyxmlparser.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Utils"
+			>
+			<File
+				RelativePath="E:\Projects\Base eXtreme\Work\src\engine\configreader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="E:\Projects\Base eXtreme\Work\src\engine\configreader.h"
 				>
 			</File>
 		</Filter>

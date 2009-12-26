@@ -56,9 +56,9 @@ private:
     };
 private:
     database::MissionInfo* _missionInfo;
+    database::TournamentInfo* _tournamentInfo;
     Camera*                _camera;
     bool                   _endOfMode;
-    unsigned int           _wttid;
     unsigned int           _wtmid;
     Virtues*               _virtues;
     engine::IBSP*          _bsp;
@@ -125,7 +125,7 @@ public:
     virtual void renderLensFlares(void);
 public:
     // class implementation
-    Equip(Scene* scene, database::MissionInfo* missionInfo, unsigned int wttid, unsigned int wtmid);
+    Equip(Scene* scene, database::MissionInfo* missionInfo, database::TournamentInfo* tournament, unsigned int wtmid);
     virtual ~Equip();
 };
 
