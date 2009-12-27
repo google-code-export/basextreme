@@ -272,6 +272,10 @@ private:
     float             _rightDeep;     // deep of right brake
     float             _leftWarpDeep;  // left warp deep
     float             _rightWarpDeep; // right warp deep
+    float             _backLeftRiserDeep;      // deep of back left riser
+    float             _backRightRiserDeep;     // deep of back right riser
+    float             _frontLeftRiserDeep;      // deep of front left riser
+    float             _frontRightRiserDeep;     // deep of front right riser
     bool              _enableWind;
     CollapseArea*     _collapseAreas;
     PAB**             _pabs;
@@ -343,6 +347,10 @@ public:
     void setRightDeep(float value);
     void setLeftWarpDeep(float value);
     void setRightWarpDeep(float value);
+    void setBackLeftRiserDeep(float value);
+    void setBackRightRiserDeep(float value);
+    void setFrontLeftRiserDeep(float value);
+    void setFrontRightRiserDeep(float value);
     void setWLOToggles(bool trigger);
     void setHookKnife(bool trigger);
     void enableWind(bool flag);

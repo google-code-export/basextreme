@@ -45,6 +45,18 @@ void ButtonChannel::setupDefault(void)
     case iaRightWarp:
         _keyCode = 0x12; // E
         break;
+    case iaFrontLeftRiser:
+        _keyCode = 0x10; // Q
+        break;
+    case iaFrontRightRiser:
+        _keyCode = 0x12; // E
+        break;
+    case iaBackLeftRiser:
+        _keyCode = 0x2C; // Z
+        break;
+    case iaBackRightRiser:
+        _keyCode = 0x2E; // C
+        break;
     case iaHeadLeft:
         _keyCode = 0x4B; // Num 4
         break;

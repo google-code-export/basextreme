@@ -172,6 +172,28 @@ void Gameplay::createActionMap(void)
     buttonChannel->setup( 0, getActionCode( _config, "iaRightWarp" ) );
     _actionChannels.insert( ActionChannelT( iaRightWarp, buttonChannel ) );
 
+
+    // create back left riser channel
+    buttonChannel = new ButtonChannel( iaBackLeftRiser, 1, 4 );
+    buttonChannel->setup( 0, getActionCode( _config, "iaBackLeftRiser" ) );
+    _actionChannels.insert( ActionChannelT( iaBackLeftRiser, buttonChannel ) );
+
+    // create back right riser channel
+    buttonChannel = new ButtonChannel( iaBackRightRiser, 1, 4 );
+    buttonChannel->setup( 0, getActionCode( _config, "iaBackRightRiser" ) );
+    _actionChannels.insert( ActionChannelT( iaBackRightRiser, buttonChannel ) );
+
+    // create front left riser channel
+    buttonChannel = new ButtonChannel( iaFrontLeftRiser, 1, 4 );
+    buttonChannel->setup( 0, getActionCode( _config, "iaFrontLeftRiser" ) );
+    _actionChannels.insert( ActionChannelT( iaFrontLeftRiser, buttonChannel ) );
+
+    // create front right riser channel
+    buttonChannel = new ButtonChannel( iaFrontRightRiser, 1, 4 );
+    buttonChannel->setup( 0, getActionCode( _config, "iaFrontRightRiser" ) );
+    _actionChannels.insert( ActionChannelT( iaFrontRightRiser, buttonChannel ) );
+
+
     // create right-warp channel
     buttonChannel = new ButtonChannel( iaRightWarp, 1, 4 );
     buttonChannel->setup( 0, getActionCode( _config, "iaRightWarp" ) );
