@@ -207,20 +207,35 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-			>
-		</Filter>
-		<Filter
-			Name="Interface"
+			Name="Libs"
 			>
 			<File
-				RelativePath="..\shared\language.h"
+				RelativePath="..\Includes\TinyXML\include\tinystr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Includes\TinyXML\include\tinystr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Includes\TinyXML\include\tinyxml.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Includes\TinyXML\include\tinyxml.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Includes\TinyXML\include\tinyxmlerror.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Includes\TinyXML\include\tinyxmlparser.cpp"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="Implementation"
+			Name="Sources"
 			>
 			<File
 				RelativePath="headers.h"
@@ -250,31 +265,11 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\shared\language.h"
+				>
+			</File>
 		</Filter>
-		<File
-			RelativePath="..\Includes\TinyXML\include\tinystr.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\Includes\TinyXML\include\tinystr.h"
-			>
-		</File>
-		<File
-			RelativePath="..\Includes\TinyXML\include\tinyxml.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\Includes\TinyXML\include\tinyxml.h"
-			>
-		</File>
-		<File
-			RelativePath="..\Includes\TinyXML\include\tinyxmlerror.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\Includes\TinyXML\include\tinyxmlparser.cpp"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

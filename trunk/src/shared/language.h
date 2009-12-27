@@ -24,6 +24,12 @@ class ILanguage : public ccor::IBase
 public:
     DECLARE_INTERFACE_ID(0xa0000);
 public:
+    virtual std::string parseTranslationString(const char* string) = 0;
+
+    virtual const wchar_t* getUnicodeString(const std::string& key) = 0;
+    virtual const wchar_t* getUnicodeString(const char* key) = 0;
+    virtual void addUnicodeString(const char* key, const wchar_t* string) = 0;
+
     virtual unsigned int __stdcall getNumStrings(void) = 0;
     virtual const wchar_t* __stdcall getUnicodeString(unsigned int stringId) = 0;
     virtual unsigned int __stdcall addUnicodeString(const wchar_t* string) = 0;

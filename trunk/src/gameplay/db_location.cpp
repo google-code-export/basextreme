@@ -5,6 +5,7 @@
 #include "database.h"
 #include "casting.h"
 #include "version.h"
+#include "gameplay.h"
 
 using namespace ccor;
 using namespace database;
@@ -349,7 +350,7 @@ static LocationInfo gStaticLocations[] =
 {
     // 0 - home dropzone
     { 
-        88, 0, 0, "LGD00", "./res/thumbnails/000.dds", true,
+        "N88", 0, 0, "LGD00", "./res/thumbnails/000.dds", true,
         0.0f, // no stay-in-location fee
         0, // no boogies
         0, // no festivals
@@ -368,7 +369,7 @@ static LocationInfo gStaticLocations[] =
         { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./res/sounds/footsteps/metal/walk.ogg", "./res/sounds/footsteps/metal/turn.ogg" },
         std::vector<LocationInfo::Weather>(dropzoneWeatherOptions, dropzoneWeatherOptions + 6),
         { 1.0f, 0.33f, 0.125f, 0.25f },
-        0
+        std::vector<TournamentInfo>()
     },
 /*    // 1 - ostankino tv tower
     { 
@@ -547,7 +548,7 @@ static LocationInfo gStaticLocations[] =
         &trollveggenReverberation
     },
 */
-    { 0, 0, 0 }
+    { "", 0, 0 }
 };
 
 std::vector<LocationInfo*> gLocations;
@@ -568,7 +569,7 @@ LocationInfo* LocationInfo::getRecord(unsigned int id)
 void LocationInfo::loadLocations(const char* fileName)
 {
     int i = 0;
-    while (gStaticLocations[i].nameId != 0) {
+    while (!gStaticLocations[i].nameId.empty()) {
         gLocations.push_back(&gStaticLocations[i]);
         i++;
     }
@@ -640,7 +641,7 @@ LocationInfo* LocationInfo::loadLocation(const char* fileName)
 
     while (cfg.PeekKey()) {
         string key = cfg.PeekKey();
-        if (key == "NameId") { locationInfo->nameId = cfg.ReadUInt32("NameId"); }
+        if (key == "NameId") { locationInfo->nameId = Gameplay::iLanguage->parseTranslationString(cfg.ReadString("NameId")); }
         else if (key == "WorldX") { locationInfo->worldX = cfg.ReadInt32("WorldX"); }
         else if (key == "WorldY") { locationInfo->worldY = cfg.ReadInt32("WorldY"); }
         else if (key == "GameData") { locationInfo->gameData = cfg.ReadString("GameData"); }
@@ -763,7 +764,7 @@ LocationInfo* LocationInfo::loadLocation(const char* fileName)
 void LocationInfo::deleteLocations()
 {
     int staticLocationsCount = 0;
-    while (gStaticLocations[staticLocationsCount].nameId != 0) {
+    while (!gStaticLocations[staticLocationsCount].nameId.empty()) {
         staticLocationsCount++;
     }
 
