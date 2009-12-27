@@ -63,6 +63,8 @@ Scene::Scene(Career* career, Location* location, float holdingTime)
     _locationWeather = NULL;
     if( _locationInfo->weathers.size() > 0 )
     {
+        _locationWeather = &_locationInfo->weathers[0];
+
         int i;
         int count = (int)_locationInfo->weathers.size();
         for (i = 0; i < count; ++i) {
