@@ -165,11 +165,11 @@ bool ConfigReader::ReadBool(const char* name)
 {
         const char* string = ReadString(name);
         bool value = true;
-        if (stricmp(string, "false")) {
+        if (stricmp(string, "false") == 0) {
             value = false;
-        } else if (stricmp(string, "no")) {
+        } else if (stricmp(string, "no") == 0) {
             value = false;
-        } else if (strcmp(string, "0")) {
+        } else if (strcmp(string, "0") == 0) {
             value = false;
         } else if (strlen(string) == 0) {
             value = false;
