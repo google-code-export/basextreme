@@ -10,6 +10,10 @@ class Actor;
 class Career;
 class ConfigReader;
 
+
+#define INIT_STD_VECTOR_WITH_ARRAY(type, array) \
+    std::vector<type>(array, array + sizeof(array) / sizeof(array[0]))
+
 /**
  * (outside database) - types of weather
  */

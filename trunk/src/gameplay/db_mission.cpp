@@ -247,9 +247,55 @@ TournamentInfo dropzoneTournaments[] =
     { 463, 464, tfArbitrary, "T02", "./res/thumbnails/020.dds", std::vector<MissionInfo>(baseVffMissions, baseVffMissions + 4) },
     { 485, 486, tfArbitrary, "T03", "./res/thumbnails/030.dds", std::vector<MissionInfo>(freeJumpingMissions, freeJumpingMissions + 5) },
     { 501, 502, tfArbitrary, "T04", "./res/thumbnails/040.dds", std::vector<MissionInfo>(skybaseMissions, skybaseMissions + 2) },
-    { 639, 640, tfSmokeball, "T05", "./res/thumbnails/050.dds", std::vector<MissionInfo>(cloudyRodeoMissions, cloudyRodeoMissions + 3) },
+    { 639, 640, tfSmokeball, "T05", "./res/thumbnails/050.dds", std::vector<MissionInfo>(cloudyRodeoMissions, cloudyRodeoMissions + 3) }
 };
-/*
+TournamentInfo ostankinoTournaments[] =
+{
+    { 514, 515, tfArbitrary, "T06", "./res/thumbnails/110.dds", std::vector<MissionInfo>(moscowUndergroundMissions, moscowUndergroundMissions + 1) },
+    { 522, 523, tfFestival,  "T07", "./res/thumbnails/120.dds", std::vector<MissionInfo>(openAirMissions, openAirMissions + 9) },
+    { 637, 638, tfFestival,  "T08", "./res/thumbnails/130.dds", std::vector<MissionInfo>(openAirSmokeballMissions, openAirSmokeballMissions + 3) }
+};
+TournamentInfo caveOfSwallowsTournaments[] =
+{
+    {  90, 622, tfArbitrary, "T14", "./res/thumbnails/420.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, caveFreejumpMissions) },
+    { 254, 584, tfBoogie,    "T15", "./res/thumbnails/410.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, caveBaseMissions) }
+};
+TournamentInfo trollVeggenTournaments[] =
+{
+    {  91, 624, tfArbitrary, "T09", "./res/thumbnails/330.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, trollFreejumpingMissions) },
+    { 661, 662, tfBoogie,    "T10", "./res/thumbnails/350.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, trollFieldTrainingMissions) }, 
+    { 253, 562, tfBoogie,    "T11", "./res/thumbnails/310.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, trollBoogieMissions) },
+    { 567, 568, tfClimbing,  "T12", "./res/thumbnails/320.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, trollClimbingMissions) },
+    { 637, 638, tfBoogie,    "T13", "./res/thumbnails/340.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, trollSmokeballMissions) }
+};
+TournamentInfo royalGorgeTournaments[] =
+{
+    {  92, 611, tfArbitrary, "T16", "./res/thumbnails/520.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, royalGorgeUndergroundMissions) },
+    { 661, 662, tfFestival,  "T17", "./res/thumbnails/540.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, goFallFieldTrainingMissions) },
+    { 596, 597, tfFestival,  "T18", "./res/thumbnails/510.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, goFallMissions) },
+    { 637, 638, tfFestival,  "T19", "./res/thumbnails/530.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, goFallSmokeballMissions) }
+};
+TournamentInfo kvlyTournaments[] =
+{
+    { 770, 771, tfArbitrary, "T20", "./res/thumbnails/610.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, kvlyUndergroundMissions) },
+    { 773, 774, tfBoogie,    "T21", "./res/thumbnails/620.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, tvBoogieMissions) }
+};
+TournamentInfo kjeragTournaments[] =
+{
+    { 786, 787, tfArbitrary, "T22", "./res/thumbnails/710.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, kjeragFreejumpingMissions) },
+    { 799, 800, tfBoogie,    "T23", "./res/thumbnails/720.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, kjeragBoogieMissions) },
+    { 637, 638, tfBoogie,    "T24", "./res/thumbnails/730.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, kjeragSmokeballMissions) }
+};
+TournamentInfo angelFallsTournaments[] =
+{
+    { 828, 829, tfArbitrary, "T25", "./res/thumbnails/810.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, angelFallsFreeJumps) },
+    { 842, 829, tfBoogie,    "T26", "./res/thumbnails/820.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, angelFallsBoogie) }
+};
+TournamentInfo elCapitanTournaments[] =
+{
+    { 847, 848, tfArbitrary, "T27", "./res/thumbnails/910.dds", INIT_STD_VECTOR_WITH_ARRAY(MissionInfo, elCapitanFreeJumps) }
+};
+    /*
 static TournamentInfo tournaments[] =
 {
     { 125, 145, 0, tfArbitrary, "T01", "./res/thumbnails/010.dds", vffMissions },
@@ -311,6 +357,14 @@ unsigned int TournamentInfo::getMinimalRank(void)
 void TournamentInfo::initStaticTournaments()
 {
     LocationInfo::getRecord(0)->tournaments = std::vector<TournamentInfo>(dropzoneTournaments, dropzoneTournaments + 5);
+    LocationInfo::getRecord(1)->tournaments = std::vector<TournamentInfo>(ostankinoTournaments, ostankinoTournaments + 3);
+    LocationInfo::getRecord(2)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, caveOfSwallowsTournaments);
+    LocationInfo::getRecord(3)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, trollVeggenTournaments);
+    LocationInfo::getRecord(4)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, royalGorgeTournaments);
+    LocationInfo::getRecord(5)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, kvlyTournaments);
+    LocationInfo::getRecord(6)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, kjeragTournaments);
+    LocationInfo::getRecord(7)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, angelFallsTournaments);
+    LocationInfo::getRecord(8)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, elCapitanTournaments);
 }
 
 
