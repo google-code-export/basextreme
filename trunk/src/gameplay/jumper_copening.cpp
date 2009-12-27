@@ -10,6 +10,13 @@
 static engine::AnimSequence openingSequence = 
 {
     FRAMETIME(1038),
+    FRAMETIME(1075),
+    engine::ltNone, 
+    0.0f
+};
+static engine::AnimSequence openingSequence2 = 
+{
+    FRAMETIME(1075),
     FRAMETIME(1112),
     engine::ltNone, 
     0.0f
@@ -177,7 +184,32 @@ void Jumper::CanopyOpening::update(float dt)
         updateAnimation( dt );
     }
 
-    if( _clump->getAnimationController()->isEndOfAnimation( 0 ) ) _endOfAction = true;
+    if(
+        _clump->getAnimationController()->isEndOfAnimation( 0 )
+        && (_clump->getAnimationController()->getTrackAnimation(0) == &openingSequence)
+        && (_jumper->getSpinalCord()->left > 0.0f)
+        && (_jumper->getSpinalCord()->right > 0.0f)
+    ) {
+        engine::IAnimationController* animCtrl = _clump->getAnimationController();
+        // setup animation
+        animCtrl->setTrackAnimation( 0, &openingSequence2 );
+        animCtrl->setTrackActivity( 0, true );
+        animCtrl->setTrackSpeed( 0, 0.75f );
+        animCtrl->setTrackWeight( 0, 1.0f );
+        animCtrl->resetTrackTime( 0 );
+        animCtrl->advance( 0.0f );
+
+        // capture blend destination
+        animCtrl->captureBlendDst();
+        animCtrl->blend( 0.0f );
+    }
+
+    if( 
+        _clump->getAnimationController()->isEndOfAnimation( 0 ) 
+        && (_clump->getAnimationController()->getTrackAnimation(0) == &openingSequence2)
+    ) {
+        _endOfAction = true;
+    }
 
     // synchronize physics & render
     _clump->getFrame()->setMatrix( _matrixConversion->convert( wrap( _phActor->getGlobalPose() ) ) );
@@ -220,8 +252,8 @@ void Jumper::CanopyOpening::updatePhysics(void)
     _phActor->setLinearDamping( damping );
 
     // shallow brake setting
-    _canopy->setLeftDeep( 0.0f );
-    _canopy->setRightDeep( 0.0f );
+    _canopy->setLeftDeep( 0.7f );
+    _canopy->setRightDeep( 0.7f );
 }
 
 bool Jumper::CanopyOpening::isCriticalAnimationRange(void)

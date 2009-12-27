@@ -36,7 +36,7 @@ Jumper::Landing::Landing(Jumper* jumper, NxActor* phFlight, MatrixConversion* mc
     _endOfAction = false;
     _phActor = phFlight;
     _matrixConversion = mcFlight;
-    _Kfr = 0.5f;
+    _Kfr = 0.8f;
 
     _phActor->setAngularDamping( 2.0f );
 
