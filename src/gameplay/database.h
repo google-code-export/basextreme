@@ -460,7 +460,7 @@ public:
 struct LocationInfo
 {
 public:
-    unsigned int  nameId;      // id of text, naming the location
+    std::string   nameId;      // id of text, naming the location
     int           worldX;      // "longitude"
     int           worldY;      // "lattitude"
     std::string   gameData;    // name of entry in game data pool (serialization)    
