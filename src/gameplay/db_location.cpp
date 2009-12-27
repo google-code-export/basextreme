@@ -109,8 +109,7 @@ static const char* dropzoneTextures[] =
     "./res/x/textures/crowdmale03.dds",
     "./res/x/textures/crowdmale04.dds",
     "./res/x/textures/crowdmale05.dds",
-    "./res/x/textures/crowdmale06.dds",
-    NULL
+    "./res/x/textures/crowdmale06.dds"
 };
 
 static const char* ostankinoTextures[] =
@@ -120,8 +119,7 @@ static const char* ostankinoTextures[] =
     "./res/x/textures/crowdmale03.dds",
     "./res/x/textures/crowdmale04.dds",
     "./res/x/textures/crowdmale05.dds",
-    "./res/x/textures/crowdmale06.dds",
-    NULL
+    "./res/x/textures/crowdmale06.dds"
 };
 
 static const char* royalGorgeBridgeTextures[] =
@@ -131,8 +129,7 @@ static const char* royalGorgeBridgeTextures[] =
     "./res/x/textures/crowdmale03.dds",
     "./res/x/textures/crowdmale04.dds",
     "./res/x/textures/crowdmale05.dds",
-    "./res/x/textures/crowdmale06.dds",
-    NULL
+    "./res/x/textures/crowdmale06.dds"
 };
 
 /**
@@ -333,18 +330,20 @@ static LocationInfo::Weather elCapitanWeatherOptions[] =
 /**
  * reverberation datatbase
  */
-
+/*
 LocationInfo::Reverberation dropzoneReverberation = { 1.0f, 0.33f, 0.125f, 0.25f };
 LocationInfo::Reverberation moscowReverberation = { 1.0f, 0.5f, 0.33f, 0.66f };
 LocationInfo::Reverberation caveReverberation = { 1.0f, 0.9f, 1.5f, 0.75f };
 LocationInfo::Reverberation trollveggenReverberation = { 1.0f, 0.419f, 1.740f, 0.158f };
 LocationInfo::Reverberation bridgeReverberation = { 1.0f, 0.5f, 1.0f, 0.9f };
 LocationInfo::Reverberation kvlyReverberation = { 1.0f, 0.5f, 1.0f, 0.9f };
+*/
 
 /**
  * main location database
  */
 extern TournamentInfo dropzoneTournaments[];
+extern TournamentInfo ostankinoTournaments[];
 
 static LocationInfo gStaticLocations[] = 
 {
@@ -371,9 +370,9 @@ static LocationInfo gStaticLocations[] =
         { 1.0f, 0.33f, 0.125f, 0.25f },
         std::vector<TournamentInfo>()
     },
-/*    // 1 - ostankino tv tower
+    // 1 - ostankino tv tower
     { 
-        89, 1243, 179, "LGD01", "./res/thumbnails/100.dds", true,
+        "N89", 1243, 179, "LGD01", "./res/thumbnails/100.dds", true,
         20.0f,
         0, // no boogies
         522, // festival event name
@@ -383,19 +382,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },        
         { "./res/ostankino/ostankino.ba", 10, 1000000 },
         { "./res/ostankino/gamedata.ba", 0, 0 },
-        ostankinoAssets,
-        ostankinoTextures,
+        std::vector<LocationInfo::AssetInfo>(ostankinoAssets, ostankinoAssets + 7),
+        std::vector<string>(ostankinoTextures, ostankinoTextures + 6),
         { 0.03f, 0.73f },
-        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
-        ostankinoExitPoints,
+        { NULL, "", "", "", "", 0.0f, 0.0f },
+        std::vector<LocationInfo::ExitPoint>(ostankinoExitPoints, ostankinoExitPoints + 4),
         casting::castingCallbackOstankino,
         { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./res/sounds/footsteps/metal/walk.ogg", "./res/sounds/footsteps/metal/turn.ogg" },
-        ostankinoWeatherOptions,
-        &moscowReverberation
+        std::vector<LocationInfo::Weather>(ostankinoWeatherOptions, ostankinoWeatherOptions + 6),
+        { 1.0f, 0.5f, 0.33f, 0.66f },
+        std::vector<TournamentInfo>()
     },
     // 2 - cave of swallows
     { 
-        90, 460, 394, "LGD02", "./res/thumbnails/400.dds", false,
+        "N90", 460, 394, "LGD02", "./res/thumbnails/400.dds", false,
         15.0f,
         254, // boogie event
         0, // no festivals
@@ -405,19 +405,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/cave/caveofswallows.ba", 10, 1000000 },
         { "./res/cave/gamedata.ba", 0, 0 },
-        caveAssets,
-        NULL,
+        std::vector<LocationInfo::AssetInfo>(caveAssets, caveAssets + 12),
+        std::vector<string>(),
         { 0.025f, 0.65f },
         { &caveGrass, "mexicanvegetation", "./res/particles/mexicanvegetation.dds", "./usr/cache/caveofswallows.grass", "GrassSurface", 2000, 2500 },
-        caveExitPoints,
+        std::vector<LocationInfo::ExitPoint>(caveExitPoints, caveExitPoints + 1),
         casting::castingCallbackCaveOfSwallows,
         { 100.0f, 20000.0f, 1.0f, 1.1f, 0.9f, 1.5f, "./res/sounds/footsteps/rock/walk.ogg", "./res/sounds/footsteps/rock/turn.ogg" },
-        caveWeatherOptions,
-        &caveReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, caveWeatherOptions),
+        { 1.0f, 0.9f, 1.5f, 0.75f },
+        std::vector<TournamentInfo>()
     },
     // 3 - trollveggen
     { 
-        91, 1047, 153, "LGD03", "./res/thumbnails/300.dds", true,
+        "N91", 1047, 153, "LGD03", "./res/thumbnails/300.dds", true,
         30.0f,
         253, // boogie event
         0,   // no festivals
@@ -427,19 +428,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/trollveggen/trollveggen.ba", 10, 1000000 },
         { "./res/trollveggen/gamedata.ba", 0, 0 },
-        trollveggenAssets,
-        NULL,
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::AssetInfo, trollveggenAssets),
+        std::vector<string>(),
         { 0.03f, 0.63f },
-        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
-        trollveggenExitPoints,
+        { NULL, "", "", "", "", 0.0f, 0.0f },
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::ExitPoint, trollveggenExitPoints),
         casting::castingCallbackTrollveggen,
         { 100.0f, 20000.0f, 1.0f, 1.1f, 0.9f, 1.5f, "./res/sounds/footsteps/rock/walk.ogg", "./res/sounds/footsteps/rock/turn.ogg" },
-        trollveggenWeatherOptions,
-        &trollveggenReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, trollveggenWeatherOptions),
+        { 1.0f, 0.419f, 1.740f, 0.158f },
+        std::vector<TournamentInfo>()
     },
     // 4 - royal gorge bridge
     { 
-        92, 398, 303, "LGD04", "./res/thumbnails/500.dds", false,
+        "N92", 398, 303, "LGD04", "./res/thumbnails/500.dds", false,
         25.0f,
         0,   // no boogies
         596, // festival event
@@ -449,19 +451,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/royalgorge/royalgorgebridge.ba", 10, 1000000 },
         { "./res/royalgorge/gamedata.ba", 0, 0 },
-        royalGorgeBridgeAssets,
-        royalGorgeBridgeTextures,
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::AssetInfo, royalGorgeBridgeAssets),
+        INIT_STD_VECTOR_WITH_ARRAY(string, royalGorgeBridgeTextures),
         { 0.0275f, 0.8f },
-        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
-        royalGorgeBridgeExitPoints,
+        { NULL, "", "", "", "", 0.0f, 0.0f },
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::ExitPoint, royalGorgeBridgeExitPoints),
         casting::castingCallbackRoyalGorgeBridge,
         { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./res/sounds/footsteps/metal/walk.ogg", "./res/sounds/footsteps/metal/turn.ogg" },
-        bridgeWeatherOptions,
-        &bridgeReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, bridgeWeatherOptions),
+        { 1.0f, 0.5f, 1.0f, 0.9f },
+        std::vector<TournamentInfo>()
     },
     // 5 - kvly-tv mast
     { 
-        768, 464, 256, "LGD05", "./res/thumbnails/600.dds", true,
+        "N768", 464, 256, "LGD05", "./res/thumbnails/600.dds", true,
         25.0f,
         773, // boogie event
         0, // no festival
@@ -471,19 +474,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/kvly/kvly.ba", 10, 1000000 },
         { "./res/kvly/gamedata.ba", 0, 0 },
-        kvlyAssets,
-        NULL, // no extra textures
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::AssetInfo, kvlyAssets),
+        std::vector<string>(), // no extra textures
         { 0.0275f, 0.8f },
         { &kvlyGrass, "corn", "./res/particles/corn.dds", "./usr/cache/kvly.grass", "GrassSurface", 7500, 10000 },
-        kvlyExitPoints,
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::ExitPoint, kvlyExitPoints),
         casting::castingCallbackKVLY,
         { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./res/sounds/footsteps/metal/walk.ogg", "./res/sounds/footsteps/metal/turn.ogg" },
-        kvlyWeatherOptions,
-        &kvlyReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, kvlyWeatherOptions),
+        { 1.0f, 0.5f, 1.0f, 0.9f },
+        std::vector<TournamentInfo>()
     },
     // 6 - kjerag
     { 
-        784, 1094, 185, "LGD06", "./res/thumbnails/700.dds", true,
+        "N784", 1094, 185, "LGD06", "./res/thumbnails/700.dds", true,
         25.0f,
         799, // boogie event
         0, // no festivals
@@ -493,19 +497,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/kjerag/kjerag.ba", 10, 1000000 },
         { "./res/kjerag/gamedata.ba", 0, 0 },
-        kjeragAssets,
-        NULL,
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::AssetInfo, kjeragAssets),
+        std::vector<string>(),
         { 0.02825f, 0.675f },
-        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
-        kjeragExitPoints,
+        { NULL, "", "", "", "", 0.0f, 0.0f },
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::ExitPoint, kjeragExitPoints),
         casting::castingCallbackKjerag,
         { 100.0f, 20000.0f, 1.0f, 1.1f, 0.9f, 1.5f, "./res/sounds/footsteps/rock/walk.ogg", "./res/sounds/footsteps/rock/turn.ogg" },
-        kjeragWeatherOptions,
-        &trollveggenReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, kjeragWeatherOptions),
+        { 1.0f, 0.419f, 1.740f, 0.158f },
+        std::vector<TournamentInfo>()
     },
     // 7 - angel falls
     { 
-        832, 328*2, 241*2, "LGD07", "./res/thumbnails/800.dds", true,
+        "N832", 328*2, 241*2, "LGD07", "./res/thumbnails/800.dds", true,
         25.0f,
         842, // angel falls boogie
         0, // no festivals
@@ -515,19 +520,20 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/angelfalls/angelfalls.ba", 10, 1500000 },
         { "./res/angelfalls/gamedata.ba", 0, 0 },
-        angelFallsAssets,
-        NULL,
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::AssetInfo, angelFallsAssets),
+        std::vector<string>(),
         { 0.025f, 0.5f },
-        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
-        angelFallsExitPoints,
+        { NULL, "", "", "", "", 0.0f, 0.0f },
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::ExitPoint, angelFallsExitPoints),
         casting::castingCallbackAngelFalls,
         { 100.0f, 20000.0f, 1.0f, 1.1f, 0.9f, 1.5f, "./res/sounds/footsteps/rock/walk.ogg", "./res/sounds/footsteps/rock/turn.ogg" },
-        angelFallsWeatherOptions,
-        &trollveggenReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, angelFallsWeatherOptions),
+        { 1.0f, 0.419f, 1.740f, 0.158f },
+        std::vector<TournamentInfo>()
     },
     // 8 - el capitan
     { 
-        846, 340, 301, "LGD08", "./res/thumbnails/900.dds", true,
+        "N846", 340, 301, "LGD08", "./res/thumbnails/900.dds", true,
         25.0f,
         0, // el capitan boogie
         0, // no festivals
@@ -537,17 +543,17 @@ static LocationInfo gStaticLocations[] =
         { 1000,1000,1000,1000,1000 },
         { "./res/elcapitan/elcapitan.ba", 10, 1500000 },
         { "./res/elcapitan/gamedata.ba", 0, 0 },
-        elCapitanAssets,
-        NULL,
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::AssetInfo, elCapitanAssets),
+        std::vector<string>(),
         { 0.025f, 0.5f },
-        { NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f },
-        elCapitanExitPoints,
+        { NULL, "", "", "", "", 0.0f, 0.0f },
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::ExitPoint, elCapitanExitPoints),
         casting::castingCallbackElCapitan,
         { 100.0f, 20000.0f, 1.0f, 1.1f, 0.9f, 1.5f, "./res/sounds/footsteps/rock/walk.ogg", "./res/sounds/footsteps/rock/turn.ogg" },
-        elCapitanWeatherOptions,
-        &trollveggenReverberation
+        INIT_STD_VECTOR_WITH_ARRAY(LocationInfo::Weather, elCapitanWeatherOptions),
+        { 1.0f, 0.419f, 1.740f, 0.158f },
+        std::vector<TournamentInfo>()
     },
-*/
     { "", 0, 0 }
 };
 
