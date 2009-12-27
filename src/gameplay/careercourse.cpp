@@ -1048,7 +1048,7 @@ void CareerCourse::onGuiMessage(gui::Message* message)
                     _geoscape->getCareer()->getVirtues()->evolution.funds += 1000.0f;
                     _geoscape->getCareer()->getVirtues()->evolution.score += 100.0f;
                     _geoscape->getCareer()->getVirtues()->evolution.health = 1.0f;
-                    _geoscape->getCareer()->getVirtues()->evolution.credits = 3;
+                    _geoscape->getCareer()->getVirtues()->evolution.credits = 10;
                     _geoscape->addHistory( Gameplay::iLanguage->getUnicodeString(631), Vector4f( 1, 0.25f, 0.25f, 1 ) );
                 } else if (message->mouseButton == gui::mbMiddle) {
                     Virtues* virtues = _geoscape->getCareer()->getVirtues();
