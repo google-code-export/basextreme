@@ -422,6 +422,7 @@ public:
     unsigned int                getMinimalRank(void);
 
 public:
+    static void                 initStaticTournaments();
     static void                 loadMissions(LocationInfo* location, const char* fileName);
     static bool                 loadMission(ConfigReader& cfg, MissionInfo* mission);
 };
