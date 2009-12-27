@@ -211,7 +211,7 @@ float Virtues::getLineoverProbability(float pcFactor)
 {
     float result = 0.03125f * ( 1 - pcFactor ) * ( 1 - pcFactor );
 
-    getCore()->logMessage( "lineover prob: %3.2f", result );
+    getCore()->logMessage( "lineover prob: %3.3f", result );
 
     return result;
 }

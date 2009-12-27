@@ -420,7 +420,7 @@ const unsigned int numBasePilots = 6;
 static database::Pilotchute basePilots[numBasePilots] = 
 {
     // size, mass, scale, Vrec, Talign, Tgyres, Fair
-    /* 0 */ { 48, 0.48f, 1.2192f, 8.26f, 2.0f, 0.5f, 2.0f },
+    /* 0 */ { 48, 0.48f, 1.2192f, 15.26f, 2.0f, 0.5f, 2.0f },
     /* 1 */ { 45, 0.45f, 1.1430f, 17.23f, 1.9f,  0.48f, 2.0f },
     /* 2 */ { 42, 0.42f, 1.0688f, 25.24f, 1.8f,  0.46f, 2.0f },
     /* 3 */ { 40, 0.40f, 1.0160f, 32.11f, 1.7f,  0.44f, 2.0f },
