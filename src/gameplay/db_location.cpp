@@ -343,6 +343,7 @@ LocationInfo::Reverberation kvlyReverberation = { 1.0f, 0.5f, 1.0f, 0.9f };
 /**
  * main location database
  */
+extern TournamentInfo dropzoneTournaments[];
 
 static LocationInfo gStaticLocations[] = 
 {
@@ -366,7 +367,8 @@ static LocationInfo gStaticLocations[] =
         casting::castingCallbackDropzone,
         { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./res/sounds/footsteps/metal/walk.ogg", "./res/sounds/footsteps/metal/turn.ogg" },
         std::vector<LocationInfo::Weather>(dropzoneWeatherOptions, dropzoneWeatherOptions + 6),
-        { 1.0f, 0.33f, 0.125f, 0.25f }
+        { 1.0f, 0.33f, 0.125f, 0.25f },
+        0
     },
 /*    // 1 - ostankino tv tower
     { 

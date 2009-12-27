@@ -241,10 +241,17 @@ static MissionInfo elCapitanFreeJumps[] =
 /**
  * tournament database
  */
+TournamentInfo dropzoneTournaments[] =
+{
+    { 125, 145, tfArbitrary, "T01", "./res/thumbnails/010.dds", std::vector<MissionInfo>(vffMissions, vffMissions + 8) },
+    { 463, 464, tfArbitrary, "T02", "./res/thumbnails/020.dds", std::vector<MissionInfo>(baseVffMissions, baseVffMissions + 4) },
+    { 485, 486, tfArbitrary, "T03", "./res/thumbnails/030.dds", std::vector<MissionInfo>(freeJumpingMissions, freeJumpingMissions + 5) },
+    { 501, 502, tfArbitrary, "T04", "./res/thumbnails/040.dds", std::vector<MissionInfo>(skybaseMissions, skybaseMissions + 2) },
+    { 639, 640, tfSmokeball, "T05", "./res/thumbnails/050.dds", std::vector<MissionInfo>(cloudyRodeoMissions, cloudyRodeoMissions + 3) },
+};
 /*
 static TournamentInfo tournaments[] =
 {
-    { 649, 650, 1, tfArbitrary, NULL,  "./res/thumbnails/120.dds", demoMissions },
     { 125, 145, 0, tfArbitrary, "T01", "./res/thumbnails/010.dds", vffMissions },
     { 463, 464, 0, tfArbitrary, "T02", "./res/thumbnails/020.dds", baseVffMissions },
     { 485, 486, 0, tfArbitrary, "T03", "./res/thumbnails/030.dds", freeJumpingMissions },
@@ -298,6 +305,12 @@ unsigned int TournamentInfo::getMinimalRank(void)
         }
     }
     return minimalRank;
+}
+
+
+void TournamentInfo::initStaticTournaments()
+{
+    LocationInfo::getRecord(0)->tournaments = std::vector<TournamentInfo>(dropzoneTournaments, dropzoneTournaments + 5);
 }
 
 

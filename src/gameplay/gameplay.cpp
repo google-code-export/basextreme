@@ -392,6 +392,7 @@ void Gameplay::entityInit(Object * p)
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_DYNAMIC,1 );
 
     database::LocationInfo::loadLocations("./res/locations.cfg");
+    database::TournamentInfo::initStaticTournaments();
 
     // generate user community events from XML documents
     generateUserCommunityEvents();
