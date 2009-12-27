@@ -139,6 +139,10 @@ CanopySimulator::CanopySimulator(Actor* jumper, Gear* gear, bool sliderUp) :
     _frontLeftRiser = _frontRightRiser = _rearLeftRiser = _rearRightRiser= NULL;
     _leftDeep = _rightDeep = 0.0f;
     _leftWarpDeep = _rightWarpDeep = 0.0f;
+    _backLeftRiserDeep = 0.0f;
+    _backRightRiserDeep = 0.0f;
+    _frontLeftRiserDeep = 0.0f;
+    _frontRightRiserDeep = 0.0f;
     _leftLOW = 0.0f;
     _rightLOW = 0.0f;
     _enableWind = true;
@@ -311,6 +315,17 @@ CanopySimulator::CanopySimulator(Actor* jumper, Gear* gear, bool sliderUp) :
             _pabs[j] = new Section( _canopyClump, _gearRecord->riserScheme->getPAB( i ), this );
             j++;
         }
+        //else if( _gearRecord->riserScheme->getPAB( i )->pabType == database::pabtFrontSection)
+        //{
+        //    _pabs[j] = new Flap( _canopyClump, _gearRecord->riserScheme->getPAB( i ), &_rightWarpDeep );
+        //    j++;
+        //}
+        //else if( 
+        //         _gearRecord->riserScheme->getPAB( i )->pabType == database::pabtRearSection )
+        //{
+        //    _pabs[j] = new Flap( _canopyClump, _gearRecord->riserScheme->getPAB( i ), &_leftWarpDeep );
+        //    j++;
+        //}
     }
     for( i=0; i<_gearRecord->riserScheme->getNumPABs(); i++ )
     {
@@ -711,6 +726,26 @@ void CanopySimulator::setRightWarpDeep(float value)
     _rightWarpDeep = value;
 }
 
+void CanopySimulator::setBackLeftRiserDeep(float value)
+{
+    _backLeftRiserDeep = value;
+}
+
+void CanopySimulator::setBackRightRiserDeep(float value)
+{
+    _backRightRiserDeep = value;
+}
+
+void CanopySimulator::setFrontLeftRiserDeep(float value)
+{
+    _frontLeftRiserDeep = value;
+}
+
+void CanopySimulator::setFrontRightRiserDeep(float value)
+{
+    _frontRightRiserDeep = value;
+}
+
 void CanopySimulator::setWLOToggles(bool trigger)
 {
     if( _wloToggles ) _wloToggles->setTrigger( trigger );
@@ -820,6 +855,14 @@ void CanopySimulator::entangle(const NxVec3& cohesionPoint)
 {
     _cohesionState = true;
     _cohesionPoint = cohesionPoint;
+}
+
+float max(float x, float y) {
+    if (x >= y) {
+        return x;
+    } else {
+        return y;
+    }
 }
 
 void CanopySimulator::onUpdatePhysics(void)
@@ -932,15 +975,26 @@ void CanopySimulator::onUpdatePhysics(void)
                   _inflation * getResistanceForce( x, velocity, _gearRecord->Kxair * perfomance ) +
                   _inflation * getResistanceForce( -x, velocity, _gearRecord->Kxair * perfomance );
 
+
     // attack angle
     float attackAngle = -calcAngle( z, velocityN, x );
-    if( velocityN.magnitude() == 0.0f ) attackAngle = 0.0f;
-    if( attackAngle < 0 ) attackAngle = 0;
-    if( attackAngle > 90 ) attackAngle = 90;
+    if( velocityN.magnitude() == 0.0f ) {
+        attackAngle = 0.0f;
+    }
 
     // average deep of brakes affects the lift & drag force and also attack angle
-    float avgDeep = modeLeftDeep * modeRightDeep;
+    float avgDeep = max(modeLeftDeep * modeRightDeep, _backLeftRiserDeep * _backRightRiserDeep * 0.8f);
+    //float avgDeep = max(modeLeftDeep * modeRightDeep, 0.0f);
     attackAngle += _gearRecord->AAdeep * avgDeep;
+
+    if( attackAngle < 0 ) {
+        attackAngle = 0.0f;
+    }
+    if( attackAngle > 90 ) { 
+        //attackAngle = -180.0f + attackAngle;
+        attackAngle = 90.0f;
+    }
+
 
     // wing function
     float WF = getWingPower( _inflation );
@@ -966,7 +1020,7 @@ void CanopySimulator::onUpdatePhysics(void)
     // drag force
     float Kdrag = _gearRecord->Kdrags * perfomance * ( 1.0f - avgDeep ) + _gearRecord->Kdragd * avgDeep * perfomance;
     NxVec3 Ndrag = -velocityN;
-    NxVec3 Fdrag = Ndrag * WF * Kdrag * getDragPower( attackAngle ) * sqr( velocity.magnitude() );
+    NxVec3 Fdrag = Ndrag * WF * Kdrag * getDragPower( fabsf(attackAngle) ) * sqr( velocity.magnitude() );
 
     // control force
     NxVec3 leftPoint = wrap( CanopySimulator::getPhysicsJointRearLeft( _canopyClump )->getPos() );
@@ -1023,6 +1077,60 @@ void CanopySimulator::onUpdatePhysics(void)
     NxVec3 Frlob = -z * _rightLOW * WF * sqr(rightPointNormalVel) * _gearRecord->Kbraking * getCore()->getRandToolkit()->getUniform( 5,10 );
     _nxCanopy->addForceAtPos( Fllob, leftPoint );
     _nxCanopy->addForceAtPos( Frlob, rightPoint );
+
+
+    // simulate risers
+    {
+        NxVec3 backLeftPoint = wrap( CanopySimulator::getPhysicsJointRearLeft( _canopyClump )->getPos() );
+        NxVec3 backRightPoint = wrap( CanopySimulator::getPhysicsJointRearRight( _canopyClump )->getPos() );
+        NxVec3 backLeftPointVel = _nxCanopy->getPointVelocity( backLeftPoint );
+        NxVec3 backRightPointVel = _nxCanopy->getPointVelocity( backRightPoint );
+        NxVec3 frontLeftPoint = wrap( CanopySimulator::getPhysicsJointFrontLeft( _canopyClump )->getPos() );
+        NxVec3 frontRightPoint = wrap( CanopySimulator::getPhysicsJointFrontRight( _canopyClump )->getPos() );
+        NxVec3 frontLeftPointVel = _nxCanopy->getPointVelocity( frontLeftPoint );
+        NxVec3 frontRightPointVel = _nxCanopy->getPointVelocity( frontRightPoint );
+
+        if( _enableWind )
+        {
+            // include wind velocity
+            frontLeftPointVel  += _scene->getWindAtPoint( frontLeftPointVel ) * windfluence;
+            frontRightPointVel += _scene->getWindAtPoint( frontRightPointVel ) * windfluence;
+            backLeftPointVel  += _scene->getWindAtPoint( backLeftPointVel ) * windfluence;
+            backRightPointVel += _scene->getWindAtPoint( backRightPointVel ) * windfluence;
+        }   
+
+        float backLeftPointNormalVel = z.dot( backLeftPointVel );
+        float backRightPointNormalVel = z.dot( backRightPointVel );
+        backLeftPointNormalVel = backLeftPointVel.magnitude();
+        backRightPointNormalVel = backRightPointVel.magnitude();
+        backLeftPointNormalVel = backLeftPointNormalVel < 0 ? 0 : backLeftPointNormalVel;
+        backRightPointNormalVel = backRightPointNormalVel < 0 ? 0 : backRightPointNormalVel;
+
+        float frontLeftPointNormalVel = z.dot( frontLeftPointVel );
+        float frontRightPointNormalVel = z.dot( frontRightPointVel );
+        frontLeftPointNormalVel = frontLeftPointNormalVel < 0 ? 0 : frontLeftPointNormalVel;
+        frontRightPointNormalVel = frontRightPointNormalVel < 0 ? 0 : frontRightPointNormalVel;
+
+        if (_backLeftRiserDeep > 0.0f) {
+            NxVec3 force = -y * _backLeftRiserDeep * 60.0f * backLeftPointNormalVel * _gearRecord->Kbraking;
+            _nxCanopy->addForceAtPos( force, backLeftPoint );
+        }
+        if (_backRightRiserDeep > 0.0f) {
+            NxVec3 force = -y * _backRightRiserDeep * 60.0f * backRightPointNormalVel * _gearRecord->Kbraking;
+            _nxCanopy->addForceAtPos( force, backRightPoint );
+        }
+
+        if (_frontLeftRiserDeep > 0.0f) {
+            NxVec3 force = -y * _frontLeftRiserDeep * 8.0f * sqr(frontLeftPointNormalVel) * _gearRecord->Kbraking;
+            _nxCanopy->addForceAtPos( force, frontLeftPoint );
+        }
+        if (_frontRightRiserDeep > 0.0f) {
+            NxVec3 force = -y * _frontRightRiserDeep * 8.0f * sqr(frontRightPointNormalVel) * _gearRecord->Kbraking;
+            _nxCanopy->addForceAtPos( force, frontRightPoint );
+        }
+    }
+
+
 
     // down canopy nose at low speed
     /*float minSpeed  = 1.0f;
@@ -1137,9 +1245,9 @@ void CanopySimulator::updateWarp(float dt)
     float Krear  = 0.0625f * Kharsh;
     float Kangle = 45.0f * Kharsh;
 
-    float leftDynamicWarp = _leftWarpDeep;
+    float leftDynamicWarp = 0.0f; // _leftWarpDeep;
     leftDynamicWarp = leftDynamicWarp > 1 ? 1 : leftDynamicWarp;
-    float rightDynamicWarp = _rightWarpDeep;
+    float rightDynamicWarp = 0.0f; // _rightWarpDeep;
     rightDynamicWarp = rightDynamicWarp > 1 ? 1 : rightDynamicWarp;
 
     float twistFactor = fabs( _linetwists ) / 1440;

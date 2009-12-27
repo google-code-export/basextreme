@@ -208,6 +208,10 @@ void Jumper::Flight::updatePhysics(void)
     canopy->setRightDeep( spinalCord->right * penalty );
     canopy->setLeftWarpDeep( spinalCord->leftWarp * penalty );
     canopy->setRightWarpDeep( spinalCord->rightWarp * penalty );
+    canopy->setBackLeftRiserDeep( spinalCord->backLeftRiser * penalty );
+    canopy->setBackRightRiserDeep( spinalCord->backRightRiser * penalty );
+    canopy->setFrontLeftRiserDeep( spinalCord->frontLeftRiser * penalty );
+    canopy->setFrontRightRiserDeep( spinalCord->frontRightRiser * penalty );
     canopy->setWLOToggles( spinalCord->wlo );
     canopy->setHookKnife( spinalCord->hook );
 

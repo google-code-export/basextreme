@@ -41,6 +41,22 @@ void MouseChannel::setupDefault(void)
         _axis = ::xAxis;
         _direction = 1;
         break;
+    case iaBackLeftRiser:
+        _axis = ::xAxis;
+        _direction = -1;
+        break;
+    case iaBackRightRiser:
+        _axis = ::xAxis;
+        _direction = 1;
+        break;
+    case iaFrontLeftRiser:
+        _axis = ::xAxis;
+        _direction = -1;
+        break;
+    case iaFrontRightRiser:
+        _axis = ::xAxis;
+        _direction = 1;
+        break;
     case iaHeadLeft:
         _axis = ::xAxis;
         _direction = -1;

@@ -117,12 +117,17 @@ public:
     float down;      // back/down channel
     float leftWarp;  // left warp channel
     float rightWarp; // right warp channel
+    float backLeftRiser;   // left warp channel
+    float backRightRiser;  // right warp channel
+    float frontLeftRiser;  // left warp channel
+    float frontRightRiser; // right warp channel
     bool  phase;     // phase channel (jump/pull)
     bool  modifier;  // context modifier channel (run/track)
     bool  wlo;       // wlo toggles channel
     bool  hook;      // hook knife channel
 public:
     SpinalCord() : left(0), right(0), up(0), down(0), leftWarp(0), rightWarp(0),
+                   backLeftRiser(0), backRightRiser(0), frontLeftRiser(0), frontRightRiser(0), 
                    phase(0), modifier(0), wlo(0), hook(0) {}
 public:
     void mapActionChannels(void);
