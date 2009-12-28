@@ -3,9 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio2", "audio2\audio2.vcproj", "{D7C54F0E-AF0A-4C83-BB0B-1E6CB2998FD1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ccor", "ccor\ccor.vcproj", "{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8CACD851-2149-467B-A426-FCCCD6ABB76B} = {8CACD851-2149-467B-A426-FCCCD6ABB76B}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ccorlogic", "ccorlogic\ccorlogic.vcproj", "{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}"
 EndProject

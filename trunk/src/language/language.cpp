@@ -10,6 +10,9 @@
 using namespace std;
 using namespace ccor;
 
+// Implementation
+TiXmlDocument*       m_config;
+
 
 /**
  * unicode text processor, 
