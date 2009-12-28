@@ -1,7 +1,7 @@
+#include "headers.h"
 
 #include "shared/ccor.h"
 #include "engine/configreader.h"
-#include "headers.h"
 #include "database.h"
 #include "casting.h"
 #include "version.h"

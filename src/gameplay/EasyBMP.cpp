@@ -1,3 +1,5 @@
+#include "headers.h"
+
 /*************************************************
 *                                                *
 *  EasyBMP Cross-Platform Windows Bitmap Library * 
