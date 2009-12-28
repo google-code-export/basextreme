@@ -1056,6 +1056,15 @@ void CareerCourse::onGuiMessage(gui::Message* message)
                     virtues->setPerceptionSkill(0.99f * virtues->predisp.perception);
                     virtues->setRiggingSkill(0.99f * virtues->predisp.rigging);
                     virtues->setTrackingSkill(0.99f * virtues->predisp.tracking);
+
+                    Career* career = _geoscape->getCareer();
+                    career->setAcrobaticsSkill(acroJumpFromRun, true);
+                    career->setAcrobaticsSkill(acroFreeflyFlip, true);
+                    career->setAcrobaticsSkill(acroFreeflySitfly, true);
+                    career->setAcrobaticsSkill(acroFrontFlip, true);
+                    career->setAcrobaticsSkill(acroFrontBackFlip, true);
+                    career->setAcrobaticsSkill(acroBackFlip, true);
+                    career->setAcrobaticsSkill(acroBackFrontFlip, true);
                 }
             }
 #ifdef GAMEPLAY_DEVELOPER_EDITION

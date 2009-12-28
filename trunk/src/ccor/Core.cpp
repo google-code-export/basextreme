@@ -146,9 +146,6 @@ int CoreShutdownEngine(int rcode)
         }
 #endif
 
-        // memory leaks?
-        _CrtDumpMemoryLeaks();
-
         return rcode;
 }
 
@@ -168,7 +165,8 @@ int CoreRunEngine(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdLine, int
         rcode = CoreShutdownEngine(rcode);
 
         // memory leaks?
-        _CrtDumpMemoryLeaks();
+        // damn... fails because of a lot of static std templates :-(
+        //_CrtDumpMemoryLeaks();
 
         return rcode;
 }
