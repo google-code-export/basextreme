@@ -87,6 +87,20 @@ const float backFlipAnimSpeed      = 0.5f;
 const float backFlipCriticalPeriod = ( FRAMETIME(1899) - FRAMETIME(1870) ) / backFlipAnimSpeed;
 
 /**
+ * back front flip jump
+ */
+static engine::AnimSequence backFrontFlipSequence =
+{
+    FRAMETIME(1903), 
+    FRAMETIME(1935), 
+    engine::ltNone,
+    0.0f
+};
+
+const float backFrontFlipAnimSpeed = 0.5f;
+const float backFrontFlipCriticalPeriod = ( FRAMETIME(1935-3) - FRAMETIME(1903) ) / backFrontFlipAnimSpeed;
+
+/**
  * jumper action
  */
 
@@ -849,7 +863,6 @@ void Jumper::onRoaming(float dt)
         else if( isAbyssBehind )
         {
             if( isPlayer() &&
-                /* !isWearWingsuit && */
                 Gameplay::iGameplay->getActionChannel( ::iaBackward )->getTrigger() &&
                 getScene()->getCareer()->getAcrobaticsSkill( ::acroBackFlip ) )
             {
@@ -859,6 +872,24 @@ void Jumper::onRoaming(float dt)
                 _phase = jpFreeFalling;
                 delete _action;
                 _action = new FlipJump( this, _phFreeFall, &_mcFreeFall, &backFlipSequence, backFlipAnimSpeed, backFlipCriticalPeriod );
+                // save jump pose
+                _jumpPose = _clump->getFrame()->getLTM();
+                _jumpPose[3][1] += ::jumperRoamingSphereSize;
+                // event
+                happen( this, EVENT_JUMPER_BEGIN_FREEFALL );
+                happen( this, EVENT_JUMPER_END_WALKFWD );
+                happen( this, EVENT_JUMPER_END_WALKBCK );
+                happen( this, EVENT_JUMPER_END_TURN );
+            } else if( isPlayer() &&
+                Gameplay::iGameplay->getActionChannel( ::iaForward )->getTrigger() &&
+                getScene()->getCareer()->getAcrobaticsSkill( ::acroBackFrontFlip ) )
+            {
+                // modify freefall adrenaline limit with accumulated value
+                _fallLimit += _adrenaline;
+                // start action
+                _phase = jpFreeFalling;
+                delete _action;
+                _action = new FlipJump( this, _phFreeFall, &_mcFreeFall, &backFrontFlipSequence, backFrontFlipAnimSpeed, backFrontFlipCriticalPeriod );
                 // save jump pose
                 _jumpPose = _clump->getFrame()->getLTM();
                 _jumpPose[3][1] += ::jumperRoamingSphereSize;
