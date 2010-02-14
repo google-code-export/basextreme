@@ -18,6 +18,10 @@
 using namespace engine;
 
 
+engine::IEngine* gEngine;
+
+
+
 class ExporterAsset: public Asset
 {
 	std::vector<MayaMaterial*>      mMaterials;
@@ -333,7 +337,10 @@ Shader* ExporterAsset::ExportMayaMaterial(MayaMaterial* material)
         int i;
         int textureCount = material->mTextures.size();
         for (i = 0; i < textureCount; ++i) {
-                Texture* texture = texture->createTexture(material->mTextures[i]->mName.asChar());
+                ITexture* texture = gEngine->getTexture(Texture::getTextureNameFromFilePath(material->mTextures[i]->mName.asChar()).c_str());
+                if (texture == 0) {
+                        texture = gEngine->createTexture(material->mTextures[i]->mName.asChar());
+                }
                 shader->setLayerTexture(i, texture);
         }
 
@@ -355,10 +362,8 @@ void ExportBa(const char* fileName)
 {
         int rcode = CoreInitEngine(0, 0, "", 0);
         if (rcode == 0) {
-                engine::IEngine* iEngine;
-
-                if(askInterfaceT("Engine", &iEngine)) {
-                        IAsset* asset = iEngine->createAsset(atBinary, fileName);
+                if(askInterfaceT("Engine", &gEngine)) {
+                        IAsset* asset = gEngine->createAsset(atBinary, fileName);
 
                         ExporterAsset exporterAsset;
 
@@ -371,8 +376,11 @@ void ExportBa(const char* fileName)
                 }
         }
         rcode = CoreShutdownEngine(rcode);
+        gEngine = 0;
 }
 
 void main() {
+        printf("Starting export -------------------");
         ExportBa("test.ba");
+        printf("Export finished -------------------");
 }
