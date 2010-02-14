@@ -1052,10 +1052,10 @@ void CareerCourse::onGuiMessage(gui::Message* message)
                     _geoscape->addHistory( Gameplay::iLanguage->getUnicodeString(631), Vector4f( 1, 0.25f, 0.25f, 1 ) );
                 } else if (message->mouseButton == gui::mbMiddle) {
                     Virtues* virtues = _geoscape->getCareer()->getVirtues();
-                    virtues->setEnduranceSkill(0.99f * virtues->predisp.endurance);
-                    virtues->setPerceptionSkill(0.99f * virtues->predisp.perception);
-                    virtues->setRiggingSkill(0.99f * virtues->predisp.rigging);
-                    virtues->setTrackingSkill(0.99f * virtues->predisp.tracking);
+                    virtues->setEnduranceSkill(0.9999f * virtues->predisp.endurance);
+                    virtues->setPerceptionSkill(0.9999f * virtues->predisp.perception);
+                    virtues->setRiggingSkill(0.9999f * virtues->predisp.rigging);
+                    virtues->setTrackingSkill(0.9999f * virtues->predisp.tracking);
 
                     Career* career = _geoscape->getCareer();
                     career->setAcrobaticsSkill(acroJumpFromRun, true);
