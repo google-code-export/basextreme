@@ -144,7 +144,7 @@
 				AdditionalIncludeDirectories="..\Includes\DirectX\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/input.pch"
 				AssemblerListingLocation=".\Debug/"

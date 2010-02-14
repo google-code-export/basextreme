@@ -814,6 +814,8 @@ AssetObjectT Geometry::read(IResource* resource, AssetObjectM& assetObjects)
     Chunk chunk;
     fread( &chunk, sizeof(Chunk), 1, resource->getFile() );
 
+    if(chunk.numVertices == 0 ) throw Exception("%s chunk has geometry with 0 vertices.", chunk.name);
+
     // read shaders
     if( !chunk.sharedShaders ) for( int i=0; i<chunk.numShaders; i++ )
     {

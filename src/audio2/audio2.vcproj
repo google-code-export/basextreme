@@ -51,7 +51,7 @@
 				AdditionalIncludeDirectories="..\Includes\DirectX\Include;..\Includes\Ogg\include;..\Includes\Vorbis\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/audio2.pch"
