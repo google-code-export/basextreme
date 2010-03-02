@@ -200,6 +200,7 @@ EntityBase* MainWnd::creator()
 
 void MainWnd::entityDestroy() 
 { 
+    _mainwnd = 0;
     delete this; 
 }
 
