@@ -84,6 +84,8 @@ void Jumper::Pull::update(float dt)
 {
     updateAnimation( dt );
 
+    _phActor->setAngularDamping(0.8f);
+
     // synchronize physics & render
     _clump->getFrame()->setMatrix( _matrixConversion->convert( wrap( _phActor->getGlobalPose() ) ) );
     _clump->getFrame()->getLTM();

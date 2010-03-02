@@ -11,7 +11,7 @@ const wchar_t* Gear::getName(void)
     case gtHelmet:
         return Gameplay::iLanguage->getUnicodeString(database::Helmet::getRecord( id )->nameId);
     case gtSuit:
-        return Gameplay::iLanguage->getUnicodeString(database::Suit::getRecord( id )->nameId);
+            return database::Suit::getRecord( id )->name.c_str();
     case gtRig:
         return Gameplay::iLanguage->getUnicodeString(database::Rig::getRecord( id )->nameId);
     case gtCanopy:

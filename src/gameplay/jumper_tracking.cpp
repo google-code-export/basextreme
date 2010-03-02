@@ -147,6 +147,10 @@ Jumper::Tracking::Tracking(Jumper* jumper, NxActor* phActor, MatrixConversion* m
     // capture blend destination
     animCtrl->captureBlendDst();
     animCtrl->blend( 0.0f );
+
+    if (_jumper->getSpinalCord()->modifier) {
+        _phActor->addLocalTorque(NxVec3(0.5f, 0.0f, 0.0f), NxForceMode::NX_VELOCITY_CHANGE);
+    }
 }
 
 void Jumper::Tracking::updateBlending(float dt)
@@ -258,6 +262,15 @@ static float getGlidePower(float angle)
     return ( pow( cos( i ), 7.0f ) * pow( i, 8.0f ) ) / 0.01544f;
 }
 
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+
 void Jumper::Tracking::updatePhysics(void)
 {
     // update controls
@@ -368,6 +381,10 @@ void Jumper::Tracking::updatePhysics(void)
     float inclinationAngle = fabs( calcAngle( z, signum ) );
     if( steerAngle > 0 ) inclinationAngle *= -1;
     steerAngle += inclinationAngle;
+    if (_jumper->_player) {
+        Kalign = 0.0f;
+        //Kroll = 0.0f;
+    }
     NxVec3 Tsteer = ( y * sqrt( velocity.magnitude() * Kslide ) * -steerAngle )+
                     ( vertical * sqrt( velocity.magnitude() * Kroll ) * -steerAngle ) +
                     ( z * sqrt( velocity.magnitude() * Kalign ) * -steerAngle );
@@ -406,11 +423,90 @@ void Jumper::Tracking::updatePhysics(void)
     // glide resistance force
     NxVec3 Fgr = -h * getAirResistancePower( velocityH.magnitude() / Vtgl ) * glideCoeff;
     
+
+
+    const float airDensity = 1.225f;
+    
+    //float wingArea = 0.7f + 0.8f * _tracking; // sq meters
+    //float wingArea = 0.8f + 0.7f * _tracking; // sq meters
+    float wingArea = 0.3f + 0.9f * _tracking; // sq meters
+    float wingLiftCoeff = 0.3f + 0.2f * _tracking;
+
+    // lift force
+    NxVec3 airFlowDirection = -velocity;
+    airFlowDirection.normalize();
+    NxVec3 Flift(0.0f, 0.0f, 0.0f);
+    float squaredVelocity = velocity.magnitudeSquared();
+    float wingAngleOfAttack = y.dot(airFlowDirection);
+    if ((squaredVelocity != 0.0f) && (wingAngleOfAttack != 0.0f)) {
+        float angle = fabsf(3.14159f - fabsf(acosf(wingAngleOfAttack) * 2.0f));
+        //float liftCoeff = wingLiftCoeff * sinf(0.3f * x * x);
+        //float liftCoeff = 
+        //        sinf(x) *
+        //        ((sinf(min(x * x * x * x * 10.0f + 2.5f, 3.14159f * 1.5f)) + 1.0f) * 2.6f * wingLiftCoeff + 1.0f);
+        float liftCoeff = 
+                sinf(angle) *
+                ((sinf(min(angle * angle * 9.0f + 2.5f, 3.14159f * 1.5f)) + 1.0f) * 1.0f * wingLiftCoeff + 1.0f)*
+                (exp(3.14159f - angle * 3.0f + 2.5f) * 0.007f + 1.0f) * max(0.2f, 1.0f - fabsf(x.dot(airFlowDirection)));
+        //float liftCoeff = wingLiftCoeff * sinf(x);
+        //float wingRatio = 2.0f / 0.5f;
+        //float liftCoeff = 1.0f * (2.0f * 3.14159f * sin(x)) / (1.0f + 2.0f / wingRatio);
+        //float liftCoeff = 4.0f * sinf (x) - 0.0037f * expf(x / 3.5f);
+        //float liftCoeff = 1.0f * sinf(wingAngleOfAttack * 3.14159f * 2.0f);
+        float lift = 0.5f * airDensity * squaredVelocity * liftCoeff * wingArea;
+
+        if (_jumper->_player) {
+                //printf("%f %f %f\n", 90.0f - acosf(wingAngleOfAttack) * 180.0f / 3.14159f, liftCoeff, expf(x / 3.5f));
+                //printf("%f %f %f\n", x, wingAngleOfAttack, liftCoeff);
+                //printf("%f %f\n", sinf(x) , ((sinf(min(x * x * 8.0f + 2.5f, 3.14159f * 1.5f)) + 1.0f) * 2.6f * wingLiftCoeff + 1.0f));
+        }
+
+        NxVec3 side = y.cross(airFlowDirection);
+        if (!side.isZero()) {
+                Flift = airFlowDirection.cross(side);
+                Flift.normalize();
+                Flift *= (lift * sgn(wingAngleOfAttack));
+
+                if (_jumper->_player) {
+                        //printf("%f %f %f %f\n", Flift.magnitude(), Flift.x, Flift.y, Flift.z);
+                }
+        }
+        //Flift = y * lift;
+    }
+    //Flift.zero();
+
+
+    // drag force
+    //const float airDensity = 1.225f;
+    float xComponent = fabsf(x.dot(airFlowDirection));
+    float yComponent = fabsf(y.dot(airFlowDirection));
+    float zComponent = fabsf(z.dot(airFlowDirection));
+    float t = fabsf(wingAngleOfAttack);
+    const float dragCoeff = 
+            0.6f * xComponent + 
+            (0.4f + 0.8f * _tracking) * yComponent + 
+            (0.05f + 0.2f * (1.0f - _tracking)) * zComponent;
+    float drag = 0.5f * airDensity * squaredVelocity * dragCoeff;
+    NxVec3 Fdrag = airFlowDirection * drag;
+    //Fdrag.zero();
+    //Fdrag.y = 0.0f;
+
+    if (_jumper->_player) {
+        //printf("%f %f %f %f %f\n", Fdrag.magnitude(), dragCoeff, xComponent, yComponent, zComponent);
+    }
+
+
+    if (_jumper->_player) {
+        //printf("%f %f %f\n", xComponent, yComponent, zComponent);
+    }
+
     // finalize motion equation    
-    _phActor->addForce( Far + Fg + Fgr );
-    _phActor->addTorque( Tr * It + Tsteer );
+    //_phActor->addForce( Far + Fg + Fgr + Flift);
+    _phActor->addForce(Flift + Fdrag);
+    _phActor->addTorque(Tr * It + Tsteer);
     _phActor->addLocalTorque( Tctrl );
 
+//*
     // fake physics : horizontal velocity aligment
     float kHAlign = _tracking * ::simulationStepTime * _jumper->getVirtues()->getHorizontalAligment();
     NxVec3 lVel = _phActor->getLinearVelocity();
@@ -423,4 +519,5 @@ void Jumper::Tracking::updatePhysics(void)
     hVel.normalize();
     hVel *= hVelMagnitude;
     _phActor->setLinearVelocity( hVel + vVel );
+//*/
 }

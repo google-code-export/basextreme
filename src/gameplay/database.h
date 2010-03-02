@@ -149,11 +149,11 @@ public:
     float        cost;                // suit cost
     bool         wingsuit;            // suit have wings
     unsigned int modelId;             // model identified, see Jumper::getBody()
-    unsigned int nameId;              // (language id) model name    
+    std::wstring name;                // model name    
     unsigned int descriptionId;       // (language id) model description
     unsigned int colorId;             // (language id) color name
     unsigned int manufacturerId;      // (language id) manufacturer name
-    unsigned int textureId;           // GearTexture record id
+    std::string  texture;             // GearTexture record id
     float        kAlign;              // horizontal velosity aligment coefficient
     float        mHeadDown;           // multiplier for air resistance in headdown pose 
     float        mFrog;               // multiplier for air resistance in frog pose 
@@ -165,7 +165,9 @@ public:
     float        Kage;                // coefficient of ageing (damage - to - state reduction)
 public:
     static unsigned int getNumRecords(void);    
-    static Suit* getRecord(unsigned int id);
+    static Suit*        getRecord(unsigned int id);
+    static void         initSuits();
+    static void         loadSuits(Suit& suitPrototype, std::string textureBase, const char* dir);
 };
 
 /**

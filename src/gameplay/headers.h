@@ -37,6 +37,7 @@
 #include "NxActor.h"
 #include "NxActorDesc.h"
 #include "NxCooking.h"
+#include "NxFoundationSDK.h"
 #include "NxTriangleMeshDesc.h"
 #include "NxStream.h"
 #include "NxTriangleMeshShapeDesc.h"

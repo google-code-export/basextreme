@@ -176,11 +176,12 @@ void JumperRenderCallback::setSuit(unsigned int suitId)
         suitTexture = NULL;
     }
     database::Suit* suit = database::Suit::getRecord( suitId );
-    database::GearTexture* gearTexture = database::GearTexture::getRecord( suit->textureId );
-    suitTexture = Gameplay::iEngine->getTexture( gearTexture->textureName );
+//    database::GearTexture* gearTexture = database::GearTexture::getRecord( suit->textureId );
+
+    suitTexture = Gameplay::iEngine->getTexture(exname(suit->texture.c_str()).c_str());
     if( suitTexture == NULL )
     {
-        suitTexture = Gameplay::iEngine->createTexture( gearTexture->resourceName );
+        suitTexture = Gameplay::iEngine->createTexture(suit->texture.c_str());
         assert( suitTexture );
         suitTexture->setMinFilter( engine::ftAnisotropic );
         suitTexture->setMagFilter( engine::ftLinear );
