@@ -37,10 +37,10 @@
 			Name="Release|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="C:\Program Files\Autodesk\Maya2009\bin\maya.exe"
 				WorkingDirectory=""
 				CommandArguments=""
-				Attach="false"
+				Attach="true"
 				DebuggerType="3"
 				Remote="1"
 				RemoteMachine="SANDBOX"
@@ -50,7 +50,7 @@
 				SQLDebugging=""
 				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor=""
+				DebuggerFlavor="0"
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""
