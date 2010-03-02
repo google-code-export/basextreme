@@ -360,6 +360,8 @@ ExporterAsset::ExporterAsset()
 
 void ExportBa(const char* fileName)
 {
+        printf("Starting export -------------------\n");
+
         int rcode = CoreInitEngine(0, 0, "", 0);
         if (rcode == 0) {
                 if(askInterfaceT("Engine", &gEngine)) {
@@ -372,15 +374,19 @@ void ExportBa(const char* fileName)
                         asset->serialize();
                         asset->release();
                 } else {
-                        printf("Couldn't get engine interface.");
+                        printf("Couldn't get engine interface.\n");
                 }
         }
         rcode = CoreShutdownEngine(rcode);
         gEngine = 0;
+
+        printf("Export finished -------------------\n");
+        fflush(stdout);
 }
 
 void main() {
         printf("Starting export -------------------");
         ExportBa("test.ba");
         printf("Export finished -------------------");
+        fflush(stdout);
 }

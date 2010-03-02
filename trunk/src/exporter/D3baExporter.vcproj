@@ -126,7 +126,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\Maya8.0\include&quot;"
+				AdditionalIncludeDirectories="..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;;..\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -147,9 +147,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="hmmayaexporter.mll"
+				AdditionalOptions="/nodefaultlib:libc.lib /nodefaultlib:libcp.lib /nodefaultlib:libcmtd.lib  /nodefaultlib:libcpmtd.lib "
+				AdditionalDependencies="../mainwnd/Release/mainwnd.lib ../ccorlogic/Release/ccorlogic.lib ../ccor/Release/ccor.lib ../engine/Release/engine.lib usp10.lib dxguid.lib dxerr9.lib dinput8.lib comctl32.lib d3dxof.lib d3dx9dt.lib d3d9.lib odbc32.lib odbccp32.lib Iphlpapi.lib tinyxml.lib NxPhysics.lib NxCooking.lib"
+				OutputFile="C:\Program Files\Autodesk\Maya2009\bin\plug-ins\D3baExporter.mll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Program Files\Maya8.0\lib&quot;"
+				AdditionalLibraryDirectories="..\Libraries"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
