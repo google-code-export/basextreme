@@ -100,7 +100,7 @@
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -133,10 +133,10 @@
 				InlineFunctionExpansion="1"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\Includes\Novodex\Physics\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Cooking\include;..\Includes\TinyXML\include;..\Includes\DirectX\Include"
+				AdditionalIncludeDirectories=".\;..\;..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
@@ -146,7 +146,6 @@
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				CompileAs="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -160,24 +159,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="dxguid.lib dxerr9.lib dinput8.lib comctl32.lib d3dxof.lib d3dx9dt.lib d3d9.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../game/sys/engine-d.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\Libraries"
-				ProgramDatabaseFile=".\Release/engine.pdb"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\Release/engine.lib"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -189,9 +174,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -199,7 +181,7 @@
 			Name="FakeRelease|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -230,7 +212,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;$(NXSDK)\Foundation\include\&quot;;&quot;$(NXSDK)\Physics\include\&quot;;&quot;$(DX9SDK)\Include&quot;;&quot;$(TinyXML)\&quot;"
+				AdditionalIncludeDirectories=".\;..\;..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RWDEBUG"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -259,25 +241,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="usp10.lib tinyxml.lib dxguid.lib dxerr9.lib dinput8.lib comctl32.lib d3dxof.lib d3dx9dt.lib d3d9.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../game/sys/engine-d.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(DX9SDK)\lib&quot;;&quot;$(TinyXML)\debug&quot;"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/engine-d.pdb"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\Debug/engine-d.lib"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -287,9 +254,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
