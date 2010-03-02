@@ -481,7 +481,7 @@ void AnimationController::advanceMultipleTracks(float dt)
             weightSet.weight[k] = _track[k].weight;
             weightSum += weightSet.weight[k];
         }
-	if( _activeWeightSetI._Ptr != 0 )
+        if( _activeWeightSetI._Mynode() != 0 )
         {
             weightSum = 0.0f;
             for( j=0; j<numActiveTracks; j++ )
@@ -638,12 +638,12 @@ void AnimationController::enableWeightSet(const char* weightSetName)
 {
     _activeWeightSetI = _weightSetMap.find( weightSetName );
     assert( _activeWeightSetI != _weightSetMap.end() );
-    if( _activeWeightSetI == _weightSetMap.end() ) _activeWeightSetI = NULL;
+    if( _activeWeightSetI == _weightSetMap.end() ) _activeWeightSetI = WeightSetI();
 }
 
 void AnimationController::disableWeightSet(void)
 {
-    _activeWeightSetI = NULL;
+    _activeWeightSetI = WeightSetI();
 }
 
 engine::WeightSet* AnimationController::getWeightSet(const char* weightSetName)
