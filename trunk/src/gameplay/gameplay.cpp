@@ -384,14 +384,18 @@ void Gameplay::entityInit(Object * p)
 
     // create physics resources
     _physicsSDK = NxCreatePhysicsSDK( NX_PHYSICS_SDK_VERSION, &_allocator, &_outputStream );
+    //_physicsSDK->getFoundationSDK().getRemoteDebugger()->connect ("localhost", 5425);
     NxInitCooking();
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZATION_SCALE, 100.0f );
+    NxGetPhysicsSDK()->setParameter( NX_VISUALIZATION_SCALE, 2.0f );
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_ACTOR_AXES, 1 );
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_SHAPES, 1 );
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_STATIC, 1 );
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_DYNAMIC,1 );
+    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_VELOCITY,1 );
+    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_FORCE,1 );
 
     database::LocationInfo::loadLocations("./res/locations.cfg");
+    database::Suit::initSuits();
     database::TournamentInfo::initStaticTournaments();
 
     // generate user community events from XML documents

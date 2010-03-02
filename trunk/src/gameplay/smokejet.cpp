@@ -38,11 +38,11 @@ SmokeJet::SmokeJet(Jumper* jumper, Vector4f color, SmokeJetMode mode) : Actor( j
     _shader->addReference();
 
     // create smoke trail scheme
-    _scheme.numParticles = 256;
+    _scheme.numParticles = 512;
     _scheme.fissionLERP = engine::SmokeTrailScheme::LERPValue( 0.0f, 25.0f, 5000.0f, 250.0f );
     _scheme.damping = 1.0f;
     _scheme.heat = 125.0f;
-    _scheme.lifeTime = 25.0f;
+    _scheme.lifeTime = 50.0f;
     _scheme.fadeTime = 2.5f;
     _scheme.sizeTimeLERP  = engine::SmokeTrailScheme::LERPValue( 0.0f, 2.5f, 5000.0f, 2.5f );
     _scheme.startSizeLERP = engine::SmokeTrailScheme::LERPValue( 0.0f, 0.0f, 1000.0f, 0.0f );

@@ -1158,8 +1158,8 @@ void Scene::postRenderCallback(void* data)
 {
     Scene* __this = reinterpret_cast<Scene*>( data );
 
-    // DebugRenderer debugRenderer;
-    // NxGetPhysicsSDK()->visualize( debugRenderer );
+    DebugRenderer debugRenderer;
+    NxGetPhysicsSDK()->visualize( debugRenderer );
     if( __this->getTopMode() )
     {
         __this->getScenery()->happen( NULL, 0xFABCCBAF, NULL );

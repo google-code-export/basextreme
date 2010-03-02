@@ -388,9 +388,9 @@ public:
 // inflation dynamics
 // SRDminvel, SRDmink, SRDmaxvel, SRDmaxk, SUminvel, SUmink, SUmaxvel, SUmaxk
 
-#define INFL_PSYCHONAUT 2.5f, 0.0f, 20.0f, 0.5f, 0.0f, 0.125f, 50.0f, 0.05f
-#define INFL_JAHNCLE    5.0f, 0.0f, 20.0f, 1.0f, 0.0f, 0.250f, 50.0f, 0.0625f
-#define INFL_HAIBANE    0.0f, 0.0f,  1.0f, 0.0f, 0.0f, 0.125f, 50.0f, 0.0375f
+#define INFL_PSYCHONAUT 2.5f, 0.0f, 20.0f, 0.5f,   0.0f, 0.125f, 50.0f, 0.05f
+#define INFL_JAHNCLE    5.0f, 0.0f, 20.0f, 1.0f,   0.0f, 0.250f, 100.0f, 0.0625f
+#define INFL_HAIBANE    0.0f, 0.0f,  1.0f, 0.0f,   0.0f, 0.125f, 50.0f, 0.0375f
 
 // collapse dynamics
 // Cnum, Cradius, Cpower, Cminvel, Cmaxvel, Crestore, Cresvel

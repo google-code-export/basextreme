@@ -235,7 +235,7 @@ void Jumper::CanopyOpening::updatePhysics(void)
     float It = velocity.magnitude() / Vt;
 
     // air resistance force
-    NxVec3 Far = NxVec3(0,1,0) * getAirResistancePower( velocity.magnitude() / Vt ) * _phActor->getMass() * 9.8f;
+    NxVec3 Far = NxVec3(0,1,0) * (getAirResistancePower( velocity.magnitude() / Vt ) * _phActor->getMass() * 9.8f);
 
     // finalize motion equation    
     _phActor->addForce( Far );
