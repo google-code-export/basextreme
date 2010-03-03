@@ -343,19 +343,11 @@ void Jumper::Tracking::updatePhysics(void)
     float AR = ARfrog * ( 1.0f - _tracking ) + ARtrac * _tracking;
     float headfirstFactor = z.dot( NxVec3(0,-1,0) );
     if( headfirstFactor < 0 ) headfirstFactor = 0.0f;
-    AR = AR * ( 1.0f - headfirstFactor ) + ARhead * headfirstFactor;
-
-    // angle of attack
-    // ( negative angle of attack affects force direction )
-    NxVec3 hz = z; hz.y = 0; hz.normalize();
-    float aa = ::calcAngle( z, hz, x );       
+    AR = AR * ( 1.0f - headfirstFactor ) + ARhead * headfirstFactor;   
 
     // terminal velocity
     float Vt = sqrt( 9.8f * _phActor->getMass() / AR );
     float It = velocityV.magnitude() / Vt;
-
-    // air resistance force
-    NxVec3 Far = NxVec3(0,1,0) * getAirResistancePower( velocityV.magnitude() / Vt ) * _phActor->getMass() * 9.8f;
 
     // steering coefficients
     float Kslide = _jumper->getVirtues()->getSteerSlide();
@@ -397,40 +389,32 @@ void Jumper::Tracking::updatePhysics(void)
     float GRV = velocity.magnitude() / 25.0f;
     if( GRV > 1.0f ) GRV = 1.0f;
     GR *= GRV;
-    NxVec3 Tr = _phActor->getAngularVelocity() * -GR;
+    NxVec3 Tr = _phActor->getAngularVelocity() * -GR; 
 
-    // glide properties
-    float glideRatio = _jumper->getVirtues()->getFrogGlideRatio() * ( 1.0f - _tracking ) + 
-                       _jumper->getVirtues()->getTrackingGlideRatio() * ( _tracking );
-    float glideCoeff = _jumper->getVirtues()->getFrogGlideCoefficient() * ( 1.0f - _tracking ) + 
-                       _jumper->getVirtues()->getTrackingGlideCoefficient() * _tracking;
 
-    // double component glide force vector
-    NxVec3 g = y + z; g.y = 0.0f; g.normalize();
-
-    // horizontal motion vector
-    NxVec3 h = velocityH; h.normalize();
-
-    // magnitude of terminal glide velocity
-    float Vtgl = Vt * glideRatio;
-
-    // glide force
-    NxVec3 Fg = g * sgn(aa) * getGlidePower( fabs( aa ) ) * glideCoeff * getAirResistancePower( It );
-
-    // backtracking keeps 1/4 perfomance from forward tracking
-    if( aa < 0 ) Fg *= 0.25f;
-
-    // glide resistance force
-    NxVec3 Fgr = -h * getAirResistancePower( velocityH.magnitude() / Vtgl ) * glideCoeff;
-    
-
+    database::Suit* suit = database::Suit::getRecord(_jumper->getVirtues()->equipment.suit.id);
 
     const float airDensity = 1.225f;
-    
-    //float wingArea = 0.7f + 0.8f * _tracking; // sq meters
-    //float wingArea = 0.8f + 0.7f * _tracking; // sq meters
-    float wingArea = 0.3f + 0.9f * _tracking; // sq meters
-    float wingLiftCoeff = 0.3f + 0.2f * _tracking;
+
+    const float wingAreaBox = suit->mWingAreaBox;
+    const float wingAreaTrack = suit->mWingAreaTrack;
+
+    const float wingLiftCoeffBox = suit->mWingLiftCoeffBox;
+    const float wingLiftCoeffTrack = suit->mWingLiftCoeffTrack;
+    const float wingLiftBackTrackEfficiency = suit->mWingLiftBackTrackEfficiency;
+
+    const float dragCoeffBoxFront = suit->mDragCoeffBoxFront;
+    const float dragCoeffBoxSide = suit->mDragCoeffBoxSide;
+    const float dragCoeffBoxTop = suit->mDragCoeffBoxTop;
+    const float dragCoeffTrackFront = suit->mDragCoeffTrackFront;
+    const float dragCoeffTrackSide = suit->mDragCoeffTrackSide;
+    const float dragCoeffTrackTop = suit->mDragCoeffTrackTop;
+
+    const float wingArea = wingAreaBox + (wingAreaTrack - wingAreaBox) * _tracking;
+    const float wingLiftCoeff = wingLiftCoeffBox + (wingLiftCoeffTrack - wingLiftCoeffBox) * _tracking;
+    const float dragCoeffFront = dragCoeffBoxFront + (dragCoeffTrackFront - dragCoeffBoxFront) * _tracking;
+    const float dragCoeffSide = dragCoeffBoxSide + (dragCoeffTrackSide - dragCoeffBoxSide) * _tracking;
+    const float dragCoeffTop = dragCoeffBoxTop + (dragCoeffTrackTop - dragCoeffBoxTop) * _tracking;
 
     // lift force
     NxVec3 airFlowDirection = -velocity;
@@ -440,25 +424,15 @@ void Jumper::Tracking::updatePhysics(void)
     float wingAngleOfAttack = y.dot(airFlowDirection);
     if ((squaredVelocity != 0.0f) && (wingAngleOfAttack != 0.0f)) {
         float angle = fabsf(3.14159f - fabsf(acosf(wingAngleOfAttack) * 2.0f));
-        //float liftCoeff = wingLiftCoeff * sinf(0.3f * x * x);
-        //float liftCoeff = 
-        //        sinf(x) *
-        //        ((sinf(min(x * x * x * x * 10.0f + 2.5f, 3.14159f * 1.5f)) + 1.0f) * 2.6f * wingLiftCoeff + 1.0f);
         float liftCoeff = 
                 sinf(angle) *
                 ((sinf(min(angle * angle * 9.0f + 2.5f, 3.14159f * 1.5f)) + 1.0f) * 1.0f * wingLiftCoeff + 1.0f)*
                 (exp(3.14159f - angle * 3.0f + 2.5f) * 0.007f + 1.0f) * max(0.2f, 1.0f - fabsf(x.dot(airFlowDirection)));
-        //float liftCoeff = wingLiftCoeff * sinf(x);
-        //float wingRatio = 2.0f / 0.5f;
-        //float liftCoeff = 1.0f * (2.0f * 3.14159f * sin(x)) / (1.0f + 2.0f / wingRatio);
-        //float liftCoeff = 4.0f * sinf (x) - 0.0037f * expf(x / 3.5f);
-        //float liftCoeff = 1.0f * sinf(wingAngleOfAttack * 3.14159f * 2.0f);
         float lift = 0.5f * airDensity * squaredVelocity * liftCoeff * wingArea;
 
-        if (_jumper->_player) {
-                //printf("%f %f %f\n", 90.0f - acosf(wingAngleOfAttack) * 180.0f / 3.14159f, liftCoeff, expf(x / 3.5f));
-                //printf("%f %f %f\n", x, wingAngleOfAttack, liftCoeff);
-                //printf("%f %f\n", sinf(x) , ((sinf(min(x * x * 8.0f + 2.5f, 3.14159f * 1.5f)) + 1.0f) * 2.6f * wingLiftCoeff + 1.0f));
+        // Backtracking gives worse performance
+        if (z.dot(airFlowDirection) > 0.0f) {
+                lift *= wingLiftBackTrackEfficiency;
         }
 
         NxVec3 side = y.cross(airFlowDirection);
@@ -466,12 +440,7 @@ void Jumper::Tracking::updatePhysics(void)
                 Flift = airFlowDirection.cross(side);
                 Flift.normalize();
                 Flift *= (lift * sgn(wingAngleOfAttack));
-
-                if (_jumper->_player) {
-                        //printf("%f %f %f %f\n", Flift.magnitude(), Flift.x, Flift.y, Flift.z);
-                }
         }
-        //Flift = y * lift;
     }
     //Flift.zero();
 
@@ -482,23 +451,10 @@ void Jumper::Tracking::updatePhysics(void)
     float yComponent = fabsf(y.dot(airFlowDirection));
     float zComponent = fabsf(z.dot(airFlowDirection));
     float t = fabsf(wingAngleOfAttack);
-    const float dragCoeff = 
-            0.6f * xComponent + 
-            (0.4f + 0.8f * _tracking) * yComponent + 
-            (0.05f + 0.2f * (1.0f - _tracking)) * zComponent;
+    const float dragCoeff = dragCoeffSide * xComponent + dragCoeffTop * yComponent + dragCoeffFront * zComponent;
     float drag = 0.5f * airDensity * squaredVelocity * dragCoeff;
     NxVec3 Fdrag = airFlowDirection * drag;
     //Fdrag.zero();
-    //Fdrag.y = 0.0f;
-
-    if (_jumper->_player) {
-        //printf("%f %f %f %f %f\n", Fdrag.magnitude(), dragCoeff, xComponent, yComponent, zComponent);
-    }
-
-
-    if (_jumper->_player) {
-        //printf("%f %f %f\n", xComponent, yComponent, zComponent);
-    }
 
     // finalize motion equation    
     //_phActor->addForce( Far + Fg + Fgr + Flift);
@@ -506,7 +462,7 @@ void Jumper::Tracking::updatePhysics(void)
     _phActor->addTorque(Tr * It + Tsteer);
     _phActor->addLocalTorque( Tctrl );
 
-//*
+/*
     // fake physics : horizontal velocity aligment
     float kHAlign = _tracking * ::simulationStepTime * _jumper->getVirtues()->getHorizontalAligment();
     NxVec3 lVel = _phActor->getLinearVelocity();
