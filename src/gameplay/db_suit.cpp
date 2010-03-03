@@ -34,11 +34,28 @@ using namespace std;
     //float        mFrogGlideForce;     .        .     .              .               glide force in frog pose
     //float        mTrackingGlideForce; .        .     .              .                      glide force in tracking pose
     //float        Kage;                .        .     .              .                             coefficient of ageing (damage - to - state reduction)
-#define PROPERTIES_SOLIFUGE_ALTITUDE    0.0625f, 1.0f, 1.0f,    1.0f, 1.0f,   1.0f,   1.0f,  1.0f,  0.125f
-#define PROPERTIES_SOLIFUGE_SUBTERMINAL 0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f
-#define PROPERTIES_FALCO_WINGSUIT       0.25f,   1.0f, 1.125f,  3.0f, 1.0f,   1.5f,   1.5f,  2.0f,  0.25f
-#define PROPERTIES_XWING_WINGSUIT       0.15f,   1.0f, 1.4f,    7.0f, 1.1f,   2.2f,   1.6f,  1.8f,  0.20f
-#define PROPERTIES_FB_SUIT              0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f
+
+
+    float        mWingAreaBox;
+    float        mWingAreaTrack;
+
+    float        mWingLiftCoeffBox;
+    float        mWingLiftCoeffTrack;
+    float        mWingLiftBackTrackEfficiency;
+
+    float        mDragCoeffBoxFront;
+    float        mDragCoeffBoxSide;
+    float        mDragCoeffBoxTop;
+
+    float        mDragCoeffTrackFront;
+    float        mDragCoeffTrackSide;
+    float        mDragCoeffTrackTop; 
+
+#define PROPERTIES_SOLIFUGE_ALTITUDE    0.0625f, 1.0f, 1.0f,    1.0f, 1.0f,   1.0f,   1.0f,  1.0f,  0.125f,  0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
+#define PROPERTIES_SOLIFUGE_SUBTERMINAL 0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
+#define PROPERTIES_FALCO_WINGSUIT       0.25f,   1.0f, 1.125f,  3.0f, 1.0f,   1.5f,   1.5f,  2.0f,  0.25f,   0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
+#define PROPERTIES_XWING_WINGSUIT       0.15f,   1.0f, 1.4f,    7.0f, 1.1f,   2.2f,   1.6f,  1.8f,  0.20f,   0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
+#define PROPERTIES_FB_SUIT              0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
 
 static std::vector<Suit> suits;
 //{
@@ -132,8 +149,15 @@ void Suit::loadSuits(Suit& suitPrototype, string textureBase, const char* dir)
         
         if (getdir(dir, &files)) {
                 int i;
-                for (i = 0; i < files.size(); ++i) {
+                for (i = 0; i < (int)files.size(); ++i) {
                         suitPrototype.texture = textureBase + files[i];
+
+                        string s(files[i]);
+                        s = s.substr(0, s.find_last_of('.'));
+                        wstring name(L" ", s.length());
+                        copy(s.begin(), s.end(), name.begin());
+
+                        suitPrototype.name = name;
                         suits.push_back(suitPrototype);
                 }
         } else {

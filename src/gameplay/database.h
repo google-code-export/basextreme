@@ -154,7 +154,9 @@ public:
     unsigned int colorId;             // (language id) color name
     unsigned int manufacturerId;      // (language id) manufacturer name
     std::string  texture;             // GearTexture record id
+
     float        kAlign;              // horizontal velosity aligment coefficient
+
     float        mHeadDown;           // multiplier for air resistance in headdown pose 
     float        mFrog;               // multiplier for air resistance in frog pose 
     float        mTracking;           // multiplier for air resistance in tracking pose 
@@ -163,6 +165,21 @@ public:
     float        mFrogGlideForce;     // multiplier for glide force in frog pose
     float        mTrackingGlideForce; // multiplier for glide force in tracking pose
     float        Kage;                // coefficient of ageing (damage - to - state reduction)
+
+    float        mWingAreaBox;
+    float        mWingAreaTrack;
+
+    float        mWingLiftCoeffBox;
+    float        mWingLiftCoeffTrack;
+    float        mWingLiftBackTrackEfficiency;
+
+    float        mDragCoeffBoxFront;
+    float        mDragCoeffBoxSide;
+    float        mDragCoeffBoxTop;
+    float        mDragCoeffTrackFront;
+    float        mDragCoeffTrackSide;
+    float        mDragCoeffTrackTop; 
+
 public:
     static unsigned int getNumRecords(void);    
     static Suit*        getRecord(unsigned int id);
