@@ -51,8 +51,8 @@ using namespace std;
 
 #define PROPERTIES_SOLIFUGE_ALTITUDE    0.0625f, 1.0f, 1.0f,    1.0f, 1.0f,   1.0f,   1.0f,  1.0f,  0.125f,  0.80f * 0.2f, 0.90f * 0.50f,  0.3f, 0.5f, 0.25f,  0.3f, 0.6f, 0.45f,  0.2f, 0.6f, 0.5f
 #define PROPERTIES_SOLIFUGE_SUBTERMINAL 0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.85f * 0.2f, 1.15f * 0.60f,  0.3f, 0.7f, 0.27f,  0.3f, 0.6f, 0.45f,  0.2f, 0.6f, 0.7f
-#define PROPERTIES_FALCO_WINGSUIT       0.25f,   1.0f, 1.125f,  3.0f, 1.0f,   1.5f,   1.5f,  2.0f,  0.25f,   1.00f * 0.2f, 1.40f * 0.57f,  0.3f, 0.4f, 0.28f,  0.6f, 0.6f, 0.3f,  0.06f, 0.9f, 0.9f
-#define PROPERTIES_XWING_WINGSUIT       0.15f,   1.0f, 1.4f,    7.0f, 1.1f,   2.2f,   1.6f,  1.8f,  0.20f,   1.10f * 0.2f, 1.90f * 0.80f,  0.3f, 0.4f, 0.30f,  0.6f, 0.6f, 0.3f,  0.09f, 0.9f, 0.9f
+#define PROPERTIES_FALCO_WINGSUIT       0.25f,   1.0f, 1.125f,  3.0f, 1.0f,   1.5f,   1.5f,  2.0f,  0.25f,   1.00f * 0.2f, 1.40f * 0.57f,  0.3f, 0.4f, 0.28f,  0.7f, 0.7f, 0.3f,  0.06f, 0.9f, 0.9f
+#define PROPERTIES_XWING_WINGSUIT       0.15f,   1.0f, 1.4f,    7.0f, 1.1f,   2.2f,   1.6f,  1.8f,  0.20f,   1.10f * 0.2f, 1.90f * 0.80f,  0.3f, 0.4f, 0.30f,  0.8f, 0.8f, 0.3f,  0.09f, 0.9f, 0.9f
 
 static std::vector<Suit> suits;
 //{
