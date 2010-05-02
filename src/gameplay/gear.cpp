@@ -10,8 +10,9 @@ const wchar_t* Gear::getName(void)
     {
     case gtHelmet:
         return Gameplay::iLanguage->getUnicodeString(database::Helmet::getRecord( id )->nameId);
-    case gtSuit:
-            return database::Suit::getRecord( id )->name.c_str();
+    case gtSuit: {
+        return database::Suit::getRecord( id )->wname.c_str();
+    }
     case gtRig:
         return Gameplay::iLanguage->getUnicodeString(database::Rig::getRecord( id )->nameId);
     case gtCanopy:
@@ -147,4 +148,22 @@ bool Gear::isTradeable(void)
         return database::Canopy::getRecord( id )->trade;
     }
     return 0.0f;
+}
+
+
+void Gear::updateNameFromId()
+{
+        if (type == gtSuit) {
+                strncpy(name, database::Suit::getRecord(id)->name.c_str(), 64);
+                name[63] = 0;
+        } else {
+                name[0] = 0;
+        }
+}
+
+
+Gear::Gear(GearType t, unsigned int i) 
+: type(t), id(i), state(1), age(0)
+{
+        updateNameFromId();
 }

@@ -387,12 +387,12 @@ void Gameplay::entityInit(Object * p)
     //_physicsSDK->getFoundationSDK().getRemoteDebugger()->connect ("localhost", 5425);
     NxInitCooking();
     NxGetPhysicsSDK()->setParameter( NX_VISUALIZATION_SCALE, 2.0f );
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_ACTOR_AXES, 1 );
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_SHAPES, 1 );
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_STATIC, 1 );
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_DYNAMIC,1 );
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_VELOCITY,1 );
-    NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_FORCE,1 );
+    //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_ACTOR_AXES, 1 );
+    //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_SHAPES, 1 );
+    //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_STATIC, 1 );
+    //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_COLLISION_DYNAMIC,1 );
+    //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_VELOCITY,1 );
+    //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_FORCE,1 );
 
     database::LocationInfo::loadLocations("./res/locations.cfg");
     database::Suit::initSuits();

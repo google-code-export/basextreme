@@ -54,7 +54,7 @@ Virtues::Equipment selectSkydivingEquipment(Career* career)
     // orange Syndrome,
     result.helmet = Gear( ::gtHelmet, 8 );
     // orange Solifuge Altitude
-    result.suit = Gear( ::gtSuit, 8 );
+    result.suit = Gear( ::gtSuit, 0 );
     // white Harpy
     result.rig = Gear( ::gtRig, 17 );
 

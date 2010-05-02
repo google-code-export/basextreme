@@ -149,7 +149,7 @@ Jumper::Tracking::Tracking(Jumper* jumper, NxActor* phActor, MatrixConversion* m
     animCtrl->blend( 0.0f );
 
     if (_jumper->getSpinalCord()->modifier) {
-        _phActor->addLocalTorque(NxVec3(0.5f, 0.0f, 0.0f), NxForceMode::NX_VELOCITY_CHANGE);
+        _phActor->addLocalTorque(NxVec3(0.5f, 0.0f, 0.0f), NX_VELOCITY_CHANGE);
     }
 }
 
@@ -357,8 +357,8 @@ void Jumper::Tracking::updatePhysics(void)
     // control torque
     NxVec3 Tctrl( 0,0,0 );
 
-    float leftRate  = ( _jumper->getSpinalCord()->leftWarp > 0.0f ) ? _jumper->getSpinalCord()->leftWarp * 5.0f : _jumper->getSpinalCord()->left * 2.0f;
-    float rightRate = ( _jumper->getSpinalCord()->rightWarp > 0.0f ) ? _jumper->getSpinalCord()->rightWarp * 5.0f : _jumper->getSpinalCord()->right * 2.0f;
+    float leftRate  = ( _jumper->getSpinalCord()->leftWarp > 0.0f ) ? _jumper->getSpinalCord()->leftWarp * 5.0f : (_jumper->getSpinalCord()->left > 0.0f ? 0.8f : 0.0f) + _jumper->getSpinalCord()->left * 2.0f;
+    float rightRate = ( _jumper->getSpinalCord()->rightWarp > 0.0f ) ? _jumper->getSpinalCord()->rightWarp * 5.0f : (_jumper->getSpinalCord()->right > 0.0f ? 0.8f : 0.0f) + _jumper->getSpinalCord()->right * 2.0f;
 
     Tctrl += NxVec3(1,0,0) * -_jumper->getVirtues()->getSteerPitch() * _jumper->getSpinalCord()->down;
     Tctrl += NxVec3(1,0,0) * _jumper->getVirtues()->getSteerPitch() * _jumper->getSpinalCord()->up;
@@ -375,7 +375,8 @@ void Jumper::Tracking::updatePhysics(void)
     steerAngle += inclinationAngle;
     if (_jumper->_player) {
         Kalign = 0.0f;
-        //Kroll = 0.0f;
+        //Kslide = 0.0f;
+        Kroll = 0.0f;
     }
     NxVec3 Tsteer = ( y * sqrt( velocity.magnitude() * Kslide ) * -steerAngle )+
                     ( vertical * sqrt( velocity.magnitude() * Kroll ) * -steerAngle ) +
@@ -461,6 +462,18 @@ void Jumper::Tracking::updatePhysics(void)
     _phActor->addForce(Flift + Fdrag);
     _phActor->addTorque(Tr * It + Tsteer);
     _phActor->addLocalTorque( Tctrl );
+
+/*
+    NxVec3 lVel = _phActor->getLinearVelocity();
+    NxVec3 vVel = y * y.dot(lVel);
+    NxVec3 hVel = lVel - vVel;
+    float hVelMagnitude = hVel.magnitude();
+    hVel.normalize();
+    hVel = hVel + z * ::simulationStepTime * 0.3f;
+    hVel.normalize();
+    hVel *= hVelMagnitude;
+    _phActor->setLinearVelocity( hVel + vVel );
+//*/
 
 /*
     // fake physics : horizontal velocity aligment

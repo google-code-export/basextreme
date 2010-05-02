@@ -26,13 +26,15 @@ struct Gear
 {
 public:
     GearType     type;  // type of gear
-    unsigned int id;    // database identifier
+    char         id;    // database identifier
+    char         name[64];  // named database identifier
     float        state; // state factor (0..1)
     unsigned int age;   // age (number of jumps)
 public:
-    Gear() : type(gtUnequipped), id(0), state(0), age(0) {}    
-    Gear(GearType t, unsigned int i) : type(t), id(i), state(1), age(0) {}    
+    Gear() : type(gtUnequipped), id(0), state(0), age(0) { name[0] = 0; }    
+    Gear(GearType t, unsigned int i);
 public:
+    void updateNameFromId();
     float getCost(void);
     const wchar_t* getName(void);
     const wchar_t* getDescription(void);

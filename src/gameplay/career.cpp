@@ -180,7 +180,14 @@ Career::~Career()
 
 void Career::addGear(Gear gear)
 {
-    _gears.push_back( gear );
+        // Update gear ids using names
+        if (gear.type == GearType::gtSuit) {
+                int id = database::Suit::getRecordId(gear.name);
+                if (id == -1) {
+                        return;
+                }
+        }
+        _gears.push_back( gear );
 }
 
 void Career::removeGear(unsigned int id)
