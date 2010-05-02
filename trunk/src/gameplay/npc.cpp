@@ -47,6 +47,7 @@ NPC::NPC(Actor* parent, unsigned int databaseId, Airplane* airplane, Enclosure* 
     _virtues.equipment.suit.age   = 0;
     _virtues.equipment.suit.state = 1.0f;
     _virtues.equipment.suit.type  = ::gtSuit;
+    _virtues.equipment.suit.updateNameFromId();
 
     // equip rig
     _virtues.equipment.rig.id    = catToy->getVirtues()->equipment.rig.id;

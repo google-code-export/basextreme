@@ -149,7 +149,8 @@ public:
     float        cost;                // suit cost
     bool         wingsuit;            // suit have wings
     unsigned int modelId;             // model identified, see Jumper::getBody()
-    std::wstring name;                // model name    
+    std::string  name;                // model name    
+    std::wstring wname;               // model name
     unsigned int descriptionId;       // (language id) model description
     unsigned int colorId;             // (language id) color name
     unsigned int manufacturerId;      // (language id) manufacturer name
@@ -183,6 +184,7 @@ public:
 public:
     static unsigned int getNumRecords(void);    
     static Suit*        getRecord(unsigned int id);
+    static int          getRecordId(char* name);
     static void         initSuits();
     static void         loadSuits(Suit& suitPrototype, std::string textureBase, const char* dir);
 };

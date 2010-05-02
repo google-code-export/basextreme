@@ -35,27 +35,24 @@ using namespace std;
     //float        mTrackingGlideForce; .        .     .              .                      glide force in tracking pose
     //float        Kage;                .        .     .              .                             coefficient of ageing (damage - to - state reduction)
 
+                                                                                                             // wing area * overall lift efficiency
+                                                                                                             // mWingAreaBox;
+                                                                                                                          // mWingAreaTrack;
+                                                                                                                                          // mWingLiftCoeffBox;
+                                                                                                                                          // mWingLiftCoeffTrack;
+                                                                                                                                          // mWingLiftBackTrackEfficiency;
+                                                                                                                                                            //mDragCoeffBoxFront;
+                                                                                                                                                            //mDragCoeffBoxSide;
+                                                                                                                                                            //mDragCoeffBoxTop;
+                                                                                                                                                                                    // mDragCoeffTrackFront;
+                                                                                                                                                                                    // mDragCoeffTrackSide;
+                                                                                                                                                                                    // mDragCoeffTrackTop; 
+#define PROPERTIES_FB_SUIT              0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.80f * 0.2f, 0.90f * 0.50f,  0.3f, 0.5f, 0.25f,  0.27f, 0.6f, 0.3f,  0.4f, 0.6f, 0.4f
 
-    float        mWingAreaBox;
-    float        mWingAreaTrack;
-
-    float        mWingLiftCoeffBox;
-    float        mWingLiftCoeffTrack;
-    float        mWingLiftBackTrackEfficiency;
-
-    float        mDragCoeffBoxFront;
-    float        mDragCoeffBoxSide;
-    float        mDragCoeffBoxTop;
-
-    float        mDragCoeffTrackFront;
-    float        mDragCoeffTrackSide;
-    float        mDragCoeffTrackTop; 
-
-#define PROPERTIES_SOLIFUGE_ALTITUDE    0.0625f, 1.0f, 1.0f,    1.0f, 1.0f,   1.0f,   1.0f,  1.0f,  0.125f,  0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
-#define PROPERTIES_SOLIFUGE_SUBTERMINAL 0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
-#define PROPERTIES_FALCO_WINGSUIT       0.25f,   1.0f, 1.125f,  3.0f, 1.0f,   1.5f,   1.5f,  2.0f,  0.25f,   0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
-#define PROPERTIES_XWING_WINGSUIT       0.15f,   1.0f, 1.4f,    7.0f, 1.1f,   2.2f,   1.6f,  1.8f,  0.20f,   0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
-#define PROPERTIES_FB_SUIT              0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.3f, 1.2f,  0.3f, 0.5f, 0.5f,  0.6f, 0.6f, 0.3f,  0.05f, 0.5f, 1.2f
+#define PROPERTIES_SOLIFUGE_ALTITUDE    0.0625f, 1.0f, 1.0f,    1.0f, 1.0f,   1.0f,   1.0f,  1.0f,  0.125f,  0.80f * 0.2f, 0.90f * 0.50f,  0.3f, 0.5f, 0.25f,  0.3f, 0.6f, 0.45f,  0.2f, 0.6f, 0.5f
+#define PROPERTIES_SOLIFUGE_SUBTERMINAL 0.125f,  1.0f, 1.0f,    1.5f, 1.125f, 1.125f, 1.25f, 1.25f, 0.125f,  0.85f * 0.2f, 1.15f * 0.60f,  0.3f, 0.7f, 0.27f,  0.3f, 0.6f, 0.45f,  0.2f, 0.6f, 0.7f
+#define PROPERTIES_FALCO_WINGSUIT       0.25f,   1.0f, 1.125f,  3.0f, 1.0f,   1.5f,   1.5f,  2.0f,  0.25f,   1.00f * 0.2f, 1.40f * 0.57f,  0.3f, 0.4f, 0.28f,  0.6f, 0.6f, 0.3f,  0.06f, 0.9f, 0.9f
+#define PROPERTIES_XWING_WINGSUIT       0.15f,   1.0f, 1.4f,    7.0f, 1.1f,   2.2f,   1.6f,  1.8f,  0.20f,   1.10f * 0.2f, 1.90f * 0.80f,  0.3f, 0.4f, 0.30f,  0.6f, 0.6f, 0.3f,  0.09f, 0.9f, 0.9f
 
 static std::vector<Suit> suits;
 //{
@@ -96,10 +93,26 @@ unsigned int Suit::getNumRecords(void)
         return suits.size();
 }
 
+
 Suit* Suit::getRecord(unsigned int id)
 {
         assert(id < suits.size());
         return &suits[id];
+}
+
+
+int Suit::getRecordId(char* name)
+{
+        string s(name);
+
+        int i;
+        for (i = 0; i < (int)suits.size(); ++i) {
+                if (suits[i].name == s) {
+                        return i;
+                }
+        }
+
+        return -1;
 }
 
 
@@ -128,10 +141,10 @@ void Suit::initSuits()
         getCore()->logMessage("Info: Loading suits.");
 
         Suit prototypes[] = {
-                { true, COST_SOLIFUGE_ALTITUDE, false, 0, L"Solifuge Altitude", DESCRIPTION_SOLIFUGE_ALTITUDE, CLID_DARK_BLUE, MFRID_D3, "", PROPERTIES_SOLIFUGE_ALTITUDE },
-                { true, COST_SOLIFUGE_SUBTERMINAL, false, 0, L"Solifuge Subterminal", DESCRIPTION_SOLIFUGE_SUBTERMINAL, CLID_YELLOW, MFRID_D3, "", PROPERTIES_SOLIFUGE_SUBTERMINAL },
-                { true, COST_FALCO_WINGSUIT, true, 1, L"Falco", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_FALCO_WINGSUIT },
-                { true, COST_XWING_WINGSUIT, true, 1, L"X Wing", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_XWING_WINGSUIT }
+                { true, COST_SOLIFUGE_ALTITUDE, false, 0, "Solifuge Altitude", L"Solifuge Altitude", DESCRIPTION_SOLIFUGE_ALTITUDE, CLID_DARK_BLUE, MFRID_D3, "", PROPERTIES_SOLIFUGE_ALTITUDE },
+                { true, COST_SOLIFUGE_SUBTERMINAL, false, 0, "Solifuge Subterminal", L"Solifuge Subterminal", DESCRIPTION_SOLIFUGE_SUBTERMINAL, CLID_YELLOW, MFRID_D3, "", PROPERTIES_SOLIFUGE_SUBTERMINAL },
+                { true, COST_FALCO_WINGSUIT, true, 1, "Falco", L"Falco", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_FALCO_WINGSUIT },
+                { true, COST_XWING_WINGSUIT, true, 1, "X Wing", L"X Wing", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_XWING_WINGSUIT }
         };
 
         loadSuits(prototypes[0], "./res/Gear/Suits/Altitude/", "./res/Gear/Suits/Altitude/*.dds");
@@ -157,7 +170,8 @@ void Suit::loadSuits(Suit& suitPrototype, string textureBase, const char* dir)
                         wstring name(L" ", s.length());
                         copy(s.begin(), s.end(), name.begin());
 
-                        suitPrototype.name = name;
+                        suitPrototype.name = s;
+                        suitPrototype.wname = name;
                         suits.push_back(suitPrototype);
                 }
         } else {

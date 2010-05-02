@@ -484,22 +484,22 @@ void castingCallback_OpenAir_HardLanding(Actor* parent)
         case 0: 
             prize.type = gtHelmet;
             prize.id   = getCore()->getRandToolkit()->getUniformInt() % database::Helmet::getNumRecords();
-            assert( prize.id < database::Helmet::getNumRecords() );
+            assert( (unsigned int)prize.id < database::Helmet::getNumRecords() );
             break;
         case 1: 
             prize.type = gtSuit; 
             prize.id   = getCore()->getRandToolkit()->getUniformInt() % database::Suit::getNumRecords();
-            assert( prize.id < database::Suit::getNumRecords() );
+            assert( (unsigned int)prize.id < database::Suit::getNumRecords() );
             break;
         case 2: 
             prize.type = gtRig; 
             prize.id   = getCore()->getRandToolkit()->getUniformInt() % database::Rig::getNumRecords();
-            assert( prize.id < database::Rig::getNumRecords() );
+            assert( (unsigned int)prize.id < database::Rig::getNumRecords() );
             break;
         case 3: 
             prize.type = gtCanopy; 
             prize.id   = getCore()->getRandToolkit()->getUniformInt() % database::Canopy::getNumRecords();
-            assert( prize.id < database::Canopy::getNumRecords() );
+            assert( (unsigned int)prize.id < database::Canopy::getNumRecords() );
             break;
         default:
             assert( !"shouldn't be here!" );
@@ -508,6 +508,8 @@ void castingCallback_OpenAir_HardLanding(Actor* parent)
         if( numOfAttempts >= 100 ) break;
     }
     while( !prize.isTradeable() );
+
+    prize.updateNameFromId();
 
     // cast goals
     new GoalStateOfHealth( mission->getPlayer() );

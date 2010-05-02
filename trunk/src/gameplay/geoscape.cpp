@@ -550,22 +550,22 @@ Gear Geoscape::generateGear(bool generateUsedGear)
     case 0: 
         result.type = gtHelmet;
         result.id   = getCore()->getRandToolkit()->getUniformInt() % database::Helmet::getNumRecords();
-        assert( result.id < database::Helmet::getNumRecords() );
+        assert( (unsigned int)result.id < database::Helmet::getNumRecords() );
         break;
     case 1: 
         result.type = gtSuit; 
         result.id   = getCore()->getRandToolkit()->getUniformInt() % database::Suit::getNumRecords();
-        assert( result.id < database::Suit::getNumRecords() );
+        assert( (unsigned int)result.id < database::Suit::getNumRecords() );
         break;
     case 2: 
         result.type = gtRig; 
         result.id   = getCore()->getRandToolkit()->getUniformInt() % database::Rig::getNumRecords();
-        assert( result.id < database::Rig::getNumRecords() );
+        assert( (unsigned int)result.id < database::Rig::getNumRecords() );
         break;
     case 3: 
         result.type = gtCanopy; 
         result.id   = getCore()->getRandToolkit()->getUniformInt() % database::Canopy::getNumRecords();
-        assert( result.id < database::Canopy::getNumRecords() );
+        assert( (unsigned int)result.id < database::Canopy::getNumRecords() );
         break;
     default:
         assert( !"shouldn't be here!" );
@@ -582,6 +582,7 @@ Gear Geoscape::generateGear(bool generateUsedGear)
         result.age   = 0;
     }
 
+    result.updateNameFromId();
     return result;
 }
 
