@@ -57,7 +57,7 @@ void PilotchuteRenderCallback::setTexture(const char* textureName, const char* r
     canopyTexture = Gameplay::iEngine->getTexture( textureName );
     if( canopyTexture == NULL )
     {
-        canopyTexture = Gameplay::iEngine->createTexture( resourceName );
+        canopyTexture = Gameplay::iEngine->createTexture( resourceName, true );
         assert( canopyTexture );
         canopyTexture->setMinFilter( engine::ftAnisotropic );
         canopyTexture->setMagFilter( engine::ftLinear );
@@ -69,8 +69,7 @@ void PilotchuteRenderCallback::setTexture(const char* textureName, const char* r
 
 void PilotchuteRenderCallback::setTexture(database::Canopy* gearRecord)
 {
-    database::GearTexture* textureInfo = database::GearTexture::getRecord( gearRecord->textureId );
-    setTexture( textureInfo->textureName, textureInfo->resourceName );
+    setTexture( gearRecord->texture.c_str(), gearRecord->texture.c_str() );
 }
 
 void PilotchuteRenderCallback::setTexture(Gear* gear)
@@ -261,7 +260,7 @@ void PilotchuteSimulator::onUpdatePhysics(void)
     float effectivity = velocity.magnitude() / _gearRecord->Vrec;
 
     // additional regulation multiplier
-    float rmul = 1.65f;
+    float rmul = 1.65f * 1.8f;
    
     // animate using effectivity coefficient
     _pilotClump->getAnimationController()->advance( ::simulationStepTime * effectivity * rmul );

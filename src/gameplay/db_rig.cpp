@@ -2,7 +2,9 @@
 #include "headers.h"
 #include "database.h"
 
+using namespace ccor;
 using namespace database;
+using namespace std;
 
 #define MODELID_VECTOR_VELCRO 174
 #define MODELID_VECTOR_PIN    175
@@ -28,7 +30,9 @@ using namespace database;
 #define PROPS_FB_BASE       0.0f, 3.0f, 0.0f, 12.0f, 1.0f/120.0f
 #define PROPS_FB_SKYDIVING  0.0f, 3.0f, 0.0f, 12.0f, 1.0f/60.0f
 
-static Rig rigs[] = 
+static std::vector<Rig> rigs;
+
+#if 0
 {
     /* 000 */ { true, COST_VECTOR_VELCRO, false, MODELID_VECTOR_VELCRO, DESCRIPTIONID_VECTOR_VELCRO, CLID_DARK_BLUE, MFRID_D3, 0, PROPS_VECTOR_VELCRO },
     /* 001 */ { true, COST_VECTOR_VELCRO, false, MODELID_VECTOR_VELCRO, DESCRIPTIONID_VECTOR_VELCRO, CLID_PURPLE, MFRID_D3, 1, PROPS_VECTOR_VELCRO },
@@ -56,17 +60,104 @@ static Rig rigs[] =
     /* 023 */ { false, COST_FB_SKYDIVING, true, MODELID_FB_SKYDIVING, DESCRIPTIONID_FB_SKYDIVING, CLID_WHITE, MFRID_D3, 70, PROPS_FB_SKYDIVING },
     { 0.0f, 0,0,0,0 }
 };
+#endif
+
 
 unsigned int Rig::getNumRecords(void)
 {
-    unsigned int result = 0;
-    unsigned int i = 0;
-    while( rigs[i].nameId != 0 ) i++, result++;
-    return result;
+        return rigs.size();
 }
 
 Rig* Rig::getRecord(unsigned int id)
 {
     assert( id >= 0 && id < getNumRecords() );
-    return rigs + id;
+    return &rigs[id];
+}
+
+
+
+int Rig::getRecordId(char* name)
+{
+        string s(name);
+
+        int i;
+        for (i = 0; i < (int)rigs.size(); ++i) {
+                if (rigs[i].name == s) {
+                        return i;
+                }
+        }
+
+        return -1;
+}
+
+
+static bool getdir (string dir, vector<string>* files)
+{
+     WIN32_FIND_DATA find_data;
+     HANDLE hnd;
+
+     find_data.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+     if((hnd = FindFirstFile(dir.c_str(), &find_data)) == INVALID_HANDLE_VALUE) {
+          return true; //no flies or error
+     }
+     
+     do {
+             files->push_back(find_data.cFileName);
+     } while(FindNextFile(hnd, &find_data));
+     
+     FindClose(hnd);
+
+     return true;
+}
+
+
+void Rig::initRigs()
+{
+        getCore()->logMessage("Info: Loading rigs.");
+
+        Rig prototypes[] = {
+                { true, COST_VECTOR_VELCRO, false, "Vector Velcro", L"Vector Velcro", DESCRIPTIONID_VECTOR_VELCRO, CLID_WHITE, MFRID_D3, "", PROPS_VECTOR_VELCRO },
+                { true, COST_VECTOR_PIN,    false, "Vector Pin", L"Vector Pin",       DESCRIPTIONID_VECTOR_PIN,    CLID_WHITE, MFRID_D3, "", PROPS_VECTOR_PIN },
+                { true, COST_HARPY,         true,  "Harpy", L"Harpy",                 DESCRIPTIONID_HARPY,         CLID_WHITE, MFRID_D3, "", PROPS_HARPY }
+        };
+
+//    /* 022 */ { false, COST_FB_BASE, false, MODELID_FB_BASE, DESCRIPTIONID_FB_BASE, CLID_WHITE, MFRID_D3, 70, PROPS_FB_BASE },
+//    /* 023 */ { false, COST_FB_SKYDIVING, true, MODELID_FB_SKYDIVING, DESCRIPTIONID_FB_SKYDIVING, CLID_WHITE, MFRID_D3, 70, PROPS_FB_SKYDIVING },
+
+
+        // Add suit 0 - AFF suit
+        prototypes[0].texture = "./res/Gear/Special/AFF Suit.dds";
+        prototypes[0].name = "AFF Container";
+        prototypes[0].wname = L"AFF Container";
+        rigs.push_back(prototypes[0]);
+
+        loadRigs(prototypes[0], "./res/Gear/Containers/Vector Velcro/", "./res/Gear/Containers/Vector Velcro/*.dds");
+        loadRigs(prototypes[1], "./res/Gear/Containers/Vector Pin/", "./res/Gear/Containers/Vector Pin/*.dds");
+        loadRigs(prototypes[2], "./res/Gear/Containers/Harpy/", "./res/Gear/Containers/Harpy/*.dds");
+ 
+        getCore()->logMessage("Info: Rigs loaded.");
+}
+
+
+void Rig::loadRigs(Rig& rigPrototype, string textureBase, const char* dir)
+{
+        std::vector<string> files;
+        
+        if (getdir(dir, &files)) {
+                int i;
+                for (i = 0; i < (int)files.size(); ++i) {
+                        rigPrototype.texture = textureBase + files[i];
+
+                        string s(files[i]);
+                        s = s.substr(0, s.find_last_of('.'));
+                        wstring name(L" ", s.length());
+                        copy(s.begin(), s.end(), name.begin());
+
+                        rigPrototype.name = s;
+                        rigPrototype.wname = name;
+                        rigs.push_back(rigPrototype);
+                }
+        } else {
+                getCore()->logMessage("Can't open directory: %s", "");
+        }
 }

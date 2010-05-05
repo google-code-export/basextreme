@@ -9,14 +9,14 @@ const wchar_t* Gear::getName(void)
     switch( type )
     {
     case gtHelmet:
-        return Gameplay::iLanguage->getUnicodeString(database::Helmet::getRecord( id )->nameId);
+            return database::Helmet::getRecord(id)->wname.c_str();
     case gtSuit: {
-        return database::Suit::getRecord( id )->wname.c_str();
+            return database::Suit::getRecord( id )->wname.c_str();
     }
     case gtRig:
-        return Gameplay::iLanguage->getUnicodeString(database::Rig::getRecord( id )->nameId);
+            return database::Rig::getRecord(id)->wname.c_str();
     case gtCanopy:
-        return Gameplay::iLanguage->getUnicodeString(database::Canopy::getRecord( id )->nameId);
+            return database::Canopy::getRecord( id )->wname.c_str();
     }
     return L"";
 }
@@ -126,7 +126,7 @@ gui::Rect Gear::getGearPreview(void)
 {
     if( type == ::gtCanopy )
     {
-        return database::Canopy::getRecord( id )->color;
+        return gui::Rect( 255, 255, 255, 255 );
     }
     else
     {
@@ -153,11 +153,30 @@ bool Gear::isTradeable(void)
 
 void Gear::updateNameFromId()
 {
-        if (type == gtSuit) {
-                strncpy(name, database::Suit::getRecord(id)->name.c_str(), 64);
-                name[63] = 0;
-        } else {
-                name[0] = 0;
+        const char* getName = "";
+        switch (type) {
+                case gtSuit:       getName = database::Suit::getRecord(id)->name.c_str(); break;
+                case gtCanopy:     getName = database::Canopy::getRecord(id)->name.c_str(); break;
+                case gtRig:        getName = database::Rig::getRecord(id)->name.c_str(); break;
+                case gtHelmet:     getName = database::Helmet::getRecord(id)->name.c_str(); break;
+        }
+        strncpy(name, getName, 64);
+        name[63] = 0;
+}
+
+
+void Gear::updateIdFromName()
+{
+        switch (type) {
+                case gtSuit:       id = database::Suit::getRecordId(name); break;
+                case gtCanopy:     id = database::Canopy::getRecordId(name); break;
+                case gtRig:        id = database::Rig::getRecordId(name); break;
+                case gtHelmet:     id = database::Helmet::getRecordId(name); break;
+                case gtUnequipped: id = -1; break;
+        }
+
+        if (id == -1) {
+                type = gtUnequipped;
         }
 }
 

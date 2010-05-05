@@ -3,7 +3,9 @@
 #include "database.h"
 #include "version.h"
 
+using namespace ccor;
 using namespace database;
+using namespace std;
 
 // default canopy pack
 #define REGULAR_TRADE true
@@ -441,55 +443,60 @@ static database::Pilotchute skydivingPilots[numSkydivingPilots] =
  * properties
  */
 
-#define PROPS_PSYCHONAUT_210 MODELID_PSYCHONAUT_210, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.5f, 4.417f, 210.0f, 2.0f, 3.010f, 3.220f, 3.220f, 2.5f, &riserScheme01, 35.000f, 2.00f, 10.00f, AA_PSYCHONAUT, 12.500f, 25.000f, 1.000f, 6.00f, 0.1750f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_221 MODELID_PSYCHONAUT_221, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.6f, 4.531f, 221.0f, 2.0f, 3.090f, 3.310f, 3.310f, 2.5f, &riserScheme01, 36.800f, 2.10f, 10.52f, AA_PSYCHONAUT, 13.150f, 26.300f, 1.050f, 6.31f, 0.1840f, 0.790f, 6.31f, 12.62f, 21.04f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_232 MODELID_PSYCHONAUT_232, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.7f, 4.642f, 232.0f, 2.0f, 3.160f, 3.390f, 3.390f, 2.5f, &riserScheme01, 38.600f, 2.20f, 11.04f, AA_PSYCHONAUT, 13.800f, 27.610f, 1.100f, 6.62f, 0.1930f, 0.828f, 6.62f, 13.25f, 22.09f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_243 MODELID_PSYCHONAUT_243, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.8f, 4.751f, 243.0f, 2.0f, 3.240f, 3.470f, 3.470f, 2.5f, &riserScheme01, 40.500f, 2.31f, 11.57f, AA_PSYCHONAUT, 14.460f, 28.920f, 1.157f, 6.94f, 0.2020f, 0.867f, 6.94f, 13.88f, 23.14f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_254 MODELID_PSYCHONAUT_254, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.9f, 4.857f, 254.0f, 2.0f, 3.310f, 3.550f, 3.550f, 2.5f, &riserScheme01, 42.310f, 2.42f, 12.10f, AA_PSYCHONAUT, 15.110f, 30.220f, 1.210f, 7.25f, 0.2110f, 0.900f, 7.25f, 14.51f, 24.20f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_265 MODELID_PSYCHONAUT_265, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.0f, 4.961f, 265.0f, 2.0f, 3.380f, 3.620f, 3.620f, 2.5f, &riserScheme01, 46.375f, 2.65f, 13.25f, AA_PSYCHONAUT, 16.560f, 33.125f, 1.325f, 7.95f, 0.2310f, 0.993f, 7.95f, 15.90f, 26.50f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_276 MODELID_PSYCHONAUT_276, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.1f, 5.063f, 276.0f, 2.0f, 3.450f, 3.700f, 3.700f, 2.5f, &riserScheme01, 48.300f, 2.76f, 13.80f, AA_PSYCHONAUT, 17.250f, 34.500f, 1.379f, 8.28f, 0.2415f, 1.035f, 8.28f, 16.56f, 27.60f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_287 MODELID_PSYCHONAUT_287, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.2f, 5.163f, 287.0f, 2.0f, 3.520f, 3.775f, 3.775f, 2.5f, &riserScheme01, 50.220f, 2.86f, 14.35f, AA_PSYCHONAUT, 17.940f, 35.870f, 1.434f, 8.60f, 0.2510f, 1.076f, 8.60f, 17.22f, 28.70f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_298 MODELID_PSYCHONAUT_298, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.3f, 5.261f, 298.0f, 2.0f, 3.588f, 3.845f, 3.845f, 2.5f, &riserScheme01, 52.150f, 2.98f, 14.90f, AA_PSYCHONAUT, 18.625f, 37.250f, 1.489f, 8.94f, 0.2600f, 1.117f, 8.94f, 17.88f, 29.80f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_PSYCHONAUT_309 MODELID_PSYCHONAUT_309, DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.4f, 5.358f, 309.0f, 2.0f, 3.655f, 3.916f, 3.916f, 2.5f, &riserScheme01, 54.070f, 3.09f, 15.45f, AA_PSYCHONAUT, 18.540f, 38.620f, 1.545f, 9.26f, 0.2700f, 1.158f, 9.26f, 18.54f, 30.90f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_210 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.5f, 4.417f, 210.0f, 2.0f, 3.010f, 3.220f, 3.220f, 2.5f, &riserScheme01, 35.000f, 2.00f, 10.00f, AA_PSYCHONAUT, 12.500f, 25.000f, 1.000f, 6.00f, 0.1750f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_221 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.6f, 4.531f, 221.0f, 2.0f, 3.090f, 3.310f, 3.310f, 2.5f, &riserScheme01, 36.800f, 2.10f, 10.52f, AA_PSYCHONAUT, 13.150f, 26.300f, 1.050f, 6.31f, 0.1840f, 0.790f, 6.31f, 12.62f, 21.04f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_232 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.7f, 4.642f, 232.0f, 2.0f, 3.160f, 3.390f, 3.390f, 2.5f, &riserScheme01, 38.600f, 2.20f, 11.04f, AA_PSYCHONAUT, 13.800f, 27.610f, 1.100f, 6.62f, 0.1930f, 0.828f, 6.62f, 13.25f, 22.09f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_243 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.8f, 4.751f, 243.0f, 2.0f, 3.240f, 3.470f, 3.470f, 2.5f, &riserScheme01, 40.500f, 2.31f, 11.57f, AA_PSYCHONAUT, 14.460f, 28.920f, 1.157f, 6.94f, 0.2020f, 0.867f, 6.94f, 13.88f, 23.14f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_254 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 2.9f, 4.857f, 254.0f, 2.0f, 3.310f, 3.550f, 3.550f, 2.5f, &riserScheme01, 42.310f, 2.42f, 12.10f, AA_PSYCHONAUT, 15.110f, 30.220f, 1.210f, 7.25f, 0.2110f, 0.900f, 7.25f, 14.51f, 24.20f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_265 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.0f, 4.961f, 265.0f, 2.0f, 3.380f, 3.620f, 3.620f, 2.5f, &riserScheme01, 46.375f, 2.65f, 13.25f, AA_PSYCHONAUT, 16.560f, 33.125f, 1.325f, 7.95f, 0.2310f, 0.993f, 7.95f, 15.90f, 26.50f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_276 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.1f, 5.063f, 276.0f, 2.0f, 3.450f, 3.700f, 3.700f, 2.5f, &riserScheme01, 48.300f, 2.76f, 13.80f, AA_PSYCHONAUT, 17.250f, 34.500f, 1.379f, 8.28f, 0.2415f, 1.035f, 8.28f, 16.56f, 27.60f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_287 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.2f, 5.163f, 287.0f, 2.0f, 3.520f, 3.775f, 3.775f, 2.5f, &riserScheme01, 50.220f, 2.86f, 14.35f, AA_PSYCHONAUT, 17.940f, 35.870f, 1.434f, 8.60f, 0.2510f, 1.076f, 8.60f, 17.22f, 28.70f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_298 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.3f, 5.261f, 298.0f, 2.0f, 3.588f, 3.845f, 3.845f, 2.5f, &riserScheme01, 52.150f, 2.98f, 14.90f, AA_PSYCHONAUT, 18.625f, 37.250f, 1.489f, 8.94f, 0.2600f, 1.117f, 8.94f, 17.88f, 29.80f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_PSYCHONAUT_309 DESCRIPTIONID_PSYCHONAUT, MFRID_D3, 3.4f, 5.358f, 309.0f, 2.0f, 3.655f, 3.916f, 3.916f, 2.5f, &riserScheme01, 54.070f, 3.09f, 15.45f, AA_PSYCHONAUT, 18.540f, 38.620f, 1.545f, 9.26f, 0.2700f, 1.158f, 9.26f, 18.54f, 30.90f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
 
-#define PROPS_JAHNCLE_210 MODELID_JAHNCLE_210, DESCRIPTIONID_JAHNCLE, MFRID_D3, 2.50f, 4.417f, 210.0f, 2.0f, 2.900f, 3.250f, 3.250f, 2.25f, &riserScheme01, 35.00f, 2.00f, 10.00f, AA_JAHNCLE, 12.50f, 25.00f, 1.000f, 6.00f, 0.175f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_JAHNCLE_190 MODELID_JAHNCLE_190, DESCRIPTIONID_JAHNCLE, MFRID_D3, 2.25f, 4.201f, 190.0f, 2.0f, 2.755f, 3.087f, 3.087f, 2.25f, &riserScheme01, 31.66f, 1.81f,  9.04f, AA_JAHNCLE, 11.31f, 22.62f, 0.904f, 5.43f, 0.158f, 0.680f, 5.43f, 10.85f, 18.10f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_JAHNCLE_240 MODELID_JAHNCLE_240, DESCRIPTIONID_JAHNCLE, MFRID_D3, 2.75f, 4.722f, 240.0f, 2.0f, 3.097f, 3.470f, 3.470f, 2.25f, &riserScheme01, 40.00f, 2.28f, 11.42f, AA_JAHNCLE, 14.28f, 28.57f, 1.142f, 6.86f, 0.200f, 0.857f, 6.86f, 13.71f, 22.85f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_JAHNCLE_270 MODELID_JAHNCLE_270, DESCRIPTIONID_JAHNCLE, MFRID_D3, 3.00f, 5.008f, 270.0f, 2.0f, 3.285f, 3.680f, 3.680f, 2.25f, &riserScheme01, 45.00f, 2.57f, 12.85f, AA_JAHNCLE, 16.07f, 32.14f, 1.285f, 7.71f, 0.225f, 0.964f, 7.71f, 15.43f, 25.70f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_JAHNCLE_290 MODELID_JAHNCLE_290, DESCRIPTIONID_JAHNCLE, MFRID_D3, 3.25f, 5.190f, 290.0f, 2.0f, 3.400f, 3.814f, 3.814f, 2.25f, &riserScheme01, 48.33f, 2.76f, 13.80f, AA_JAHNCLE, 17.26f, 34.52f, 1.380f, 8.28f, 0.242f, 1.035f, 8.28f, 16.57f, 27.61f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_JAHNCLE_210 DESCRIPTIONID_JAHNCLE, MFRID_D3, 2.50f, 4.417f, 210.0f, 2.0f, 2.900f, 3.250f, 3.250f, 2.25f, &riserScheme01, 35.00f, 2.00f, 10.00f, AA_JAHNCLE, 12.50f, 25.00f, 1.000f, 6.00f, 0.175f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_JAHNCLE_190 DESCRIPTIONID_JAHNCLE, MFRID_D3, 2.25f, 4.201f, 190.0f, 2.0f, 2.755f, 3.087f, 3.087f, 2.25f, &riserScheme01, 31.66f, 1.81f,  9.04f, AA_JAHNCLE, 11.31f, 22.62f, 0.904f, 5.43f, 0.158f, 0.680f, 5.43f, 10.85f, 18.10f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_JAHNCLE_240 DESCRIPTIONID_JAHNCLE, MFRID_D3, 2.75f, 4.722f, 240.0f, 2.0f, 3.097f, 3.470f, 3.470f, 2.25f, &riserScheme01, 40.00f, 2.28f, 11.42f, AA_JAHNCLE, 14.28f, 28.57f, 1.142f, 6.86f, 0.200f, 0.857f, 6.86f, 13.71f, 22.85f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_JAHNCLE_270 DESCRIPTIONID_JAHNCLE, MFRID_D3, 3.00f, 5.008f, 270.0f, 2.0f, 3.285f, 3.680f, 3.680f, 2.25f, &riserScheme01, 45.00f, 2.57f, 12.85f, AA_JAHNCLE, 16.07f, 32.14f, 1.285f, 7.71f, 0.225f, 0.964f, 7.71f, 15.43f, 25.70f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_JAHNCLE_290 DESCRIPTIONID_JAHNCLE, MFRID_D3, 3.25f, 5.190f, 290.0f, 2.0f, 3.400f, 3.814f, 3.814f, 2.25f, &riserScheme01, 48.33f, 2.76f, 13.80f, AA_JAHNCLE, 17.26f, 34.52f, 1.380f, 8.28f, 0.242f, 1.035f, 8.28f, 16.57f, 27.61f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
 
-#define PROPS_HAIBANE_130 MODELID_HAIBANE_130, DESCRIPTIONID_HAIBANE, MFRID_D3, 2.50f, 3.885f, 130.0f, 2.5f, 2.650f, 2.900f, 2.900f, 1.5f, &riserScheme02, 15.00f, 0.500f, 30.0f, AA_HAIBANE, 12.00f, 15.50f, 0.350f, 0.60f, 0.0500f, 0.12500f, 1.20f, 4.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
-#define PROPS_HAIBANE_160 MODELID_HAIBANE_160, DESCRIPTIONID_HAIBANE, MFRID_D3, 2.75f, 4.310f, 160.0f, 2.5f, 2.940f, 3.220f, 3.220f, 1.5f, &riserScheme02, 16.65f, 0.555f, 33.3f, AA_HAIBANE, 13.00f, 17.00f, 0.400f, 0.65f, 0.0555f, 0.13875f, 1.30f, 5.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
-#define PROPS_HAIBANE_190 MODELID_HAIBANE_190, DESCRIPTIONID_HAIBANE, MFRID_D3, 3.00f, 4.697f, 190.0f, 2.5f, 3.200f, 3.510f, 3.510f, 1.5f, &riserScheme02, 18.15f, 0.605f, 36.3f, AA_HAIBANE, 14.00f, 18.50f, 0.450f, 0.70f, 0.0605f, 0.15100f, 1.40f, 5.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
-#define PROPS_HAIBANE_220 MODELID_HAIBANE_220, DESCRIPTIONID_HAIBANE, MFRID_D3, 3.25f, 5.054f, 220.0f, 2.5f, 3.447f, 3.774f, 3.774f, 1.5f, &riserScheme02, 19.50f, 0.650f, 39.0f, AA_HAIBANE, 14.50f, 19.00f, 0.475f, 0.72f, 0.0650f, 0.16250f, 1.45f, 5.75f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
-#define PROPS_HAIBANE_250 MODELID_HAIBANE_250, DESCRIPTIONID_HAIBANE, MFRID_D3, 3.50f, 5.388f, 250.0f, 2.5f, 3.670f, 3.850f, 3.850f, 1.5f, &riserScheme02, 20.80f, 0.690f, 41.6f, AA_HAIBANE, 15.00f, 20.00f, 0.500f, 0.75f, 0.0690f, 0.17300f, 1.50f, 6.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_HAIBANE_130 DESCRIPTIONID_HAIBANE, MFRID_D3, 2.50f, 3.885f, 130.0f, 2.5f, 2.650f, 2.900f, 2.900f, 1.5f, &riserScheme02, 15.00f, 0.500f, 30.0f, AA_HAIBANE, 12.00f, 15.50f, 0.350f, 0.60f, 0.0500f, 0.12500f, 1.20f, 4.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_HAIBANE_160 DESCRIPTIONID_HAIBANE, MFRID_D3, 2.75f, 4.310f, 160.0f, 2.5f, 2.940f, 3.220f, 3.220f, 1.5f, &riserScheme02, 16.65f, 0.555f, 33.3f, AA_HAIBANE, 13.00f, 17.00f, 0.400f, 0.65f, 0.0555f, 0.13875f, 1.30f, 5.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_HAIBANE_190 DESCRIPTIONID_HAIBANE, MFRID_D3, 3.00f, 4.697f, 190.0f, 2.5f, 3.200f, 3.510f, 3.510f, 1.5f, &riserScheme02, 18.15f, 0.605f, 36.3f, AA_HAIBANE, 14.00f, 18.50f, 0.450f, 0.70f, 0.0605f, 0.15100f, 1.40f, 5.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_HAIBANE_220 DESCRIPTIONID_HAIBANE, MFRID_D3, 3.25f, 5.054f, 220.0f, 2.5f, 3.447f, 3.774f, 3.774f, 1.5f, &riserScheme02, 19.50f, 0.650f, 39.0f, AA_HAIBANE, 14.50f, 19.00f, 0.475f, 0.72f, 0.0650f, 0.16250f, 1.45f, 5.75f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_HAIBANE_250 DESCRIPTIONID_HAIBANE, MFRID_D3, 3.50f, 5.388f, 250.0f, 2.5f, 3.670f, 3.850f, 3.850f, 1.5f, &riserScheme02, 20.80f, 0.690f, 41.6f, AA_HAIBANE, 15.00f, 20.00f, 0.500f, 0.75f, 0.0690f, 0.17300f, 1.50f, 6.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
 
-#define PROPS_FB_254 MODELID_FB_254, DESCRIPTIONID_FB, MFRID_D3, 2.9f, 4.857f, 254.0f, 2.0f, 3.310f, 3.550f, 3.550f, 2.5f, &riserScheme01, 42.310f, 2.42f, 12.10f, AA_PSYCHONAUT, 15.110f, 30.220f, 1.210f, 7.25f, 0.2110f, 0.900f, 7.25f, 14.51f, 24.20f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_FB_265 MODELID_FB_265, DESCRIPTIONID_FB, MFRID_D3, 3.0f, 4.961f, 265.0f, 2.0f, 3.380f, 3.620f, 3.620f, 2.5f, &riserScheme01, 46.375f, 2.65f, 13.25f, AA_PSYCHONAUT, 16.560f, 33.125f, 1.325f, 7.95f, 0.2310f, 0.993f, 7.95f, 15.90f, 26.50f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_FB_240 MODELID_FB_240, DESCRIPTIONID_FB, MFRID_D3, 2.75f, 4.722f, 240.0f, 2.0f, 3.097f, 3.470f, 3.470f, 2.25f, &riserScheme01, 40.00f, 2.28f, 11.42f, AA_JAHNCLE, 14.28f, 28.57f, 1.142f, 6.86f, 0.200f, 0.857f, 6.86f, 13.71f, 22.85f, INFL_HAIBANE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numSkydivingPilots, skydivingPilots
+#define PROPS_FB_254 DESCRIPTIONID_FB, MFRID_D3, 2.9f, 4.857f, 254.0f, 2.0f, 3.310f, 3.550f, 3.550f, 2.5f, &riserScheme01, 42.310f, 2.42f, 12.10f, AA_PSYCHONAUT, 15.110f, 30.220f, 1.210f, 7.25f, 0.2110f, 0.900f, 7.25f, 14.51f, 24.20f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_FB_265 DESCRIPTIONID_FB, MFRID_D3, 3.0f, 4.961f, 265.0f, 2.0f, 3.380f, 3.620f, 3.620f, 2.5f, &riserScheme01, 46.375f, 2.65f, 13.25f, AA_PSYCHONAUT, 16.560f, 33.125f, 1.325f, 7.95f, 0.2310f, 0.993f, 7.95f, 15.90f, 26.50f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_FB_240 DESCRIPTIONID_FB, MFRID_D3, 2.75f, 4.722f, 240.0f, 2.0f, 3.097f, 3.470f, 3.470f, 2.25f, &riserScheme01, 40.00f, 2.28f, 11.42f, AA_JAHNCLE, 14.28f, 28.57f, 1.142f, 6.86f, 0.200f, 0.857f, 6.86f, 13.71f, 22.85f, INFL_HAIBANE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numSkydivingPilots, skydivingPilots
 
-#define PROPS_MORPHEUS_210 MODELID_MORPHEUS_210, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.5f, 4.417f, 210.0f, 2.0f, 3.010f, 3.220f, 3.220f, 2.5f, &riserScheme01, 35.000f, 2.00f, 10.00f, AA_PSYCHONAUT, 12.500f, 25.000f, 1.000f, 6.00f, 0.1750f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_221 MODELID_MORPHEUS_221, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.6f, 4.531f, 221.0f, 2.0f, 3.090f, 3.310f, 3.310f, 2.5f, &riserScheme01, 36.800f, 2.10f, 10.52f, AA_PSYCHONAUT, 13.150f, 26.300f, 1.050f, 6.31f, 0.1840f, 0.790f, 6.31f, 12.62f, 21.04f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_232 MODELID_MORPHEUS_232, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.7f, 4.642f, 232.0f, 2.0f, 3.160f, 3.390f, 3.390f, 2.5f, &riserScheme01, 38.600f, 2.20f, 11.04f, AA_PSYCHONAUT, 13.800f, 27.610f, 1.100f, 6.62f, 0.1930f, 0.828f, 6.62f, 13.25f, 22.09f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_243 MODELID_MORPHEUS_243, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.8f, 4.751f, 243.0f, 2.0f, 3.240f, 3.470f, 3.470f, 2.5f, &riserScheme01, 40.500f, 2.31f, 11.57f, AA_PSYCHONAUT, 14.460f, 28.920f, 1.157f, 6.94f, 0.2020f, 0.867f, 6.94f, 13.88f, 23.14f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_254 MODELID_MORPHEUS_254, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.9f, 4.857f, 254.0f, 2.0f, 3.310f, 3.550f, 3.550f, 2.5f, &riserScheme01, 42.310f, 2.42f, 12.10f, AA_PSYCHONAUT, 15.110f, 30.220f, 1.210f, 7.25f, 0.2110f, 0.900f, 7.25f, 14.51f, 24.20f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_265 MODELID_MORPHEUS_265, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.0f, 4.961f, 265.0f, 2.0f, 3.380f, 3.620f, 3.620f, 2.5f, &riserScheme01, 46.375f, 2.65f, 13.25f, AA_PSYCHONAUT, 16.560f, 33.125f, 1.325f, 7.95f, 0.2310f, 0.993f, 7.95f, 15.90f, 26.50f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_276 MODELID_MORPHEUS_276, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.1f, 5.063f, 276.0f, 2.0f, 3.450f, 3.700f, 3.700f, 2.5f, &riserScheme01, 48.300f, 2.76f, 13.80f, AA_PSYCHONAUT, 17.250f, 34.500f, 1.379f, 8.28f, 0.2415f, 1.035f, 8.28f, 16.56f, 27.60f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_287 MODELID_MORPHEUS_287, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.2f, 5.163f, 287.0f, 2.0f, 3.520f, 3.775f, 3.775f, 2.5f, &riserScheme01, 50.220f, 2.86f, 14.35f, AA_PSYCHONAUT, 17.940f, 35.870f, 1.434f, 8.60f, 0.2510f, 1.076f, 8.60f, 17.22f, 28.70f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
-#define PROPS_MORPHEUS_298 MODELID_MORPHEUS_298, DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.3f, 5.261f, 298.0f, 2.0f, 3.588f, 3.845f, 3.845f, 2.5f, &riserScheme01, 52.150f, 2.98f, 14.90f, AA_PSYCHONAUT, 18.625f, 37.250f, 1.489f, 8.94f, 0.2600f, 1.117f, 8.94f, 17.88f, 29.80f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_210 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.5f, 4.417f, 210.0f, 2.0f, 3.010f, 3.220f, 3.220f, 2.5f, &riserScheme01, 35.000f, 2.00f, 10.00f, AA_PSYCHONAUT, 12.500f, 25.000f, 1.000f, 6.00f, 0.1750f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_221 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.6f, 4.531f, 221.0f, 2.0f, 3.090f, 3.310f, 3.310f, 2.5f, &riserScheme01, 36.800f, 2.10f, 10.52f, AA_PSYCHONAUT, 13.150f, 26.300f, 1.050f, 6.31f, 0.1840f, 0.790f, 6.31f, 12.62f, 21.04f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_232 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.7f, 4.642f, 232.0f, 2.0f, 3.160f, 3.390f, 3.390f, 2.5f, &riserScheme01, 38.600f, 2.20f, 11.04f, AA_PSYCHONAUT, 13.800f, 27.610f, 1.100f, 6.62f, 0.1930f, 0.828f, 6.62f, 13.25f, 22.09f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_243 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.8f, 4.751f, 243.0f, 2.0f, 3.240f, 3.470f, 3.470f, 2.5f, &riserScheme01, 40.500f, 2.31f, 11.57f, AA_PSYCHONAUT, 14.460f, 28.920f, 1.157f, 6.94f, 0.2020f, 0.867f, 6.94f, 13.88f, 23.14f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_254 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 2.9f, 4.857f, 254.0f, 2.0f, 3.310f, 3.550f, 3.550f, 2.5f, &riserScheme01, 42.310f, 2.42f, 12.10f, AA_PSYCHONAUT, 15.110f, 30.220f, 1.210f, 7.25f, 0.2110f, 0.900f, 7.25f, 14.51f, 24.20f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_265 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.0f, 4.961f, 265.0f, 2.0f, 3.380f, 3.620f, 3.620f, 2.5f, &riserScheme01, 46.375f, 2.65f, 13.25f, AA_PSYCHONAUT, 16.560f, 33.125f, 1.325f, 7.95f, 0.2310f, 0.993f, 7.95f, 15.90f, 26.50f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_276 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.1f, 5.063f, 276.0f, 2.0f, 3.450f, 3.700f, 3.700f, 2.5f, &riserScheme01, 48.300f, 2.76f, 13.80f, AA_PSYCHONAUT, 17.250f, 34.500f, 1.379f, 8.28f, 0.2415f, 1.035f, 8.28f, 16.56f, 27.60f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_287 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.2f, 5.163f, 287.0f, 2.0f, 3.520f, 3.775f, 3.775f, 2.5f, &riserScheme01, 50.220f, 2.86f, 14.35f, AA_PSYCHONAUT, 17.940f, 35.870f, 1.434f, 8.60f, 0.2510f, 1.076f, 8.60f, 17.22f, 28.70f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
+#define PROPS_MORPHEUS_298 DESCRIPTIONID_MORPHEUS, MFRID_UTURN, 3.3f, 5.261f, 298.0f, 2.0f, 3.588f, 3.845f, 3.845f, 2.5f, &riserScheme01, 52.150f, 2.98f, 14.90f, AA_PSYCHONAUT, 18.625f, 37.250f, 1.489f, 8.94f, 0.2600f, 1.117f, 8.94f, 17.88f, 29.80f, INFL_PSYCHONAUT, COLLAPSE_PSYCHONAUT, AGEING_PSYCHONAUT, numBasePilots, basePilots
 
-#define PROPS_OBSESSION_210 MODELID_OBSESSION_210, DESCRIPTIONID_OBSESSION, MFRID_UTURN, 2.50f, 4.417f, 210.0f, 2.0f, 2.900f, 3.250f, 3.250f, 2.25f, &riserScheme01, 35.00f, 2.00f, 10.00f, AA_JAHNCLE, 12.50f, 25.00f, 1.000f, 6.00f, 0.175f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_OBSESSION_240 MODELID_OBSESSION_240, DESCRIPTIONID_OBSESSION, MFRID_UTURN, 2.75f, 4.722f, 240.0f, 2.0f, 3.097f, 3.470f, 3.470f, 2.25f, &riserScheme01, 40.00f, 2.28f, 11.42f, AA_JAHNCLE, 14.28f, 28.57f, 1.142f, 6.86f, 0.200f, 0.857f, 6.86f, 13.71f, 22.85f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_OBSESSION_270 MODELID_OBSESSION_270, DESCRIPTIONID_OBSESSION, MFRID_UTURN, 3.00f, 5.008f, 270.0f, 2.0f, 3.285f, 3.680f, 3.680f, 2.25f, &riserScheme01, 45.00f, 2.57f, 12.85f, AA_JAHNCLE, 16.07f, 32.14f, 1.285f, 7.71f, 0.225f, 0.964f, 7.71f, 15.43f, 25.70f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
-#define PROPS_OBSESSION_290 MODELID_OBSESSION_290, DESCRIPTIONID_OBSESSION, MFRID_UTURN, 3.25f, 5.190f, 290.0f, 2.0f, 3.400f, 3.814f, 3.814f, 2.25f, &riserScheme01, 48.33f, 2.76f, 13.80f, AA_JAHNCLE, 17.26f, 34.52f, 1.380f, 8.28f, 0.242f, 1.035f, 8.28f, 16.57f, 27.61f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_OBSESSION_210 DESCRIPTIONID_OBSESSION, MFRID_UTURN, 2.50f, 4.417f, 210.0f, 2.0f, 2.900f, 3.250f, 3.250f, 2.25f, &riserScheme01, 35.00f, 2.00f, 10.00f, AA_JAHNCLE, 12.50f, 25.00f, 1.000f, 6.00f, 0.175f, 0.750f, 6.00f, 12.00f, 20.00f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_OBSESSION_240 DESCRIPTIONID_OBSESSION, MFRID_UTURN, 2.75f, 4.722f, 240.0f, 2.0f, 3.097f, 3.470f, 3.470f, 2.25f, &riserScheme01, 40.00f, 2.28f, 11.42f, AA_JAHNCLE, 14.28f, 28.57f, 1.142f, 6.86f, 0.200f, 0.857f, 6.86f, 13.71f, 22.85f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_OBSESSION_270 DESCRIPTIONID_OBSESSION, MFRID_UTURN, 3.00f, 5.008f, 270.0f, 2.0f, 3.285f, 3.680f, 3.680f, 2.25f, &riserScheme01, 45.00f, 2.57f, 12.85f, AA_JAHNCLE, 16.07f, 32.14f, 1.285f, 7.71f, 0.225f, 0.964f, 7.71f, 15.43f, 25.70f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
+#define PROPS_OBSESSION_290 DESCRIPTIONID_OBSESSION, MFRID_UTURN, 3.25f, 5.190f, 290.0f, 2.0f, 3.400f, 3.814f, 3.814f, 2.25f, &riserScheme01, 48.33f, 2.76f, 13.80f, AA_JAHNCLE, 17.26f, 34.52f, 1.380f, 8.28f, 0.242f, 1.035f, 8.28f, 16.57f, 27.61f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
 
-#define PROPS_GFORCE_220 MODELID_GFORCE_220, DESCRIPTIONID_GFORCE, MFRID_UTURN, 3.25f, 5.054f, 220.0f, 2.5f, 3.447f, 3.774f, 3.774f, 1.5f, &riserScheme02, 19.50f, 0.650f, 39.0f, AA_HAIBANE, 14.50f, 19.00f, 0.475f, 0.72f, 0.0650f, 0.16250f, 1.45f, 5.75f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
-#define PROPS_GFORCE_250 MODELID_GFORCE_250, DESCRIPTIONID_GFORCE, MFRID_UTURN, 3.50f, 5.388f, 250.0f, 2.5f, 3.670f, 3.850f, 3.850f, 1.5f, &riserScheme02, 20.80f, 0.690f, 41.6f, AA_HAIBANE, 15.00f, 20.00f, 0.500f, 0.75f, 0.0690f, 0.17300f, 1.50f, 6.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_GFORCE_220 DESCRIPTIONID_GFORCE, MFRID_UTURN, 3.25f, 5.054f, 220.0f, 2.5f, 3.447f, 3.774f, 3.774f, 1.5f, &riserScheme02, 19.50f, 0.650f, 39.0f, AA_HAIBANE, 14.50f, 19.00f, 0.475f, 0.72f, 0.0650f, 0.16250f, 1.45f, 5.75f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_GFORCE_250 DESCRIPTIONID_GFORCE, MFRID_UTURN, 3.50f, 5.388f, 250.0f, 2.5f, 3.670f, 3.850f, 3.850f, 1.5f, &riserScheme02, 20.80f, 0.690f, 41.6f, AA_HAIBANE, 15.00f, 20.00f, 0.500f, 0.75f, 0.0690f, 0.17300f, 1.50f, 6.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
 
-#define PROPS_INFINITY_160 MODELID_INFINITY_160, DESCRIPTIONID_INFINITY, MFRID_UTURN, 2.75f, 4.310f, 160.0f, 2.5f, 2.940f, 3.220f, 3.220f, 1.5f, &riserScheme02, 16.65f, 0.555f, 33.3f, AA_HAIBANE, 13.00f, 17.00f, 0.400f, 0.65f, 0.0555f, 0.13875f, 1.30f, 5.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
-#define PROPS_INFINITY_190 MODELID_INFINITY_190, DESCRIPTIONID_INFINITY, MFRID_UTURN, 3.00f, 4.697f, 190.0f, 2.5f, 3.200f, 3.510f, 3.510f, 1.5f, &riserScheme02, 18.15f, 0.605f, 36.3f, AA_HAIBANE, 14.00f, 18.50f, 0.450f, 0.70f, 0.0605f, 0.15100f, 1.40f, 5.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_INFINITY_160 DESCRIPTIONID_INFINITY, MFRID_UTURN, 2.75f, 4.310f, 160.0f, 2.5f, 2.940f, 3.220f, 3.220f, 1.5f, &riserScheme02, 16.65f, 0.555f, 33.3f, AA_HAIBANE, 13.00f, 17.00f, 0.400f, 0.65f, 0.0555f, 0.13875f, 1.30f, 5.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
+#define PROPS_INFINITY_190 DESCRIPTIONID_INFINITY, MFRID_UTURN, 3.00f, 4.697f, 190.0f, 2.5f, 3.200f, 3.510f, 3.510f, 1.5f, &riserScheme02, 18.15f, 0.605f, 36.3f, AA_HAIBANE, 14.00f, 18.50f, 0.450f, 0.70f, 0.0605f, 0.15100f, 1.40f, 5.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
 
-static Canopy canopies[] = 
+
+
+
+static std::vector<Canopy> canopies;
+
+#if 0
 {
     // skydiving, color, cost, templateName, props_macro
 
@@ -641,19 +648,17 @@ static Canopy canopies[] =
 
     { 0, 0, COLOR_DISABLED, 0.0f, 0 }
 };
+#endif
 
 unsigned int Canopy::getNumRecords(void)
 {
-    unsigned int result = 0;
-    unsigned int i = 0;
-    while( canopies[i].nameId != 0 ) i++, result++;
-    return result;
+    return canopies.size();
 }
 
 Canopy* Canopy::getRecord(unsigned int id)
 {
     assert( id >= 0 && id < getNumRecords() );
-    return canopies + id;
+    return &canopies[id];
 }
 
 float Canopy::getOptimalCanopySquare(float weight, float wind)
@@ -673,4 +678,137 @@ float Canopy::getWingLoading(unsigned int id, float weight)
 {
     assert( id >= 0 && id < getNumRecords() );
     return ( weight / 0.45f ) / getRecord( id )->square;
+}
+
+int Canopy::getRecordId(char* name)
+{
+        string s(name);
+
+        int i;
+        for (i = 0; i < (int)canopies.size(); ++i) {
+                if (canopies[i].name == s) {
+                        return i;
+                }
+        }
+
+        return -1;
+}
+
+
+static bool getdir (string dir, vector<string>* files)
+{
+     WIN32_FIND_DATA find_data;
+     HANDLE hnd;
+
+     find_data.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+     if((hnd = FindFirstFile(dir.c_str(), &find_data)) == INVALID_HANDLE_VALUE) {
+          return true; //no flies or error
+     }
+     
+     do {
+             files->push_back(find_data.cFileName);
+     } while(FindNextFile(hnd, &find_data));
+     
+     FindClose(hnd);
+
+     return true;
+}
+
+
+void Canopy::initCanopies()
+{
+        getCore()->logMessage("Info: Loading canopies.");
+
+        Canopy prototypes[] = {
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy01", "Psychonaut", L"Psychonaut", "210", L"210", PROPS_PSYCHONAUT_210 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy01", "Psychonaut", L"Psychonaut", "221", L"221", PROPS_PSYCHONAUT_221 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy01", "Psychonaut", L"Psychonaut", "232", L"232", PROPS_PSYCHONAUT_232 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1225.0f, "Canopy01", "Psychonaut", L"Psychonaut", "243", L"243", PROPS_PSYCHONAUT_243 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1255.0f, "Canopy01", "Psychonaut", L"Psychonaut", "254", L"254", PROPS_PSYCHONAUT_254 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1325.0f, "Canopy01", "Psychonaut", L"Psychonaut", "265", L"265", PROPS_PSYCHONAUT_265 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1425.0f, "Canopy01", "Psychonaut", L"Psychonaut", "276", L"276", PROPS_PSYCHONAUT_276 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1455.0f, "Canopy01", "Psychonaut", L"Psychonaut", "287", L"287", PROPS_PSYCHONAUT_287 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1475.0f, "Canopy01", "Psychonaut", L"Psychonaut", "298", L"298", PROPS_PSYCHONAUT_298 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1515.0f, "Canopy01", "Psychonaut", L"Psychonaut", "309", L"309", PROPS_PSYCHONAUT_309 },
+
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy02", "Jahncle", L"Jahncle", "190", L"190", PROPS_JAHNCLE_190 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy02", "Jahncle", L"Jahncle", "210", L"210", PROPS_JAHNCLE_210 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy02", "Jahncle", L"Jahncle", "240", L"240", PROPS_JAHNCLE_240 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy02", "Jahncle", L"Jahncle", "270", L"270", PROPS_JAHNCLE_270 },
+                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1600.0f, "Canopy02", "Jahncle", L"Jahncle", "290", L"290", PROPS_JAHNCLE_290 },
+
+                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/",  950.0f, "Canopy03", "Haibane", L"Haibane", "130", L"130", PROPS_HAIBANE_130 },
+                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1100.0f, "Canopy03", "Haibane", L"Haibane", "160", L"160", PROPS_HAIBANE_160 },
+                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1250.0f, "Canopy03", "Haibane", L"Haibane", "190", L"190", PROPS_HAIBANE_190 },
+                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1400.0f, "Canopy03", "Haibane", L"Haibane", "220", L"220", PROPS_HAIBANE_220 },
+                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1550.0f, "Canopy03", "Haibane", L"Haibane", "250", L"250", PROPS_HAIBANE_250 },
+
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1000.0f, "Canopy04", "Morpheus", L"Morpheus", "210", L"210", PROPS_MORPHEUS_210 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy04", "Morpheus", L"Morpheus", "221", L"221", PROPS_MORPHEUS_221 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy04", "Morpheus", L"Morpheus", "232", L"232", PROPS_MORPHEUS_232 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy04", "Morpheus", L"Morpheus", "243", L"243", PROPS_MORPHEUS_243 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Morpheus", L"Morpheus", "254", L"254", PROPS_MORPHEUS_254 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1250.0f, "Canopy04", "Morpheus", L"Morpheus", "265", L"265", PROPS_MORPHEUS_265 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy04", "Morpheus", L"Morpheus", "276", L"276", PROPS_MORPHEUS_276 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Morpheus", L"Morpheus", "287", L"287", PROPS_MORPHEUS_287 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy04", "Morpheus", L"Morpheus", "298", L"298", PROPS_MORPHEUS_298 },
+
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Obsession", L"Obsession", "210", L"210", PROPS_OBSESSION_210 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Obsession", L"Obsession", "240", L"240", PROPS_OBSESSION_240 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy04", "Obsession", L"Obsession", "270", L"270", PROPS_OBSESSION_270 },
+                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1650.0f, "Canopy04", "Obsession", L"Obsession", "290", L"290", PROPS_OBSESSION_290 },
+
+                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 1300.0f, "Canopy05", "G Force", L"G Force", "220", L"220", PROPS_GFORCE_220 },
+                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 1500.0f, "Canopy05", "G Force", L"G Force", "250", L"250", PROPS_GFORCE_250 },
+
+                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 700.0f, "Canopy05", "Infinity", L"Infinity", "160", L"160", PROPS_INFINITY_160 },
+                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 900.0f, "Canopy05", "Infinity", L"Infinity", "190", L"190", PROPS_INFINITY_190 },
+
+                { false, true, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "240", L"240", PROPS_FB_240 },
+                { false, false, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "254", L"254", PROPS_FB_254 },
+                { false, false, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "265", L"265", PROPS_FB_265 },    
+        };
+
+        // Add suit 0 - AFF suit
+        //prototypes[0].texture = "./res/Gear/Special/AFF Suit.dds";
+        //prototypes[0].name = "AFF Suit";
+        //prototypes[0].wname = L"AFF Suit";
+        //suits.push_back(prototypes[0]);
+
+        int i;
+        int count = sizeof(prototypes) / sizeof(Canopy);
+        for (i = 0; i < count; ++i) {
+                loadCanopies(prototypes[i], prototypes[i].texture, (prototypes[i].texture + "*.dds").c_str());
+        }
+ 
+        getCore()->logMessage("Info: Canopies loaded.");
+}
+
+
+void Canopy::loadCanopies(Canopy& canopyPrototype, string textureBase, const char* dir)
+{
+        std::vector<string> files;
+        
+        if (getdir(dir, &files)) {
+                int i;
+
+                string baseName = canopyPrototype.name;
+                wstring baseWName = canopyPrototype.wname;
+                string sizeName = canopyPrototype.sizeName;
+                wstring sizeWName = canopyPrototype.sizeWname;
+                for (i = 0; i < (int)files.size(); ++i) {
+                        canopyPrototype.texture = textureBase + files[i];
+
+                        string s(files[i]);
+                        s = s.substr(0, s.find_last_of('.'));
+                        wstring name(L" ", s.length());
+                        copy(s.begin(), s.end(), name.begin());
+
+                        canopyPrototype.name = baseName + " " + s + " " + sizeName;
+                        canopyPrototype.wname = baseWName + L" " + name + L" " + sizeWName;
+                        canopies.push_back(canopyPrototype);
+                }
+        } else {
+                getCore()->logMessage("Can't open directory: %s", "");
+        }
 }

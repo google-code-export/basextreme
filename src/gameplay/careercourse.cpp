@@ -109,7 +109,7 @@ CareerCourse::CareerCourse(Geoscape* geoscape) : GeoscapeMode( geoscape )
 
     // create coming events texture
     _comingEventsTexture = Gameplay::iEngine->getTexture( "ev_calendar" );
-    if( !_comingEventsTexture ) _comingEventsTexture = Gameplay::iEngine->createTexture( "./res/gui/textures/ev_calendar.dds" );
+    if( !_comingEventsTexture ) _comingEventsTexture = Gameplay::iEngine->createTexture( "./res/gui/textures/ev_calendar.dds", false );
     assert( _comingEventsTexture );
     _comingEventsTexture->addReference();
 

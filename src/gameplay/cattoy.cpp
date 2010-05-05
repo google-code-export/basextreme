@@ -2,6 +2,58 @@
 #include "headers.h"
 #include "jumper.h"
 
+
+struct OldGear {
+public:
+        GearType     type;  // type of gear
+        char         id;    // database identifier
+        float        state; // state factor (0..1)
+        unsigned int age;   // age (number of jumps)
+public:
+        OldGear() : type(gtUnequipped), id(0), state(0), age(0) { }    
+
+        Gear ConvertToGear() {
+                Gear gear;
+                gear.type = type;
+                gear.id = id;
+                gear.state = state;
+                gear.age = age;
+                gear.updateNameFromId();
+                return gear;
+        }
+};
+
+
+struct OldVirtues
+{
+public:
+        // character statistics
+        Virtues::Statistics statistics;
+        // character appearance
+        Virtues::Appearance appearance;
+
+        // character equipment
+        struct Equipment {
+        public:
+                OldGear      helmet;       // helmet
+                OldGear      suit;         // suit
+                OldGear      rig;          // rig
+                OldGear      canopy;       // canopy
+                bool         malfunctions; // true, if going to simulate malfunctions
+                bool         experience;   // true, if going to improve skills
+                SliderOption sliderOption; // slider option
+                unsigned int pilotchute;   // pilotchute
+        public:
+                Equipment() : experience(true), malfunctions(true), sliderOption(soRemoved), pilotchute(0) {}
+        }
+                equipment;
+public:
+        // character/career evolution
+        Virtues::Evolution evolution;
+        // character skills & predisposition to skills
+        Virtues::Skills skills, predisp;
+};
+
 /**
  * cat toy that just  wrapping existed jumper
  */
@@ -74,12 +126,22 @@ public:
 
 const float ghostFrameRate = 0.1f;
 
-struct GhostHeader
+struct NewGhostHeader
+{
+public:
+    unsigned int magic;     // 0x30313233
+    unsigned int version;   // 1
+    unsigned int numFrames; // number of ghost state frames    
+    Matrix4f     jumpPose;  // jump pose of ghost (it is unique for entire telemetry)
+    Virtues      virtues;   // ghost virtues 
+};
+
+struct OldGhostHeader
 {
 public:
     unsigned int numFrames; // number of ghost state frames    
     Matrix4f     jumpPose;  // jump pose of ghost (it is unique for entire telemetry)
-    Virtues      virtues;   // ghost virtues 
+    OldVirtues   virtues;   // ghost virtues 
 };
 
 struct GhostState
@@ -94,12 +156,12 @@ public:
 class CatToySaveGhost : public CatToy
 {
 private:
-    Jumper*     _ghost;
-    GhostHeader _ghostHeader;
-    GhostState  _ghostState;
-    float       _ghostTime;
-    float       _ghostFrameTime;
-    FILE*       _file;    
+    Jumper*        _ghost;
+    NewGhostHeader _ghostHeader;
+    GhostState     _ghostState;
+    float          _ghostTime;
+    float          _ghostFrameTime;
+    FILE*          _file;    
 public:
     CatToySaveGhost(Jumper* jumper, const char* filename)
     {
@@ -110,11 +172,13 @@ public:
         // open file for writting
         _file = fopen( filename, "wb" ); assert( _file );
         // initialize ghost header
+        _ghostHeader.magic = 0x30313233;
+        _ghostHeader.version = 1;
         _ghostHeader.numFrames = 0;
         _ghostHeader.virtues = *_ghost->getVirtues();
         _ghostHeader.jumpPose.set( 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 );
         // save ghost header
-        fwrite( &_ghostHeader, sizeof( GhostHeader ), 1, _file );
+        fwrite( &_ghostHeader, sizeof( NewGhostHeader ), 1, _file );
         // save initial ghost state
         _ghostFrameTime = _ghostTime = 0.0f;        
         update( 0.0f );
@@ -123,7 +187,7 @@ public:
     {
         // save actual ghost header 
         fseek( _file, 0, SEEK_SET );
-        fwrite( &_ghostHeader, sizeof( GhostHeader ), 1, _file );
+        fwrite( &_ghostHeader, sizeof( NewGhostHeader ), 1, _file );
         // close file
         fclose( _file );
         // break jumper connection
@@ -196,7 +260,7 @@ public:
 class CatToyLoadGhost : public CatToy
 {
 private:
-    GhostHeader  _ghostHeader;  // heading infos
+    NewGhostHeader  _ghostHeader;  // heading infos
     GhostState*  _ghostStates;  // state frames
     unsigned int _startFrameId; // seaching helper
     float        _ghostTime;    // process time
@@ -209,7 +273,31 @@ public:
         // open file for reading
         FILE* file = fopen( filename, "rb" ); assert( file );
         // load ghost header
-        fread( &_ghostHeader, sizeof( GhostHeader ), 1, file );
+        fread( &_ghostHeader, sizeof( NewGhostHeader ), 1, file );
+        // check if it's an old cattoy version
+        if (_ghostHeader.magic != 0x30313233) {
+                fseek(file, 0, SEEK_SET);
+                OldGhostHeader oldHeader;
+                fread( &oldHeader, sizeof( OldGhostHeader ), 1, file );
+                _ghostHeader.magic = 0x30313233;
+                _ghostHeader.version = 1;
+                _ghostHeader.numFrames = oldHeader.numFrames;
+                _ghostHeader.jumpPose = oldHeader.jumpPose;
+                _ghostHeader.virtues.statistics = oldHeader.virtues.statistics;
+                _ghostHeader.virtues.appearance = oldHeader.virtues.appearance;
+                _ghostHeader.virtues.evolution = oldHeader.virtues.evolution;
+                _ghostHeader.virtues.predisp = oldHeader.virtues.predisp;
+                _ghostHeader.virtues.skills = oldHeader.virtues.skills;
+                _ghostHeader.virtues.equipment.canopy = oldHeader.virtues.equipment.canopy.ConvertToGear();
+                _ghostHeader.virtues.equipment.experience = oldHeader.virtues.equipment.experience;
+                _ghostHeader.virtues.equipment.helmet = oldHeader.virtues.equipment.helmet.ConvertToGear();
+                _ghostHeader.virtues.equipment.malfunctions = oldHeader.virtues.equipment.malfunctions;
+                _ghostHeader.virtues.equipment.pilotchute = oldHeader.virtues.equipment.pilotchute;
+                _ghostHeader.virtues.equipment.rig = oldHeader.virtues.equipment.rig.ConvertToGear();
+                _ghostHeader.virtues.equipment.sliderOption = oldHeader.virtues.equipment.sliderOption;
+                _ghostHeader.virtues.equipment.suit = oldHeader.virtues.equipment.suit.ConvertToGear();
+        }
+
         // load ghost states
         _ghostStates = new GhostState[_ghostHeader.numFrames];
         unsigned int fileResult = fread( _ghostStates, sizeof( GhostState ), _ghostHeader.numFrames, file );

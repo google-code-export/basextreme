@@ -1950,7 +1950,7 @@ void Jumper::onCameraIsActual(void)
     if( _signatureType == stFull && _canopySimulator->getInflation() == 0 )
     {
         database::Canopy* canopyInfo = database::Canopy::getRecord( _virtues->equipment.canopy.id );
-        std::wstring text = Gameplay::iLanguage->getUnicodeString(canopyInfo->nameId);
+        std::wstring text = canopyInfo->wname;
         text += L" - ";
         text += Gameplay::iLanguage->getUnicodeString(190);
         text += L" ";

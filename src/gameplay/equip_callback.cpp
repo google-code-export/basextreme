@@ -9,13 +9,54 @@
  * helpers
  */
 
+static bool equipBestHelmet(Career* career)
+{
+    assert( career );
+    
+    Virtues* virtues = career->getVirtues();
+
+    // build list of helmets
+    std::vector<unsigned int> helmets;
+    unsigned int i;
+    for( i=0; i<career->getNumGears(); i++ )
+    {
+        if( career->getGear( i ).type == gtHelmet) 
+        {
+            helmets.push_back( i );
+        }
+    }
+
+    // select best rig
+    if( helmets.size() )
+    {
+        unsigned int bestHelmet = 0;    
+        float bestState = career->getGear( helmets[bestHelmet] ).state;
+
+        for( i=1; i<helmets.size(); i++ )
+        {
+            if( career->getGear( helmets[i] ).state > bestState )
+            {
+                bestHelmet = i;
+                bestState = career->getGear( helmets[i] ).state;
+            }
+        }
+
+        // equip best rig
+        career->equipGear( helmets[bestHelmet] );
+        return true;
+    }
+
+    return false;
+}
+
+
 static void equipBestBASERig(Career* career)
 {
     assert( career );
     
     Virtues* virtues = career->getVirtues();
-    assert( virtues->equipment.rig.type == gtRig );
-    assert( virtues->equipment.canopy.type == gtCanopy );
+//    assert( virtues->equipment.rig.type == gtRig );
+//    assert( virtues->equipment.canopy.type == gtCanopy );
 
     // build list of BASE rigs
     std::vector<unsigned int> rigs;
@@ -98,8 +139,8 @@ static void equipBestBASECanopy(Career* career, float windAmbient, float windBla
     assert( career );
     
     Virtues* virtues = career->getVirtues();
-    assert( virtues->equipment.rig.type == gtRig );
-    assert( virtues->equipment.canopy.type == gtCanopy );
+//    assert( virtues->equipment.rig.type == gtRig );
+//    assert( virtues->equipment.canopy.type == gtCanopy );
 
     // determine optimal canopy square
     float optimalSquare = database::Canopy::getOptimalCanopySquare( 
@@ -141,7 +182,7 @@ static void equipBestBASECanopy(Career* career, float windAmbient, float windBla
         }
 
         // currently equipped canopy is a BASE canopy?
-        if( !database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving )
+        if( (virtues->equipment.canopy.id >= 0) && (!database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving) )
         {
             // check current canopy epsilon and state
             float currentEpsilon = fabs( database::Canopy::getRecord( virtues->equipment.canopy.id )->square - optimalSquare );
@@ -213,7 +254,7 @@ static void equipBestSkydivingCanopy(Career* career, float windAmbient, float wi
         }
 
         // currently equipped canopy is a skydiving canopy?
-        if( database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving )
+        if( (virtues->equipment.canopy.id >= 0) && (database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving) )
         {
             // check current canopy epsilon and state
             float currentState = virtues->equipment.canopy.state;
@@ -246,11 +287,17 @@ bool equipBestBASEEquipment(Career* career, float windAmbient, float windBlast)
     assert( career );
     
     Virtues* virtues = career->getVirtues();
-    assert( virtues->equipment.suit.type == gtSuit );
+    if (virtues->equipment.suit.type != gtSuit ) {
+            if (!equipBestSuit(career, windAmbient, windBlast)) {
+                    if (!equipBestWingsuit(career, windAmbient, windBlast)) {
+                            return false;
+                    }
+            }
+    }
 
     // first, check if there is any BASE rig owned by player
     bool flag = false;
-    if( !database::Rig::getRecord( virtues->equipment.rig.id )->skydiving )
+    if( ( virtues->equipment.rig.id >= 0) && (!database::Rig::getRecord( virtues->equipment.rig.id )->skydiving) )
     {
         flag = true;
     }
@@ -275,7 +322,7 @@ bool equipBestBASEEquipment(Career* career, float windAmbient, float windBlast)
 
     // second, check if there is any BASE canopy owned by player
     flag = false;
-    if( !database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving )
+    if( ( virtues->equipment.canopy.id >= 0) && (!database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving) )
     {
         flag = true;
     }
@@ -299,7 +346,7 @@ bool equipBestBASEEquipment(Career* career, float windAmbient, float windBlast)
     if( !flag ) return false;
 
     // if current rig is BASE rig
-    if( !database::Rig::getRecord( virtues->equipment.rig.id )->skydiving )
+    if( ( virtues->equipment.rig.id >= 0) && (!database::Rig::getRecord( virtues->equipment.rig.id )->skydiving) )
     {
         // check rig state treshold
         if( virtues->equipment.rig.state < 0.75f )
@@ -316,6 +363,10 @@ bool equipBestBASEEquipment(Career* career, float windAmbient, float windBlast)
 
     // equip best canopy for specifiend weather
     equipBestBASECanopy( career, windAmbient, windBlast );
+
+    if (!equipBestHelmet(career)) {
+            return false;
+    }
 
     return true;
 }
@@ -396,6 +447,10 @@ bool equipBestSkydivingEquipment(Career* career, float windAmbient, float windBl
     // equip best canopy for specifiend weather
     equipBestSkydivingCanopy( career, windAmbient, windBlast );
 
+    if (!equipBestHelmet(career)) {
+            return false;
+    }
+
     return true;
 }
 
@@ -423,6 +478,10 @@ bool equipBestSuit(Career* career, float windAmbient, float windBlast)
     if( suits.size() == 0 )
     {
         // check the suit is equipped
+            if (virtues->equipment.suit.id < 0) {
+                    return false;
+            }
+
         return !database::Suit::getRecord( virtues->equipment.suit.id )->wingsuit;
     }
     else
@@ -441,7 +500,7 @@ bool equipBestSuit(Career* career, float windAmbient, float windBlast)
         }
 
         // check the suit is currently equipped
-        if( !database::Suit::getRecord( virtues->equipment.suit.id )->wingsuit )
+        if( (virtues->equipment.suit.id > 0) && (!database::Suit::getRecord( virtues->equipment.suit.id )->wingsuit) )
         {
             if( virtues->equipment.suit.state < bestState )
             {
