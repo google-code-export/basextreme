@@ -11,6 +11,187 @@
 #include "forest.h"
 #include "version.h"
 
+
+Mission::FollowCamera::FollowCamera(Scene* scene, Actor* target) :
+    Actor( scene )
+{
+    _name                = "ThirdPersonCamera";
+    _positionMode        = false;
+    _positionModeTimeout = 0.0f;
+    _target              = target;
+    _cameraTilt          = 0;
+    _cameraTurn          = 0;
+    _cameraFOV           = 60* CAMERA_FOV_MULTIPLIER;
+    _cameraDistance      = 500.0f;
+    _cameraMatrix        = Matrix4f( 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 );    
+}
+
+Mission::FollowCamera::~FollowCamera()
+{
+}
+
+void Mission::FollowCamera::onUpdateActivity(float dt)
+{
+    assert( _scene );
+
+    _positionModeTimeout -= dt;
+    _positionModeTimeout = _positionModeTimeout < 0 ? 0 : _positionModeTimeout;
+
+    // retrieve action channels
+    ActionChannel* headLeft  = Gameplay::iGameplay->getActionChannel( iaHeadLeft );
+    ActionChannel* headRight = Gameplay::iGameplay->getActionChannel( iaHeadRight );
+    ActionChannel* headUp    = Gameplay::iGameplay->getActionChannel( iaHeadUp );
+    ActionChannel* headDown  = Gameplay::iGameplay->getActionChannel( iaHeadDown );
+    ActionChannel* zoomIn    = Gameplay::iGameplay->getActionChannel( iaZoomIn );
+    ActionChannel* zoomOut   = Gameplay::iGameplay->getActionChannel( iaZoomOut );    
+
+    if( _positionMode )
+    {
+        // field of view
+        _cameraFOV = ( 60.0f - 55.0f * ( zoomIn->getAmplitude() ) ) * CAMERA_FOV_MULTIPLIER;
+
+        // target position
+        Matrix4f targetPose( 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 );
+        if( _target ) targetPose = _target->getPose();    
+        Vector3f targetPos( targetPose[3][0], targetPose[3][1], targetPose[3][2] );
+
+        if( dynamic_cast<Jumper*>( _target ) )
+        {
+            Jumper* j = dynamic_cast<Jumper*>( _target );
+            j->getClump()->getFrame()->getLTM();
+            engine::IFrame* backBone = Jumper::getBackBone( j->getClump() );
+            targetPos = backBone->getPos();
+        }
+
+        // camera direction
+        Vector3f cameraAt = _cameraPos - targetPos;
+        cameraAt.normalize();        
+
+        // camera right
+        Vector3f cameraRight; 
+        cameraRight.cross( Vector3f(0,1,0), cameraAt );
+        cameraRight.normalize();
+
+        // camera up
+        Vector3f cameraUp;
+        cameraUp.cross( cameraAt, cameraRight );
+        cameraUp.normalize();
+
+        // camera matrix
+        _cameraMatrix.set( 
+            cameraRight[0], cameraRight[1], cameraRight[2], 0.0f,
+            cameraUp[0], cameraUp[1], cameraUp[2], 0.0f,
+            cameraAt[0], cameraAt[1], cameraAt[2], 0.0f,
+            _cameraPos[0], _cameraPos[1], _cameraPos[2], 1.0f
+        );
+    }
+    else
+    {
+        // target position
+        Matrix4f targetPose( 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 );
+        if( _target ) targetPose = _target->getPose();
+
+        Vector3f targetPos( targetPose[3][0], targetPose[3][1], targetPose[3][2] );
+        Vector3f targetUp( targetPose[1][0], targetPose[1][1], targetPose[1][2] );
+        Vector3f targetRight( targetPose[0][0], targetPose[0][1], targetPose[0][2] );
+        Vector3f targetFront( targetPose[2][0], targetPose[2][1], targetPose[2][2] );
+        targetUp.normalize();
+        targetRight.normalize();
+        targetFront.normalize();
+
+        Vector3f cameraPos(targetPos);
+
+        if( dynamic_cast<Jumper*>( _target ) )
+        {
+            Jumper* j = dynamic_cast<Jumper*>( _target );
+            j->getClump()->getFrame()->getLTM();
+            engine::IFrame* backBone = Jumper::getBackBone( j->getClump() );
+            targetPos = backBone->getPos();
+
+            engine::IFrame* legBone = Jumper::getRightSmokeJetAnchor(j->getClump());
+            cameraPos = legBone->getPos();
+            cameraPos += legBone->getAt() * 0.0f; // right
+            cameraPos += legBone->getUp() * -10.0f; // up
+            cameraPos += legBone->getRight() * -20.0f; // forward
+            targetPos = cameraPos;
+            targetPos += legBone->getAt() * -25.0f; // right
+            targetPos += legBone->getRight() * 40.0f; // forward
+            targetPos += legBone->getUp() * -25.0f; // up
+            targetUp = legBone->getUp() * -8.0f + legBone->getAt() * -2.0f;
+            targetUp.normalize();
+        }
+
+        //cameraPos += targetUp * 45.0f - targetRight * 40.0f - targetFront * 100.0f;
+
+        // camera direction
+        Vector3f cameraAt = cameraPos - targetPos/* + targetFront * 50.0f*/;
+        cameraAt.normalize();        
+
+        // camera right
+        Vector3f cameraRight; 
+        cameraRight.cross( targetUp, cameraAt );
+        cameraRight.normalize();
+
+        // camera up
+        Vector3f cameraUp;
+        cameraUp.cross( cameraAt, cameraRight );
+        cameraUp.normalize();
+
+        // camera matrix
+        _cameraMatrix.set( 
+            cameraRight[0], cameraRight[1], cameraRight[2], 0.0f,
+            cameraUp[0], cameraUp[1], cameraUp[2], 0.0f,
+            cameraAt[0], cameraAt[1], cameraAt[2], 0.0f,
+            cameraPos[0], cameraPos[1], cameraPos[2], 1.0f
+        );
+    }
+
+    // camera is actual now
+    Gameplay::iEngine->getDefaultCamera()->setFOV( _cameraFOV );
+    Gameplay::iEngine->getDefaultCamera()->getFrame()->setMatrix( _cameraMatrix );
+    _scene->getScenery()->happen( this, EVENT_CAMERA_IS_ACTUAL );
+    if( _scene->getTopMode() ) _scene->getTopMode()->happen( this, EVENT_CAMERA_IS_ACTUAL );
+
+    // RT-RS pass
+    bool flares = ( _scene->getLocation()->getWeather() == ::wtSunny ) || ( _scene->getLocation()->getWeather() == ::wtVariable );
+    Gameplay::iGameplay->getRenderTarget()->render( _scene, _cameraMatrix, _cameraFOV, flares, false );
+    // GUI
+    Gameplay::iEngine->getDefaultCamera()->beginScene( 0, Vector4f( 0,0,0,0 ) );    
+    if( _scene->isHUDEnabled() ) Gameplay::iGui->render();
+    Gameplay::iEngine->getDefaultCamera()->endScene();
+    // present result
+    Gameplay::iEngine->present();
+}
+
+void Mission::FollowCamera::switchMode(void)
+{
+    if( _positionModeTimeout > 0 ) return;
+
+    _positionMode = !_positionMode;
+    if( _positionMode )
+    {
+        _cameraPos[0] = _cameraMatrix[3][0];
+        _cameraPos[1] = _cameraMatrix[3][1];
+        _cameraPos[2] = _cameraMatrix[3][2];
+        _cameraFOV    = 60 * CAMERA_FOV_MULTIPLIER;
+    }
+    else
+    {
+        _cameraTilt     = 0;
+        _cameraTurn     = 0;
+        _cameraFOV      = 60 * CAMERA_FOV_MULTIPLIER;
+        _cameraDistance = 500.0f;
+    }
+    _positionModeTimeout = 0.125f;
+}
+
+void Mission::FollowCamera::resetSwitchTimer(void)
+{
+    _positionModeTimeout = 0.125f;
+}
+
+
+
 /**
  * Mission::ThirdPersonCamera
  */
@@ -336,6 +517,7 @@ Mission::Mission(Scene* scene, database::MissionInfo* missionInfo, database::Tou
     _fpcamera = new FirstPersonCamera( scene, Jumper::getFirstPersonFrame( _player->getClump() ) );
     _fwcamera = new FlywayCamera( scene );
     _frcamera = new FreeCamera( scene );
+    _followCamera = new FollowCamera(scene, _player);
 
     // prompt window
     _promptWindow = Gameplay::iGui->createWindow( "Prompt" ); assert( _promptWindow );
@@ -407,6 +589,11 @@ void Mission::onUpdateActivity(float dt)
     if( Gameplay::iGameplay->getActionChannel( iaCameraMode1 )->getTrigger() )
     {
         setThirdPersonCamera();
+    }
+    // action: follow mode
+    if( Gameplay::iGameplay->getActionChannel( iaCameraMode4 )->getTrigger() )
+    {
+        setFollowCamera();
     }
     // action : flyway mode
     if( Gameplay::iGameplay->getActionChannel( iaCameraMode2 )->getTrigger() )
@@ -609,6 +796,23 @@ void Mission::setThirdPersonCamera(void)
     {
         _scene->setCamera( _tpcamera );
         _tpcamera->resetSwitchTimer();
+    }
+}
+
+void Mission::setFollowCamera(void)
+{
+    _player->happen( this, EVENT_JUMPER_THIRDPERSON, _player );
+
+    Actor* currentCamera = _scene->getCamera();
+    FollowCamera* currentFollowCamera = dynamic_cast<FollowCamera*>( currentCamera );
+    if( currentFollowCamera )
+    {
+        currentFollowCamera->switchMode();
+    }
+    else
+    {
+        _scene->setCamera( _followCamera );
+        _followCamera->resetSwitchTimer();
     }
 }
 

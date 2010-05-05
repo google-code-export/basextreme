@@ -15,6 +15,31 @@
 class Mission : public Mode
 {
 private:
+    class FollowCamera : public Actor
+    {
+    private:      
+        Actor*   _target;
+        bool     _positionMode;
+        float    _positionModeTimeout;
+        float    _cameraTilt;
+        float    _cameraTurn;
+        float    _cameraDistance;
+        float    _cameraFOV;
+        Matrix4f _cameraMatrix;
+        Vector3f _cameraPos;
+    public:
+        // actor abstracts        
+        virtual void onUpdateActivity(float dt);
+        virtual Matrix4f getPose(void) { return _cameraMatrix; }
+    public:
+        // class implementation
+        FollowCamera(Scene* scene, Actor* target);
+        virtual ~FollowCamera();
+    public:
+        // class behaviour
+        void switchMode(void);
+        void resetSwitchTimer(void);
+    };
     /**
      * third person camera
      */
@@ -114,6 +139,7 @@ private:
         FreeCamera(Scene* scene);
         virtual ~FreeCamera();
     };
+
 private:    
     database::MissionInfo* _missionInfo;
     database::TournamentInfo* _tournamentInfo;
@@ -122,6 +148,7 @@ private:
     bool                   _endOfPlayerActivity;
     Jumper*                _player;
     ThirdPersonCamera*     _tpcamera;
+    FollowCamera*          _followCamera;
     FirstPersonCamera*     _fpcamera;
     FlywayCamera*          _fwcamera;
     FreeCamera*            _frcamera;
@@ -146,6 +173,7 @@ public:
     // complex behaviour
     void setFirstPersonCamera(void);
     void setThirdPersonCamera(void);
+    void setFollowCamera(void);
     bool cameraIsFirstPerson(void);
     bool cameraIsThirdPerson(void);
     void showGoals(bool flag);

@@ -211,8 +211,8 @@ static void equipBestSkydivingCanopy(Career* career, float windAmbient, float wi
     assert( career );
     
     Virtues* virtues = career->getVirtues();
-    assert( virtues->equipment.rig.type == gtRig );
-    assert( virtues->equipment.canopy.type == gtCanopy );
+//    assert( virtues->equipment.rig.type == gtRig );
+//    assert( virtues->equipment.canopy.type == gtCanopy );
 
     // determine optimal canopy square (skydiving case)
     float optimalSquare = 250.0f;
@@ -405,7 +405,7 @@ bool equipBestSkydivingEquipment(Career* career, float windAmbient, float windBl
 
     // second, check if there is any skydiving canopy owned by player
     flag = false;
-    if( database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving )
+    if( (virtues->equipment.canopy.id >= 0) && (database::Canopy::getRecord( virtues->equipment.canopy.id )->skydiving) )
     {
         flag = true;
     }
@@ -429,7 +429,7 @@ bool equipBestSkydivingEquipment(Career* career, float windAmbient, float windBl
     if( !flag ) return false;
 
     // if current rig is skydiving rig
-    if( database::Rig::getRecord( virtues->equipment.rig.id )->skydiving )
+    if( (virtues->equipment.rig.id >= 0) && (database::Rig::getRecord( virtues->equipment.rig.id )->skydiving) )
     {
         // check rig state treshold
         if( virtues->equipment.rig.state < 0.75f )

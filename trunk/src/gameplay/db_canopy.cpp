@@ -7,15 +7,6 @@ using namespace ccor;
 using namespace database;
 using namespace std;
 
-// default canopy pack
-#define REGULAR_TRADE true
-
-// atari edition canopy pack
-#ifdef GAMEPLAY_EDITION_ATARI
-    #define UTURN_TRADE true
-#else
-    #define UTURN_TRADE false
-#endif
 
 #define MODELID_PSYCHONAUT_210 182
 #define MODELID_PSYCHONAUT_221 183
@@ -720,49 +711,49 @@ void Canopy::initCanopies()
         getCore()->logMessage("Info: Loading canopies.");
 
         Canopy prototypes[] = {
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy01", "Psychonaut", L"Psychonaut", "210", L"210", PROPS_PSYCHONAUT_210 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy01", "Psychonaut", L"Psychonaut", "221", L"221", PROPS_PSYCHONAUT_221 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy01", "Psychonaut", L"Psychonaut", "232", L"232", PROPS_PSYCHONAUT_232 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1225.0f, "Canopy01", "Psychonaut", L"Psychonaut", "243", L"243", PROPS_PSYCHONAUT_243 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1255.0f, "Canopy01", "Psychonaut", L"Psychonaut", "254", L"254", PROPS_PSYCHONAUT_254 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1325.0f, "Canopy01", "Psychonaut", L"Psychonaut", "265", L"265", PROPS_PSYCHONAUT_265 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1425.0f, "Canopy01", "Psychonaut", L"Psychonaut", "276", L"276", PROPS_PSYCHONAUT_276 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1455.0f, "Canopy01", "Psychonaut", L"Psychonaut", "287", L"287", PROPS_PSYCHONAUT_287 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1475.0f, "Canopy01", "Psychonaut", L"Psychonaut", "298", L"298", PROPS_PSYCHONAUT_298 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1515.0f, "Canopy01", "Psychonaut", L"Psychonaut", "309", L"309", PROPS_PSYCHONAUT_309 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy01", "Psychonaut", L"Psychonaut", "210", L"210", PROPS_PSYCHONAUT_210 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy01", "Psychonaut", L"Psychonaut", "221", L"221", PROPS_PSYCHONAUT_221 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy01", "Psychonaut", L"Psychonaut", "232", L"232", PROPS_PSYCHONAUT_232 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1225.0f, "Canopy01", "Psychonaut", L"Psychonaut", "243", L"243", PROPS_PSYCHONAUT_243 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1255.0f, "Canopy01", "Psychonaut", L"Psychonaut", "254", L"254", PROPS_PSYCHONAUT_254 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1325.0f, "Canopy01", "Psychonaut", L"Psychonaut", "265", L"265", PROPS_PSYCHONAUT_265 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1425.0f, "Canopy01", "Psychonaut", L"Psychonaut", "276", L"276", PROPS_PSYCHONAUT_276 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1455.0f, "Canopy01", "Psychonaut", L"Psychonaut", "287", L"287", PROPS_PSYCHONAUT_287 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1475.0f, "Canopy01", "Psychonaut", L"Psychonaut", "298", L"298", PROPS_PSYCHONAUT_298 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1515.0f, "Canopy01", "Psychonaut", L"Psychonaut", "309", L"309", PROPS_PSYCHONAUT_309 },
 
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy02", "Jahncle", L"Jahncle", "190", L"190", PROPS_JAHNCLE_190 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy02", "Jahncle", L"Jahncle", "210", L"210", PROPS_JAHNCLE_210 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy02", "Jahncle", L"Jahncle", "240", L"240", PROPS_JAHNCLE_240 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy02", "Jahncle", L"Jahncle", "270", L"270", PROPS_JAHNCLE_270 },
-                { REGULAR_TRADE, false, "./res/Gear/Canopies/7Cell/", 1600.0f, "Canopy02", "Jahncle", L"Jahncle", "290", L"290", PROPS_JAHNCLE_290 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy02", "Jahncle", L"Jahncle", "190", L"190", PROPS_JAHNCLE_190 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy02", "Jahncle", L"Jahncle", "210", L"210", PROPS_JAHNCLE_210 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy02", "Jahncle", L"Jahncle", "240", L"240", PROPS_JAHNCLE_240 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy02", "Jahncle", L"Jahncle", "270", L"270", PROPS_JAHNCLE_270 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1600.0f, "Canopy02", "Jahncle", L"Jahncle", "290", L"290", PROPS_JAHNCLE_290 },
 
-                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/",  950.0f, "Canopy03", "Haibane", L"Haibane", "130", L"130", PROPS_HAIBANE_130 },
-                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1100.0f, "Canopy03", "Haibane", L"Haibane", "160", L"160", PROPS_HAIBANE_160 },
-                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1250.0f, "Canopy03", "Haibane", L"Haibane", "190", L"190", PROPS_HAIBANE_190 },
-                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1400.0f, "Canopy03", "Haibane", L"Haibane", "220", L"220", PROPS_HAIBANE_220 },
-                { REGULAR_TRADE, true, "./res/Gear/Canopies/9Cell/", 1550.0f, "Canopy03", "Haibane", L"Haibane", "250", L"250", PROPS_HAIBANE_250 },
+                { true, true, "./res/Gear/Canopies/9Cell/",  950.0f, "Canopy03", "Haibane", L"Haibane", "130", L"130", PROPS_HAIBANE_130 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 1100.0f, "Canopy03", "Haibane", L"Haibane", "160", L"160", PROPS_HAIBANE_160 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 1250.0f, "Canopy03", "Haibane", L"Haibane", "190", L"190", PROPS_HAIBANE_190 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 1400.0f, "Canopy03", "Haibane", L"Haibane", "220", L"220", PROPS_HAIBANE_220 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 1550.0f, "Canopy03", "Haibane", L"Haibane", "250", L"250", PROPS_HAIBANE_250 },
 
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1000.0f, "Canopy04", "Morpheus", L"Morpheus", "210", L"210", PROPS_MORPHEUS_210 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy04", "Morpheus", L"Morpheus", "221", L"221", PROPS_MORPHEUS_221 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy04", "Morpheus", L"Morpheus", "232", L"232", PROPS_MORPHEUS_232 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy04", "Morpheus", L"Morpheus", "243", L"243", PROPS_MORPHEUS_243 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Morpheus", L"Morpheus", "254", L"254", PROPS_MORPHEUS_254 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1250.0f, "Canopy04", "Morpheus", L"Morpheus", "265", L"265", PROPS_MORPHEUS_265 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy04", "Morpheus", L"Morpheus", "276", L"276", PROPS_MORPHEUS_276 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Morpheus", L"Morpheus", "287", L"287", PROPS_MORPHEUS_287 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy04", "Morpheus", L"Morpheus", "298", L"298", PROPS_MORPHEUS_298 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1000.0f, "Canopy04", "Morpheus", L"Morpheus", "210", L"210", PROPS_MORPHEUS_210 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy04", "Morpheus", L"Morpheus", "221", L"221", PROPS_MORPHEUS_221 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy04", "Morpheus", L"Morpheus", "232", L"232", PROPS_MORPHEUS_232 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy04", "Morpheus", L"Morpheus", "243", L"243", PROPS_MORPHEUS_243 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Morpheus", L"Morpheus", "254", L"254", PROPS_MORPHEUS_254 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1250.0f, "Canopy04", "Morpheus", L"Morpheus", "265", L"265", PROPS_MORPHEUS_265 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy04", "Morpheus", L"Morpheus", "276", L"276", PROPS_MORPHEUS_276 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Morpheus", L"Morpheus", "287", L"287", PROPS_MORPHEUS_287 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy04", "Morpheus", L"Morpheus", "298", L"298", PROPS_MORPHEUS_298 },
 
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Obsession", L"Obsession", "210", L"210", PROPS_OBSESSION_210 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Obsession", L"Obsession", "240", L"240", PROPS_OBSESSION_240 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy04", "Obsession", L"Obsession", "270", L"270", PROPS_OBSESSION_270 },
-                { UTURN_TRADE, false, "./res/Gear/Canopies/7Cell/", 1650.0f, "Canopy04", "Obsession", L"Obsession", "290", L"290", PROPS_OBSESSION_290 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Obsession", L"Obsession", "210", L"210", PROPS_OBSESSION_210 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Obsession", L"Obsession", "240", L"240", PROPS_OBSESSION_240 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy04", "Obsession", L"Obsession", "270", L"270", PROPS_OBSESSION_270 },
+                { true, false, "./res/Gear/Canopies/7Cell/", 1650.0f, "Canopy04", "Obsession", L"Obsession", "290", L"290", PROPS_OBSESSION_290 },
 
-                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 1300.0f, "Canopy05", "G Force", L"G Force", "220", L"220", PROPS_GFORCE_220 },
-                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 1500.0f, "Canopy05", "G Force", L"G Force", "250", L"250", PROPS_GFORCE_250 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 1300.0f, "Canopy05", "G Force", L"G Force", "220", L"220", PROPS_GFORCE_220 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 1500.0f, "Canopy05", "G Force", L"G Force", "250", L"250", PROPS_GFORCE_250 },
 
-                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 700.0f, "Canopy05", "Infinity", L"Infinity", "160", L"160", PROPS_INFINITY_160 },
-                { UTURN_TRADE, true, "./res/Gear/Canopies/9Cell/", 900.0f, "Canopy05", "Infinity", L"Infinity", "190", L"190", PROPS_INFINITY_190 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 700.0f, "Canopy05", "Infinity", L"Infinity", "160", L"160", PROPS_INFINITY_160 },
+                { true, true, "./res/Gear/Canopies/9Cell/", 900.0f, "Canopy05", "Infinity", L"Infinity", "190", L"190", PROPS_INFINITY_190 },
 
                 { false, true, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "240", L"240", PROPS_FB_240 },
                 { false, false, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "254", L"254", PROPS_FB_254 },
@@ -804,8 +795,8 @@ void Canopy::loadCanopies(Canopy& canopyPrototype, string textureBase, const cha
                         wstring name(L" ", s.length());
                         copy(s.begin(), s.end(), name.begin());
 
-                        canopyPrototype.name = baseName + " " + s + " " + sizeName;
-                        canopyPrototype.wname = baseWName + L" " + name + L" " + sizeWName;
+                        canopyPrototype.name = baseName + " " + sizeName + s + " ";
+                        canopyPrototype.wname = baseWName + L" " + sizeWName + L" " + name;
                         canopies.push_back(canopyPrototype);
                 }
         } else {

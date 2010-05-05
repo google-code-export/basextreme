@@ -987,8 +987,8 @@ void CanopySimulator::onUpdatePhysics(void)
     //float avgDeep = max(modeLeftDeep * modeRightDeep, 0.0f);
     attackAngle += _gearRecord->AAdeep * avgDeep;
 
-    if( attackAngle < 0 ) {
-        attackAngle = 0.0f;
+    if( attackAngle <= 0.0f ) {
+        attackAngle = 1.0f;
     }
     if( attackAngle > 90 ) { 
         //attackAngle = -180.0f + attackAngle;
@@ -1130,7 +1130,8 @@ void CanopySimulator::onUpdatePhysics(void)
         }
     }
 
-
+    assert(_nxCanopy->getLinearVelocity().isFinite());
+    assert(_nxCanopy->getLinearVelocity().magnitude() < 300.0f);
 
     // down canopy nose at low speed
     /*float minSpeed  = 1.0f;
