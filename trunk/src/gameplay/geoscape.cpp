@@ -562,11 +562,13 @@ Gear Geoscape::generateGear(bool generateUsedGear)
         result.id   = getCore()->getRandToolkit()->getUniformInt() % database::Rig::getNumRecords();
         assert( (unsigned int)result.id < database::Rig::getNumRecords() );
         break;
-    case 3: 
+    case 3: {
+        unsigned int count = database::Canopy::getNumRecords();
         result.type = gtCanopy; 
-        result.id   = getCore()->getRandToolkit()->getUniformInt() % database::Canopy::getNumRecords();
-        assert( (unsigned int)result.id < database::Canopy::getNumRecords() );
+        result.id   = getCore()->getRandToolkit()->getUniformInt() % count;
+        assert( (unsigned int)result.id < count );
         break;
+    }
     default:
         assert( !"shouldn't be here!" );
     }

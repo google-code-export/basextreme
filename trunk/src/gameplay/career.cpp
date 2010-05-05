@@ -77,6 +77,11 @@ Career::Career(TiXmlElement* node)
             {
                 throw ccor::Exception( "User database entry corrupted: \"%s\"! Cheating not allowed!", _name.c_str() );
             }
+
+            _virtues.equipment.suit.updateIdFromName();
+            _virtues.equipment.canopy.updateIdFromName();
+            _virtues.equipment.rig.updateIdFromName();
+            _virtues.equipment.helmet.updateIdFromName();
         }
         else if( child->Type() == TiXmlNode::ELEMENT && strcmp( child->Value(), "gears" ) == 0 )
         {
@@ -181,11 +186,9 @@ Career::~Career()
 void Career::addGear(Gear gear)
 {
         // Update gear ids using names
-        if (gear.type == GearType::gtSuit) {
-                int id = database::Suit::getRecordId(gear.name);
-                if (id == -1) {
-                        return;
-                }
+        gear.updateIdFromName();
+        if (gear.id == -1) {
+                return;
         }
         _gears.push_back( gear );
 }

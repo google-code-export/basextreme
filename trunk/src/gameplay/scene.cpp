@@ -268,7 +268,7 @@ void Scene::load(void)
         for (i = 0; i < count; ++i) {
             const char* resourceName = locationInfo->localTextures[i].c_str();
 
-            engine::ITexture* texture = Gameplay::iEngine->createTexture( resourceName );
+            engine::ITexture* texture = Gameplay::iEngine->createTexture( resourceName, false );
             assert( texture );
             texture->addReference();
             texture->setMagFilter( engine::ftLinear );
@@ -377,7 +377,7 @@ void Scene::load(void)
             _grassTexture = Gameplay::iEngine->getTexture( locationInfo->grass.textureName.c_str() );
             if( !_grassTexture )
             {
-                _grassTexture = Gameplay::iEngine->createTexture( locationInfo->grass.textureResource.c_str() );
+                _grassTexture = Gameplay::iEngine->createTexture( locationInfo->grass.textureResource.c_str(), false );
                 assert( _grassTexture );
             }            
             _grassTexture->addReference();
@@ -428,7 +428,7 @@ void Scene::load(void)
     if( numParticles )
     {
         // load rain texture
-        _rainTexture = Gameplay::iEngine->createTexture( "./res/particles/rain.dds" );
+        _rainTexture = Gameplay::iEngine->createTexture( "./res/particles/rain.dds", false );
         assert( _rainTexture );
         _rainTexture->addReference();
         _rainTexture->setMagFilter( engine::ftLinear );

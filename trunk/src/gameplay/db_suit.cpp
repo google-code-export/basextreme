@@ -116,7 +116,7 @@ int Suit::getRecordId(char* name)
 }
 
 
-bool getdir (string dir, vector<string>* files)
+static bool getdir (string dir, vector<string>* files)
 {
      WIN32_FIND_DATA find_data;
      HANDLE hnd;
@@ -146,6 +146,12 @@ void Suit::initSuits()
                 { true, COST_FALCO_WINGSUIT, true, 1, "Falco", L"Falco", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_FALCO_WINGSUIT },
                 { true, COST_XWING_WINGSUIT, true, 1, "X Wing", L"X Wing", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_XWING_WINGSUIT }
         };
+
+        // Add suit 0 - AFF suit
+        prototypes[0].texture = "./res/Gear/Special/AFF Suit.dds";
+        prototypes[0].name = "AFF Suit";
+        prototypes[0].wname = L"AFF Suit";
+        suits.push_back(prototypes[0]);
 
         loadSuits(prototypes[0], "./res/Gear/Suits/Altitude/", "./res/Gear/Suits/Altitude/*.dds");
         loadSuits(prototypes[1], "./res/Gear/Suits/Subterminal/", "./res/Gear/Suits/Subterminal/*.dds");

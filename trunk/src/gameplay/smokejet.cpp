@@ -18,7 +18,7 @@ SmokeJet::SmokeJet(Jumper* jumper, Vector4f color, SmokeJetMode mode) : Actor( j
     texture = Gameplay::iEngine->getTexture( "smoketrail" );
     if( !texture )
     {
-        texture = Gameplay::iEngine->createTexture( "./res/particles/smoketrail.dds" );
+        texture = Gameplay::iEngine->createTexture( "./res/particles/smoketrail.dds", false );
         texture->setMinFilter( engine::ftAnisotropic );
         texture->setMagFilter( engine::ftLinear );
         texture->setMipFilter( engine::ftLinear );

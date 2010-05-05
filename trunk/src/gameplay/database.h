@@ -128,14 +128,18 @@ public:
     float        Kda;              // coefficient of damage absorbtion
     float        Kage;             // coefficient of ageing (damage - to - state reduction)
     unsigned int modelId;          // 3d model identifier
-    unsigned int nameId;           // (language id) model name
+    std::string  name;             // model name    
+    std::wstring wname;            // model name
     unsigned int descriptionId;    // (language id) model description
     unsigned int colorId;          // (language id) color name
     unsigned int manufacturerId;   // (language id) manufacturer name
-    unsigned int textureId;        // GearTexture record id    
+    std::string  texture;
 public:
     static unsigned int getNumRecords(void);
-    static Helmet* getRecord(unsigned int id);
+    static Helmet*      getRecord(unsigned int id);
+    static int          getRecordId(char* name);
+    static void         initHelmets();
+    static void         loadHelmets(Helmet& helmetPrototype, std::string textureBase, const char* dir);
 };
 
 /**
@@ -154,7 +158,7 @@ public:
     unsigned int descriptionId;       // (language id) model description
     unsigned int colorId;             // (language id) color name
     unsigned int manufacturerId;      // (language id) manufacturer name
-    std::string  texture;             // GearTexture record id
+    std::string  texture;
 
     float        kAlign;              // horizontal velosity aligment coefficient
 
@@ -199,11 +203,12 @@ public:
     bool         trade;          // rig is tradeable
     float        cost;           // cost of the rig
     bool         skydiving;      // true if rig for skydiving only
-    unsigned int nameId;         // (language id) model name
+    std::string  name;           // model name    
+    std::wstring wname;          // model name
     unsigned int descriptionId;  // (language id) model description
     unsigned int colorId;        // (language id) color name
     unsigned int manufacturerId; // (language id) manufacturer name
-    unsigned int textureId;      // texture name
+    std::string  texture;
     float        Kab;            // coefficient of overburden absorbtion 
     float        Kminoverb;      // minimal ageing overburden
     float        Kminage;        // miniam ageing (per second)
@@ -211,7 +216,10 @@ public:
     float        Kmaxage;        // maximal ageing (per second)    
 public:
     static unsigned int getNumRecords(void);
-    static Rig* getRecord(unsigned int id);
+    static Rig*         getRecord(unsigned int id);
+    static int          getRecordId(char* name);
+    static void         initRigs();
+    static void         loadRigs(Rig& rigPrototype, std::string textureBase, const char* dir);
 };
 
 /**
@@ -302,12 +310,14 @@ struct Canopy
 public:
     bool         trade;          // flag for trading activity
     bool         skydiving;      // flag for skydiving gear
-    gui::Rect    color;          // color preview
-    unsigned int textureId;      // texture id, @see GearTexture database
+    std::string  texture;
     float        cost;           // cost
     const char*  templateName;   // canopy 3d model template name    
 public:
-    unsigned int nameId;         // (language id) model name
+    std::string  name;                // model name    
+    std::wstring wname;               // model name
+    std::string  sizeName;                // model size name    
+    std::wstring sizeWname;               // model size name
     unsigned int descriptionId;  // (language id) model description
     unsigned int manufacturerId; // (language id) manufacturer name
     float        mass;           // canopy mass
@@ -365,9 +375,12 @@ public:
     Pilotchute*  pilots;    // avaiable pilotchute options
 public:
     static unsigned int getNumRecords(void);
-    static Canopy* getRecord(unsigned int id);
-    static float getOptimalCanopySquare(float weight, float wind);
-    static float getWingLoading(unsigned int id, float weight);
+    static Canopy*      getRecord(unsigned int id);
+    static float        getOptimalCanopySquare(float weight, float wind);
+    static float        getWingLoading(unsigned int id, float weight);
+    static int          getRecordId(char* name);
+    static void         initCanopies();
+    static void         loadCanopies(Canopy& canopyPrototype, std::string textureBase, const char* dir);
 };
 
 /**

@@ -31,7 +31,7 @@ SmokeBall::SmokeBall(Actor* parent, SmokeBallDesc* desc) : Actor( parent )
     texture = Gameplay::iEngine->getTexture( "smoke" );
     if( !texture )
     {
-        texture = Gameplay::iEngine->createTexture( "./res/particles/smoke.dds" );
+        texture = Gameplay::iEngine->createTexture( "./res/particles/smoke.dds", false );
         texture->setMinFilter( engine::ftLinear );
         texture->setMagFilter( engine::ftLinear );
         texture->setMipFilter( engine::ftLinear );

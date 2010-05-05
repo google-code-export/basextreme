@@ -1545,7 +1545,7 @@ void CanopySimulator::onEvent(Actor* initiator, unsigned int eventId, void* even
                 // canopy name
                 gui::IGuiPanel* panel = _signature->getPanel()->find( "CanopyName" ); assert( panel && panel->getStaticText() );
                 database::Canopy* canopyInfo = database::Canopy::getRecord( this->_gear->id );
-                panel->getStaticText()->setText( Gameplay::iLanguage->getUnicodeString( canopyInfo->nameId ) );
+                panel->getStaticText()->setText( canopyInfo->wname.c_str() );
     
                 // canopy inflation
                 panel = _signature->getPanel()->find( "CanopyInflation" ); assert( panel && panel->getStaticText() );

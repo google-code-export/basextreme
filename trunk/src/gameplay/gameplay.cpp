@@ -395,7 +395,10 @@ void Gameplay::entityInit(Object * p)
     //NxGetPhysicsSDK()->setParameter( NX_VISUALIZE_BODY_LIN_FORCE,1 );
 
     database::LocationInfo::loadLocations("./res/locations.cfg");
+    database::Canopy::initCanopies();
     database::Suit::initSuits();
+    database::Rig::initRigs();
+    database::Helmet::initHelmets();
     database::TournamentInfo::initStaticTournaments();
 
     // generate user community events from XML documents

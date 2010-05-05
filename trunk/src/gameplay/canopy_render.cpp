@@ -46,7 +46,7 @@ void CanopyRenderCallback::setTexture(const char* textureName, const char* resou
     canopyTexture = Gameplay::iEngine->getTexture( textureName );
     if( canopyTexture == NULL )
     {
-        canopyTexture = Gameplay::iEngine->createTexture( resourceName );
+        canopyTexture = Gameplay::iEngine->createTexture( resourceName, true );
         assert( canopyTexture );
         canopyTexture->setMinFilter( engine::ftAnisotropic );
         canopyTexture->setMagFilter( engine::ftLinear );
@@ -58,8 +58,7 @@ void CanopyRenderCallback::setTexture(const char* textureName, const char* resou
 
 void CanopyRenderCallback::setTexture(database::Canopy* gearRecord)
 {
-    database::GearTexture* textureInfo = database::GearTexture::getRecord( gearRecord->textureId );
-    setTexture( textureInfo->textureName, textureInfo->resourceName );
+        setTexture( gearRecord->texture.c_str(), gearRecord->texture.c_str() );
 }
 
 void CanopyRenderCallback::setTexture(Gear* gear)

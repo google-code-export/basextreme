@@ -116,7 +116,7 @@ void JumperRenderCallback::setFace(unsigned int faceId)
     faceTexture = Gameplay::iEngine->getTexture( face->textureName );
     if( faceTexture == NULL )
     {
-        faceTexture = Gameplay::iEngine->createTexture( face->resourceName );
+        faceTexture = Gameplay::iEngine->createTexture( face->resourceName, false );
         assert( faceTexture );
         faceTexture->setMinFilter( engine::ftAnisotropic );
         faceTexture->setMagFilter( engine::ftLinear );
@@ -136,7 +136,7 @@ void JumperRenderCallback::setFace(const char* textureName, const char* resource
     faceTexture = Gameplay::iEngine->getTexture( textureName );
     if( faceTexture == NULL )
     {
-        faceTexture = Gameplay::iEngine->createTexture( resourceName );
+        faceTexture = Gameplay::iEngine->createTexture( resourceName, false );
         assert( faceTexture );
         faceTexture->setMinFilter( engine::ftAnisotropic );
         faceTexture->setMagFilter( engine::ftLinear );
@@ -154,11 +154,10 @@ void JumperRenderCallback::setHelmet(unsigned int helmetId)
         helmetTexture = NULL;
     }
     database::Helmet* helmet = database::Helmet::getRecord( helmetId );
-    database::GearTexture* gearTexture = database::GearTexture::getRecord( helmet->textureId );
-    helmetTexture = Gameplay::iEngine->getTexture( gearTexture->textureName );
+    helmetTexture = Gameplay::iEngine->getTexture(helmet->texture.c_str());
     if( helmetTexture == NULL )
     {
-        helmetTexture = Gameplay::iEngine->createTexture( gearTexture->resourceName );
+        helmetTexture = Gameplay::iEngine->createTexture( helmet->texture.c_str(), true );
         assert( helmetTexture );
         helmetTexture->setMinFilter( engine::ftAnisotropic );
         helmetTexture->setMagFilter( engine::ftLinear );
@@ -178,10 +177,11 @@ void JumperRenderCallback::setSuit(unsigned int suitId)
     database::Suit* suit = database::Suit::getRecord( suitId );
 //    database::GearTexture* gearTexture = database::GearTexture::getRecord( suit->textureId );
 
-    suitTexture = Gameplay::iEngine->getTexture(exname(suit->texture.c_str()).c_str());
+    //suitTexture = Gameplay::iEngine->getTexture(exname(suit->texture.c_str()).c_str());
+    suitTexture = Gameplay::iEngine->getTexture(suit->texture.c_str());
     if( suitTexture == NULL )
     {
-        suitTexture = Gameplay::iEngine->createTexture(suit->texture.c_str());
+        suitTexture = Gameplay::iEngine->createTexture(suit->texture.c_str(), true);
         assert( suitTexture );
         suitTexture->setMinFilter( engine::ftAnisotropic );
         suitTexture->setMagFilter( engine::ftLinear );
@@ -199,11 +199,11 @@ void JumperRenderCallback::setRig(unsigned int rigId)
         rigTexture = NULL;
     }
     database::Rig* rig = database::Rig::getRecord( rigId );
-    database::GearTexture* gearTexture = database::GearTexture::getRecord( rig->textureId );
-    rigTexture = Gameplay::iEngine->getTexture( gearTexture->textureName );
+    //database::GearTexture* gearTexture = database::GearTexture::getRecord( rig->textureId );
+    rigTexture = Gameplay::iEngine->getTexture( rig->texture.c_str() );
     if( rigTexture == NULL )
     {
-        rigTexture = Gameplay::iEngine->createTexture( gearTexture->resourceName );
+        rigTexture = Gameplay::iEngine->createTexture( rig->texture.c_str(), true );
         assert( rigTexture );
         rigTexture->setMinFilter( engine::ftAnisotropic );
         rigTexture->setMagFilter( engine::ftLinear );

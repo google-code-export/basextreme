@@ -95,7 +95,7 @@ void Event::initializeGui(void)
 
     // create textures
     _buttonTexture = Gameplay::iEngine->getTexture( eventInfo->textureName );
-    if( !_buttonTexture ) _buttonTexture = Gameplay::iEngine->createTexture( eventInfo->resourceName );
+    if( !_buttonTexture ) _buttonTexture = Gameplay::iEngine->createTexture( eventInfo->resourceName, false );
     assert( _buttonTexture );
     _buttonTexture->addReference();    
 
