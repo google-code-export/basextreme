@@ -98,7 +98,7 @@ void Gui::entityInit(Object * p)
             // read resource
             std::string path = static_cast<TiXmlElement*>( child )->Attribute( "resource" );
             path = strtrim( path, "\"" );
-            engine::ITexture* texture = Engine::instance->createTexture( path.c_str() );
+            engine::ITexture* texture = Engine::instance->createTexture( path.c_str(), false );
             texture->addReference();
         }
         child = child->NextSibling();

@@ -294,16 +294,16 @@ void Engine::entityInit(Object * p)
     CameraEffect::init();
 
     // load default textures
-    createTexture( "./res/effects/textures/lensflare/flare1.dds" );
-    createTexture( "./res/effects/textures/lensflare/flare2.dds" );
-    createTexture( "./res/effects/textures/lensflare/flare3.dds" );
-    createTexture( "./res/effects/textures/lensflare/flare4.dds" );
-    createTexture( "./res/effects/textures/lensflare/flare5.dds" );
-    createTexture( "./res/effects/textures/lensflare/flare6.dds" );
-    createTexture( "./res/effects/textures/lensflare/flare7.dds" );
+    createTexture( "./res/effects/textures/lensflare/flare1.dds", false );
+    createTexture( "./res/effects/textures/lensflare/flare2.dds", false );
+    createTexture( "./res/effects/textures/lensflare/flare3.dds", false );
+    createTexture( "./res/effects/textures/lensflare/flare4.dds", false );
+    createTexture( "./res/effects/textures/lensflare/flare5.dds", false );
+    createTexture( "./res/effects/textures/lensflare/flare6.dds", false );
+    createTexture( "./res/effects/textures/lensflare/flare7.dds", false );
 
     // create alpha balck texture (used as render state corrector)
-    alphaBlackTexture = createTexture( "./res/alphablack.dds" );
+    alphaBlackTexture = createTexture( "./res/alphablack.dds", false );
     assert( alphaBlackTexture );
 
     // create default rendering resources

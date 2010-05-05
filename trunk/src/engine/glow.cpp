@@ -52,7 +52,7 @@ Glow::Glow(BSP* bsp, const char* glowTextureResource)
         TextureI glowTextureI = Texture::textures.find( glowTextureName.c_str() );
         if( glowTextureI == Texture::textures.end() )
         {
-            glowTexture = Texture::createTexture( glowTextureResource );
+            glowTexture = Texture::createTexture( glowTextureResource, false );
             glowTexture->setMagFilter( engine::ftLinear );
             glowTexture->setMinFilter( engine::ftLinear );
             glowTexture->setMipFilter( engine::ftNone );

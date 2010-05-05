@@ -1219,7 +1219,7 @@ public:
      */
     virtual ITexture* __stdcall createRenderTarget(int width, int height, int depth, const char* textureName) = 0;
     virtual ITexture* __stdcall createCubeRenderTarget(int size, int depth, const char* textureName) = 0;
-    virtual ITexture* __stdcall createTexture(const char* resourcePath) = 0;
+    virtual ITexture* __stdcall createTexture(const char* resourcePath, bool keepFullName) = 0;
     virtual ITexture* __stdcall createDUDVFromNormalMap(ITexture* normalMap, const char* dudvName) = 0;
     virtual IShader* __stdcall createShader(int numLayers, const char* shaderName) = 0;
     virtual IFrame* __stdcall createFrame(const char* frameName) = 0;

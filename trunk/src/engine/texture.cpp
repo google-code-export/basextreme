@@ -71,9 +71,9 @@ engine::ITexture* Engine::createCubeRenderTarget(int size, int depth, const char
     return Texture::createCubeRenderTarget( size, depth, textureName );
 }
 
-engine::ITexture* Engine::createTexture(const char* resourcePath)
+engine::ITexture* Engine::createTexture(const char* resourcePath, bool keepFullName)
 {
-    return Texture::createTexture( resourcePath );
+        return Texture::createTexture( resourcePath, keepFullName );
 }
 
 engine::ITexture* Engine::createDUDVFromNormalMap(engine::ITexture* normalMap, const char* dudvName)
@@ -273,7 +273,7 @@ Texture* Texture::createCubeRenderTarget(int size, int depth, const char* name)
     return result;
 }
 
-Texture* Texture::createTexture(const char* fileName)
+Texture* Texture::createTexture(const char* fileName, bool keepFullName)
 {
     // read surface format
     IResource* resource = getCore()->getResource( fileName, "rb" ); assert( resource );
@@ -327,7 +327,11 @@ Texture* Texture::createTexture(const char* fileName)
         ) );*/
     }
 
-    result->_name = getTextureNameFromFilePath( fileName );
+    if (keepFullName) {
+        result->_name = fileName;
+    } else {
+        result->_name = getTextureNameFromFilePath( fileName );
+    }
     textures.insert( TextureT( result->_name.c_str(), result ) );
     
     return result;
@@ -676,7 +680,7 @@ AssetObjectT Texture::read(IResource* resource, AssetObjectM& assetObjects)
     path += chunk.name;
     path += ".dds";
 
-    Texture* texture = Texture::createTexture( path.c_str() );
+    Texture* texture = Texture::createTexture( path.c_str(), false );
 
     texture->_addressTypeU  = chunk.addresTypeU;
     texture->_addressTypeV  = chunk.addresTypeV;

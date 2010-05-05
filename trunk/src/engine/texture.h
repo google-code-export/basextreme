@@ -78,7 +78,7 @@ public:
     static Texture* createDynamicTexture(int width, int height, int depth, const char* name);
     static Texture* createRenderTarget(int width, int height, int depth, const char* name);
     static Texture* createCubeRenderTarget(int size, int depth, const char* name);
-    static Texture* createTexture(const char* fileName);
+    static Texture* createTexture(const char* fileName, bool keepFullName);
     virtual ~Texture();
     // Lostable
     virtual void onLostDevice(void);
