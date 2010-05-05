@@ -144,6 +144,7 @@ void Altimeter::onUpdateActivity(float dt)
             {
                 _toneSound = Gameplay::iAudio->createStaticSound( "./res/sounds/hud/aualt0.ogg" );
                 _toneSound->setLoop( true );
+                _toneSound->setGain(0.5f);
             }
         }
         if( acIWA->getTrigger() && _acIWATimeout == 0 )
@@ -158,7 +159,7 @@ void Altimeter::onUpdateActivity(float dt)
         }
 
         // play tone sound
-        if( altitude < _state->altitude && _toneSound )            
+        if( altitude < _state->altitude && _toneSound && (_parent->getVel().length() > 3000.0f))
         {
             if( !_toneSound->isPlaying() ) _toneSound->play();
         }

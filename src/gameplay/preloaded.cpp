@@ -28,11 +28,9 @@ Preloaded::Preloaded()
     _preloadedAssets.push_back( PreloadedAsset( "Canopy01", engine::atXFile, "./res/x/canopy01.x", NULL ) );
     _preloadedAssets.push_back( PreloadedAsset( "Canopy02", engine::atXFile, "./res/x/canopy02.x", NULL ) );
     _preloadedAssets.push_back( PreloadedAsset( "Canopy03", engine::atXFile, "./res/x/canopy03.x", NULL ) );
-    #ifdef GAMEPLAY_EDITION_ATARI
-        _preloadedAssets.push_back( PreloadedAsset( "Canopy04", engine::atXFile, "./res/x/canopy04.x", NULL ) );
-        _preloadedAssets.push_back( PreloadedAsset( "Canopy05", engine::atXFile, "./res/x/canopy05.x", NULL ) );
-        _preloadedAssets.push_back( PreloadedAsset( "Canopy06", engine::atXFile, "./res/x/canopy06.x", NULL ) );
-    #endif
+    _preloadedAssets.push_back( PreloadedAsset( "Canopy04", engine::atXFile, "./res/x/canopy04.x", NULL ) );
+    _preloadedAssets.push_back( PreloadedAsset( "Canopy05", engine::atXFile, "./res/x/canopy05.x", NULL ) );
+    _preloadedAssets.push_back( PreloadedAsset( "Canopy06", engine::atXFile, "./res/x/canopy06.x", NULL ) );
     _preloadedAssets.push_back( PreloadedAsset( "LandingCircle", engine::atBinary, "./res/others/landingzone.ba", NULL ) );
     _preloadedAssets.push_back( PreloadedAsset( "BaseJumper01", engine::atXFile, "./res/x/character05.x", NULL ) );
 #endif

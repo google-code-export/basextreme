@@ -84,6 +84,9 @@ void ButtonChannel::setupDefault(void)
     case iaCameraMode2:
         _keyCode = 0x3D; // F3
         break;
+    case iaCameraMode4:
+        _keyCode = 0x3E; // F4
+        break;
     case iaCameraMode3:
         _keyCode = 0x58; // F12
         break;

@@ -235,21 +235,28 @@ void Jumper::CanopyOpening::updatePhysics(void)
     float It = velocity.magnitude() / Vt;
 
     // air resistance force
-    NxVec3 Far = NxVec3(0,1,0) * (getAirResistancePower( velocity.magnitude() / Vt ) * _phActor->getMass() * 9.8f);
+    NxVec3 direction = -velocity;
+    if (direction.magnitudeSquared() != 0.0f) {
+        direction.normalize();
+        NxVec3 Far = direction * (getAirResistancePower( velocity.magnitude() / Vt ) * _phActor->getMass() * 9.8f);
+        assert(Far.isFinite());
+        // finalize motion equation    
+        _phActor->addForce( Far );
+    }
 
-    // finalize motion equation    
-    _phActor->addForce( Far );
+//    // linear damping is function of jumper velocity    
+//    // this is prevents calculation errors due to high speed rates
+//    float minVel     = 50.0f;
+//    float minDamping = _initialLD;
+//    float maxVel     = 70.0f;
+//    float maxDamping = 2.5f;
+//    float factor = ( velocity.magnitude() - minVel ) / ( maxVel - minVel );
+//    factor = factor < 0 ? 0 : ( factor > 1 ? 1 : factor );
+//    float damping = minDamping * ( factor - 1 ) + maxDamping * ( factor );
+//    _phActor->setLinearDamping( damping );
 
-    // linear damping is function of jumper velocity    
-    // this is prevents calculation errors due to high speed rates
-    float minVel     = 50.0f;
-    float minDamping = _initialLD;
-    float maxVel     = 70.0f;
-    float maxDamping = 2.5f;
-    float factor = ( velocity.magnitude() - minVel ) / ( maxVel - minVel );
-    factor = factor < 0 ? 0 : ( factor > 1 ? 1 : factor );
-    float damping = minDamping * ( factor - 1 ) + maxDamping * ( factor );
-    _phActor->setLinearDamping( damping );
+    assert(_phActor->getLinearVelocity().isFinite());
+    assert(_phActor->getLinearVelocity().magnitude() < 300.0f);
 
     // shallow brake setting
     _canopy->setLeftDeep( 0.7f );

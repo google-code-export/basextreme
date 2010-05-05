@@ -224,6 +224,11 @@ void Gameplay::createActionMap(void)
     buttonChannel->setup( 0, getActionCode( _config, "iaCameraMode2" ) );
     _actionChannels.insert( ActionChannelT( iaCameraMode2, buttonChannel ) );
 
+    // create camera mode 2 channel
+    buttonChannel = new ButtonChannel( iaCameraMode4, 1, 4 );
+    buttonChannel->setup( 0, getActionCode( _config, "iaCameraMode4" ) );
+    _actionChannels.insert( ActionChannelT( iaCameraMode4, buttonChannel ) );
+
     // create WLO channel
     buttonChannel = new ButtonChannel( iaWLO, 1, 4 );
     buttonChannel->setup( 0, getActionCode( _config, "iaWLO" ) );
