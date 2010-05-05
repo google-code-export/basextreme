@@ -134,7 +134,7 @@ public:
     virtual void __stdcall setRenderState(engine::RenderState renderState, unsigned int value);
     virtual engine::ITexture* __stdcall createRenderTarget(int width, int height, int depth, const char* textureName);
     virtual engine::ITexture* __stdcall createCubeRenderTarget(int size, int depth, const char* textureName);
-    virtual engine::ITexture* __stdcall createTexture(const char* resourcePath);
+    virtual engine::ITexture* __stdcall createTexture(const char* resourcePath, bool keepFullName);
     virtual engine::ITexture* __stdcall createDUDVFromNormalMap(engine::ITexture* normalMap, const char* dudvName);
     virtual engine::IShader* __stdcall createShader(int numLayers, const char* shaderName);
     virtual engine::IFrame* __stdcall createFrame(const char* frameName);

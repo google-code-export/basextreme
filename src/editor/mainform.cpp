@@ -1172,7 +1172,7 @@ void MainForm::OnToolsCreatebumpmap()
         // load texture
         engine::IEngine* iEngine;
         queryInterfaceT( "Engine", &iEngine );
-        engine::ITexture* texture = iEngine->createTexture( fileName.c_str() );
+        engine::ITexture* texture = iEngine->createTexture( fileName.c_str(), false );
         assert( texture );
 
         // create DUDV

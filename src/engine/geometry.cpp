@@ -1065,7 +1065,7 @@ void Geometry::captureMeshData(bool captureShaders)
                 }
                 else
                 {
-                    texture = Texture::createTexture( _mesh->pMaterials[i].pTextureFilename );
+                    texture = Texture::createTexture( _mesh->pMaterials[i].pTextureFilename, false );
                     texture->setMagFilter( engine::ftLinear );
                     texture->setMinFilter( engine::ftLinear );
                     texture->setMipFilter( engine::ftLinear );

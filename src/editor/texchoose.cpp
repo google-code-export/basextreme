@@ -225,7 +225,7 @@ void TextureChooser::OnButton1()
         SetCurrentDirectory( currentDir );
 
         std::string fileName = fileDialog.GetPathName();
-        texture = iEngine()->createTexture( fileName.c_str() );
+        texture = iEngine()->createTexture( fileName.c_str(), false );
 
         textureName.ResetContent();
 
