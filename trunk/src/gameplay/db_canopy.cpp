@@ -451,6 +451,7 @@ static database::Pilotchute skydivingPilots[numSkydivingPilots] =
 #define PROPS_JAHNCLE_270 DESCRIPTIONID_JAHNCLE, MFRID_D3, 3.00f, 5.008f, 270.0f, 2.0f, 3.285f, 3.680f, 3.680f, 2.25f, &riserScheme01, 45.00f, 2.57f, 12.85f, AA_JAHNCLE, 16.07f, 32.14f, 1.285f, 7.71f, 0.225f, 0.964f, 7.71f, 15.43f, 25.70f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
 #define PROPS_JAHNCLE_290 DESCRIPTIONID_JAHNCLE, MFRID_D3, 3.25f, 5.190f, 290.0f, 2.0f, 3.400f, 3.814f, 3.814f, 2.25f, &riserScheme01, 48.33f, 2.76f, 13.80f, AA_JAHNCLE, 17.26f, 34.52f, 1.380f, 8.28f, 0.242f, 1.035f, 8.28f, 16.57f, 27.61f, INFL_JAHNCLE, COLLAPSE_JAHNCLE, AGEING_JAHNCLE, numBasePilots, basePilots
 
+#define PROPS_HAIBANE_100 DESCRIPTIONID_HAIBANE, MFRID_D3, 2.30f, 3.500f, 100.0f, 2.5f, 2.360f, 2.580f, 2.560f, 1.5f, &riserScheme02, 13.50f, 0.400f, 27.0f, AA_HAIBANE, 11.00f, 14.00f, 0.300f, 0.55f, 0.0450f, 0.11200f, 1.10f, 4.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
 #define PROPS_HAIBANE_130 DESCRIPTIONID_HAIBANE, MFRID_D3, 2.50f, 3.885f, 130.0f, 2.5f, 2.650f, 2.900f, 2.900f, 1.5f, &riserScheme02, 15.00f, 0.500f, 30.0f, AA_HAIBANE, 12.00f, 15.50f, 0.350f, 0.60f, 0.0500f, 0.12500f, 1.20f, 4.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
 #define PROPS_HAIBANE_160 DESCRIPTIONID_HAIBANE, MFRID_D3, 2.75f, 4.310f, 160.0f, 2.5f, 2.940f, 3.220f, 3.220f, 1.5f, &riserScheme02, 16.65f, 0.555f, 33.3f, AA_HAIBANE, 13.00f, 17.00f, 0.400f, 0.65f, 0.0555f, 0.13875f, 1.30f, 5.00f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
 #define PROPS_HAIBANE_190 DESCRIPTIONID_HAIBANE, MFRID_D3, 3.00f, 4.697f, 190.0f, 2.5f, 3.200f, 3.510f, 3.510f, 1.5f, &riserScheme02, 18.15f, 0.605f, 36.3f, AA_HAIBANE, 14.00f, 18.50f, 0.450f, 0.70f, 0.0605f, 0.15100f, 1.40f, 5.50f, 14.00f, INFL_HAIBANE, COLLAPSE_HAIBANE, AGEING_HAIBANE, numSkydivingPilots, skydivingPilots
@@ -711,53 +712,54 @@ void Canopy::initCanopies()
         getCore()->logMessage("Info: Loading canopies.");
 
         Canopy prototypes[] = {
-                { true, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy01", "Psychonaut", L"Psychonaut", "210", L"210", PROPS_PSYCHONAUT_210 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy01", "Psychonaut", L"Psychonaut", "221", L"221", PROPS_PSYCHONAUT_221 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy01", "Psychonaut", L"Psychonaut", "232", L"232", PROPS_PSYCHONAUT_232 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1225.0f, "Canopy01", "Psychonaut", L"Psychonaut", "243", L"243", PROPS_PSYCHONAUT_243 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1255.0f, "Canopy01", "Psychonaut", L"Psychonaut", "254", L"254", PROPS_PSYCHONAUT_254 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1325.0f, "Canopy01", "Psychonaut", L"Psychonaut", "265", L"265", PROPS_PSYCHONAUT_265 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1425.0f, "Canopy01", "Psychonaut", L"Psychonaut", "276", L"276", PROPS_PSYCHONAUT_276 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1455.0f, "Canopy01", "Psychonaut", L"Psychonaut", "287", L"287", PROPS_PSYCHONAUT_287 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1475.0f, "Canopy01", "Psychonaut", L"Psychonaut", "298", L"298", PROPS_PSYCHONAUT_298 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1515.0f, "Canopy01", "Psychonaut", L"Psychonaut", "309", L"309", PROPS_PSYCHONAUT_309 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1050.0f, "Canopy01", "Psychonaut", L"Psychonaut", "210", L"210", PROPS_PSYCHONAUT_210 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1100.0f, "Canopy01", "Psychonaut", L"Psychonaut", "221", L"221", PROPS_PSYCHONAUT_221 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1150.0f, "Canopy01", "Psychonaut", L"Psychonaut", "232", L"232", PROPS_PSYCHONAUT_232 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1225.0f, "Canopy01", "Psychonaut", L"Psychonaut", "243", L"243", PROPS_PSYCHONAUT_243 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1255.0f, "Canopy01", "Psychonaut", L"Psychonaut", "254", L"254", PROPS_PSYCHONAUT_254 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1325.0f, "Canopy01", "Psychonaut", L"Psychonaut", "265", L"265", PROPS_PSYCHONAUT_265 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1425.0f, "Canopy01", "Psychonaut", L"Psychonaut", "276", L"276", PROPS_PSYCHONAUT_276 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1455.0f, "Canopy01", "Psychonaut", L"Psychonaut", "287", L"287", PROPS_PSYCHONAUT_287 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1475.0f, "Canopy01", "Psychonaut", L"Psychonaut", "298", L"298", PROPS_PSYCHONAUT_298 },
+                { true, false, "./res/Gear/Canopies/Psychonaut/", "", 1515.0f, "Canopy01", "Psychonaut", L"Psychonaut", "309", L"309", PROPS_PSYCHONAUT_309 },
 
-                { true, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy02", "Jahncle", L"Jahncle", "190", L"190", PROPS_JAHNCLE_190 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy02", "Jahncle", L"Jahncle", "210", L"210", PROPS_JAHNCLE_210 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy02", "Jahncle", L"Jahncle", "240", L"240", PROPS_JAHNCLE_240 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy02", "Jahncle", L"Jahncle", "270", L"270", PROPS_JAHNCLE_270 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1600.0f, "Canopy02", "Jahncle", L"Jahncle", "290", L"290", PROPS_JAHNCLE_290 },
+                { true, false, "./res/Gear/Canopies/Jahncle/", "", 1200.0f, "Canopy02", "Jahncle", L"Jahncle", "190", L"190", PROPS_JAHNCLE_190 },
+                { true, false, "./res/Gear/Canopies/Jahncle/", "", 1300.0f, "Canopy02", "Jahncle", L"Jahncle", "210", L"210", PROPS_JAHNCLE_210 },
+                { true, false, "./res/Gear/Canopies/Jahncle/", "", 1400.0f, "Canopy02", "Jahncle", L"Jahncle", "240", L"240", PROPS_JAHNCLE_240 },
+                { true, false, "./res/Gear/Canopies/Jahncle/", "", 1500.0f, "Canopy02", "Jahncle", L"Jahncle", "270", L"270", PROPS_JAHNCLE_270 },
+                { true, false, "./res/Gear/Canopies/Jahncle/", "", 1600.0f, "Canopy02", "Jahncle", L"Jahncle", "290", L"290", PROPS_JAHNCLE_290 },
 
-                { true, true, "./res/Gear/Canopies/9Cell/",  950.0f, "Canopy03", "Haibane", L"Haibane", "130", L"130", PROPS_HAIBANE_130 },
-                { true, true, "./res/Gear/Canopies/9Cell/", 1100.0f, "Canopy03", "Haibane", L"Haibane", "160", L"160", PROPS_HAIBANE_160 },
-                { true, true, "./res/Gear/Canopies/9Cell/", 1250.0f, "Canopy03", "Haibane", L"Haibane", "190", L"190", PROPS_HAIBANE_190 },
-                { true, true, "./res/Gear/Canopies/9Cell/", 1400.0f, "Canopy03", "Haibane", L"Haibane", "220", L"220", PROPS_HAIBANE_220 },
-                { true, true, "./res/Gear/Canopies/9Cell/", 1550.0f, "Canopy03", "Haibane", L"Haibane", "250", L"250", PROPS_HAIBANE_250 },
+                //{ true, true, "./res/Gear/Canopies/Haibane/", "", 1000.0f, "Canopy03", "Haibane", L"Haibane", "100", L"100", PROPS_HAIBANE_100 },
+                { true, true, "./res/Gear/Canopies/Haibane/", "", 1000.0f, "Canopy03", "Haibane", L"Haibane", "130", L"130", PROPS_HAIBANE_130 },
+                { true, true, "./res/Gear/Canopies/Haibane/", "", 1100.0f, "Canopy03", "Haibane", L"Haibane", "160", L"160", PROPS_HAIBANE_160 },
+                { true, true, "./res/Gear/Canopies/Haibane/", "", 1250.0f, "Canopy03", "Haibane", L"Haibane", "190", L"190", PROPS_HAIBANE_190 },
+                { true, true, "./res/Gear/Canopies/Haibane/", "", 1400.0f, "Canopy03", "Haibane", L"Haibane", "220", L"220", PROPS_HAIBANE_220 },
+                { true, true, "./res/Gear/Canopies/Haibane/", "", 1550.0f, "Canopy03", "Haibane", L"Haibane", "250", L"250", PROPS_HAIBANE_250 },
 
-                { true, false, "./res/Gear/Canopies/7Cell/", 1000.0f, "Canopy04", "Morpheus", L"Morpheus", "210", L"210", PROPS_MORPHEUS_210 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1050.0f, "Canopy04", "Morpheus", L"Morpheus", "221", L"221", PROPS_MORPHEUS_221 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1100.0f, "Canopy04", "Morpheus", L"Morpheus", "232", L"232", PROPS_MORPHEUS_232 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1150.0f, "Canopy04", "Morpheus", L"Morpheus", "243", L"243", PROPS_MORPHEUS_243 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Morpheus", L"Morpheus", "254", L"254", PROPS_MORPHEUS_254 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1250.0f, "Canopy04", "Morpheus", L"Morpheus", "265", L"265", PROPS_MORPHEUS_265 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1300.0f, "Canopy04", "Morpheus", L"Morpheus", "276", L"276", PROPS_MORPHEUS_276 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Morpheus", L"Morpheus", "287", L"287", PROPS_MORPHEUS_287 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1400.0f, "Canopy04", "Morpheus", L"Morpheus", "298", L"298", PROPS_MORPHEUS_298 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1000.0f, "Canopy04", "Morpheus", L"Morpheus", "210", L"210", PROPS_MORPHEUS_210 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1050.0f, "Canopy04", "Morpheus", L"Morpheus", "221", L"221", PROPS_MORPHEUS_221 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1100.0f, "Canopy04", "Morpheus", L"Morpheus", "232", L"232", PROPS_MORPHEUS_232 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1150.0f, "Canopy04", "Morpheus", L"Morpheus", "243", L"243", PROPS_MORPHEUS_243 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1200.0f, "Canopy04", "Morpheus", L"Morpheus", "254", L"254", PROPS_MORPHEUS_254 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1250.0f, "Canopy04", "Morpheus", L"Morpheus", "265", L"265", PROPS_MORPHEUS_265 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1300.0f, "Canopy04", "Morpheus", L"Morpheus", "276", L"276", PROPS_MORPHEUS_276 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1350.0f, "Canopy04", "Morpheus", L"Morpheus", "287", L"287", PROPS_MORPHEUS_287 },
+                { true, false, "./res/Gear/Canopies/Morpheus/", "", 1400.0f, "Canopy04", "Morpheus", L"Morpheus", "298", L"298", PROPS_MORPHEUS_298 },
 
-                { true, false, "./res/Gear/Canopies/7Cell/", 1200.0f, "Canopy04", "Obsession", L"Obsession", "210", L"210", PROPS_OBSESSION_210 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1350.0f, "Canopy04", "Obsession", L"Obsession", "240", L"240", PROPS_OBSESSION_240 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1500.0f, "Canopy04", "Obsession", L"Obsession", "270", L"270", PROPS_OBSESSION_270 },
-                { true, false, "./res/Gear/Canopies/7Cell/", 1650.0f, "Canopy04", "Obsession", L"Obsession", "290", L"290", PROPS_OBSESSION_290 },
+                { true, false, "./res/Gear/Canopies/Obsession/", "", 1200.0f, "Canopy04", "Obsession", L"Obsession", "210", L"210", PROPS_OBSESSION_210 },
+                { true, false, "./res/Gear/Canopies/Obsession/", "", 1350.0f, "Canopy04", "Obsession", L"Obsession", "240", L"240", PROPS_OBSESSION_240 },
+                { true, false, "./res/Gear/Canopies/Obsession/", "", 1500.0f, "Canopy04", "Obsession", L"Obsession", "270", L"270", PROPS_OBSESSION_270 },
+                { true, false, "./res/Gear/Canopies/Obsession/", "", 1650.0f, "Canopy04", "Obsession", L"Obsession", "290", L"290", PROPS_OBSESSION_290 },
 
-                { true, true, "./res/Gear/Canopies/9Cell/", 1300.0f, "Canopy05", "G Force", L"G Force", "220", L"220", PROPS_GFORCE_220 },
-                { true, true, "./res/Gear/Canopies/9Cell/", 1500.0f, "Canopy05", "G Force", L"G Force", "250", L"250", PROPS_GFORCE_250 },
+                { true, true, "./res/Gear/Canopies/G-Force/", "", 1300.0f, "Canopy05", "G-Force", L"G-Force", "220", L"220", PROPS_GFORCE_220 },
+                { true, true, "./res/Gear/Canopies/G-Force/", "", 1500.0f, "Canopy05", "G-Force", L"G-Force", "250", L"250", PROPS_GFORCE_250 },
 
-                { true, true, "./res/Gear/Canopies/9Cell/", 700.0f, "Canopy05", "Infinity", L"Infinity", "160", L"160", PROPS_INFINITY_160 },
-                { true, true, "./res/Gear/Canopies/9Cell/", 900.0f, "Canopy05", "Infinity", L"Infinity", "190", L"190", PROPS_INFINITY_190 },
+                { true, true, "./res/Gear/Canopies/Infinity/", "", 700.0f, "Canopy05", "Infinity", L"Infinity", "160", L"160", PROPS_INFINITY_160 },
+                { true, true, "./res/Gear/Canopies/Infinity/", "", 900.0f, "Canopy05", "Infinity", L"Infinity", "190", L"190", PROPS_INFINITY_190 },
 
-                { false, true, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "240", L"240", PROPS_FB_240 },
-                { false, false, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "254", L"254", PROPS_FB_254 },
-                { false, false, "./res/Gear/Canopies/7Cell/", 0.0f, "Canopy06", "RedBull", L"RedBull", "265", L"265", PROPS_FB_265 },    
+                { true, true, "./res/Gear/Canopies/RedBull/", "", 0.0f, "Canopy06", "RedBull", L"RedBull", "240", L"240", PROPS_FB_240 },
+                { true, false, "./res/Gear/Canopies/RedBull/", "", 0.0f, "Canopy06", "RedBull Base", L"RedBull Base", "254", L"254", PROPS_FB_254 },
+                { true, false, "./res/Gear/Canopies/RedBull/", "", 0.0f, "Canopy06", "RedBull Base", L"RedBull Base", "265", L"265", PROPS_FB_265 },    
         };
 
         // Add suit 0 - AFF suit
@@ -787,7 +789,17 @@ void Canopy::loadCanopies(Canopy& canopyPrototype, string textureBase, const cha
                 wstring baseWName = canopyPrototype.wname;
                 string sizeName = canopyPrototype.sizeName;
                 wstring sizeWName = canopyPrototype.sizeWname;
+
                 for (i = 0; i < (int)files.size(); ++i) {
+                        { // icon
+                                if (files[i].find("_") != string::npos) {
+                                        continue;
+                                }
+                                string iconFileName = files[i];
+                                iconFileName = textureBase + iconFileName.replace(iconFileName.find_last_of("."), 1, "_.");
+                                canopyPrototype.iconTexture = iconFileName;
+                        }
+
                         canopyPrototype.texture = textureBase + files[i];
 
                         string s(files[i]);

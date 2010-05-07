@@ -360,8 +360,8 @@ void Jumper::Tracking::updatePhysics(void)
     float leftRate  = ( _jumper->getSpinalCord()->leftWarp > 0.0f ) ? _jumper->getSpinalCord()->leftWarp * 5.0f : (_jumper->getSpinalCord()->left > 0.0f ? 0.8f : 0.0f) + _jumper->getSpinalCord()->left * 2.0f;
     float rightRate = ( _jumper->getSpinalCord()->rightWarp > 0.0f ) ? _jumper->getSpinalCord()->rightWarp * 5.0f : (_jumper->getSpinalCord()->right > 0.0f ? 0.8f : 0.0f) + _jumper->getSpinalCord()->right * 2.0f;
 
-    Tctrl += NxVec3(1,0,0) * -_jumper->getVirtues()->getSteerPitch() * _jumper->getSpinalCord()->down;
-    Tctrl += NxVec3(1,0,0) * _jumper->getVirtues()->getSteerPitch() * _jumper->getSpinalCord()->up;
+    Tctrl += NxVec3(1,0,0) * -_jumper->getVirtues()->getSteerPitch() * _jumper->getSpinalCord()->down * 2.0f;
+    Tctrl += NxVec3(1,0,0) * _jumper->getVirtues()->getSteerPitch() * _jumper->getSpinalCord()->up * 2.0f;
     Tctrl += NxVec3(0,0,1) * leftRate * -_jumper->getVirtues()->getSteerTurn();
     Tctrl += NxVec3(0,0,1) * rightRate * _jumper->getVirtues()->getSteerTurn();
     Tctrl *= It;

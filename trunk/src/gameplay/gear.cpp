@@ -126,13 +126,26 @@ gui::Rect Gear::getGearPreview(void)
 {
     if( type == ::gtCanopy )
     {
-        return gui::Rect( 255, 255, 255, 255 );
+        return gui::Rect( 0, 0, 16, 32 );
     }
     else
     {
         return gui::Rect( 0,0,15,31 );
     }
 }
+
+engine::ITexture* Gear::getGearPreviewTexture(void) {
+        if (type == gtCanopy) {
+                engine::ITexture* texture = Gameplay::iEngine->getTexture(database::Canopy::getRecord(id)->iconTexture.c_str());
+                if (texture == 0) {
+                        texture = Gameplay::iEngine->createTexture(database::Canopy::getRecord(id)->iconTexture.c_str(), true);
+                }
+                return texture;
+        }
+
+        return 0;
+}
+
 
 bool Gear::isTradeable(void)
 {

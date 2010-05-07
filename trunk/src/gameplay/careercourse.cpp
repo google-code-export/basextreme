@@ -842,6 +842,14 @@ void CareerCourse::updateShopScreen(void)
             name->getButton()->setCaption( gear.getName() );
             name->setHint( gear.getDescription() );
             color->setColor( gear.getGearColor() );
+
+            engine::ITexture* texture = gear.getGearPreviewTexture();
+            if (texture != 0) {
+                color->setTexture(texture);
+            } else {
+                color->setTexture(0);
+            }
+
             color->setTextureRect( gear.getGearPreview() );
             status->getStaticText()->setText( gear.getStateText() );
             status->getStaticText()->setTextColor( gear.getStateColor() );

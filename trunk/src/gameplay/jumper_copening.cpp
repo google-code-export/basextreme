@@ -259,8 +259,20 @@ void Jumper::CanopyOpening::updatePhysics(void)
     assert(_phActor->getLinearVelocity().magnitude() < 300.0f);
 
     // shallow brake setting
-    _canopy->setLeftDeep( 0.7f );
-    _canopy->setRightDeep( 0.7f );
+    switch (_jumper->getVirtues()->equipment.breaksOption) {
+            case boShallow:
+                    _canopy->setLeftDeep( 0.4f );
+                    _canopy->setRightDeep( 0.4f );
+                    break;
+            case boDeep:
+                    _canopy->setLeftDeep( 0.7f );
+                    _canopy->setRightDeep( 0.7f );
+                    break;
+            default:
+                    _canopy->setLeftDeep( 0.4f );
+                    _canopy->setRightDeep( 0.4f );
+                    break;
+    }
 }
 
 bool Jumper::CanopyOpening::isCriticalAnimationRange(void)
