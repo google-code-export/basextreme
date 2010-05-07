@@ -719,6 +719,50 @@ void Equip::messageCallback(gui::Message* message, void* userData)
             __this->showEquipment();
         }
 
+        // breaks option?
+        if( strcmp( message->origin->getName(), "PrevBreaks" ) == 0 )
+        {
+            database::Canopy* canopyInfo = database::Canopy::getRecord( __this->_virtues->equipment.canopy.id );
+            if( canopyInfo->skydiving )
+            {
+                __this->_virtues->equipment.breaksOption = ::boShallow;
+            }
+            else
+            {
+                switch( __this->_virtues->equipment.breaksOption )
+                {
+                case ::boShallow:
+                    __this->_virtues->equipment.breaksOption = ::boDeep;
+                    break;
+                case ::boDeep:
+                    __this->_virtues->equipment.breaksOption = ::boShallow;
+                    break;
+                }
+            }            
+            __this->showEquipment();
+        }
+        else if( strcmp( message->origin->getName(), "NextBreaks" ) == 0 )
+        {
+            database::Canopy* canopyInfo = database::Canopy::getRecord( __this->_virtues->equipment.canopy.id );
+            if( canopyInfo->skydiving )
+            {
+                __this->_virtues->equipment.breaksOption = ::boShallow;
+            }
+            else
+            {
+                switch( __this->_virtues->equipment.breaksOption )
+                {
+                case ::boShallow:
+                    __this->_virtues->equipment.breaksOption = ::boDeep;
+                    break;
+                case ::boDeep:
+                    __this->_virtues->equipment.breaksOption = ::boShallow;
+                    break;
+                }
+            }            
+            __this->showEquipment();
+        }
+
         // scroll buttons?
         if( strcmp( message->origin->getName(), "ScrollUp" ) == 0 )
         {
@@ -829,6 +873,7 @@ void Equip::showEquipment(void)
     gui::IGuiPanel* color  = _canopySlot->getPanel()->find( "Color" ); assert( color );
     gui::IGuiPanel* pc     = _canopySlot->getPanel()->find( "PC" ); assert( color );
     gui::IGuiPanel* slider = _canopySlot->getPanel()->find( "Slider" ); assert( slider );
+    gui::IGuiPanel* breaks = _canopySlot->getPanel()->find( "Breaks" ); assert( slider );
 
     // update controls
     name->getButton()->setCaption( gear->getName() );
@@ -853,6 +898,19 @@ void Equip::showEquipment(void)
         break;
     default:
         slider->getStaticText()->setText( L"" );
+        break;
+    }
+
+    switch( _virtues->equipment.breaksOption )
+    {
+    case ::boDeep:
+        breaks->getStaticText()->setText( Gameplay::iLanguage->getUnicodeString(Gameplay::iLanguage->parseTranslationString("BreaksDeep=Deep")) );
+        break;
+    case ::boShallow:
+        breaks->getStaticText()->setText( Gameplay::iLanguage->getUnicodeString(Gameplay::iLanguage->parseTranslationString("BreaksShallow=Shallow")) );
+        break;
+    default:
+        breaks->getStaticText()->setText( L"" );
         break;
     }
 }
