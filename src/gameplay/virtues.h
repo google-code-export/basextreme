@@ -15,6 +15,13 @@ enum SliderOption
     soUp
 };
 
+// breaks options
+enum BreaksOption
+{
+    boShallow,
+    boDeep
+};
+
 /**
  * character virtues
  */
@@ -57,9 +64,10 @@ public:
         bool         malfunctions; // true, if going to simulate malfunctions
         bool         experience;   // true, if going to improve skills
         SliderOption sliderOption; // slider option
+        BreaksOption breaksOption;
         unsigned int pilotchute;   // pilotchute
     public:
-        Equipment() : experience(true), malfunctions(true), sliderOption(soRemoved), pilotchute(0) {}
+            Equipment() : experience(true), malfunctions(true), sliderOption(soRemoved), breaksOption(boShallow), pilotchute(0) {}
     }
     equipment;
 public:

@@ -44,6 +44,7 @@ public:
     Vector4f getStateColor(void);
     Vector4f getGearColor(void);
     gui::Rect getGearPreview(void);
+    engine::ITexture* getGearPreviewTexture(void);
     bool isTradeable(void);
 };
 

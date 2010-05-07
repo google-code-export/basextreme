@@ -311,6 +311,7 @@ public:
     bool         trade;          // flag for trading activity
     bool         skydiving;      // flag for skydiving gear
     std::string  texture;
+    std::string  iconTexture;
     float        cost;           // cost
     const char*  templateName;   // canopy 3d model template name    
 public:
