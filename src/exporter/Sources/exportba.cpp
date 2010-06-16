@@ -15,11 +15,20 @@
 #include "mayanode.h"
 
 
+#define LOG(...) { printf(__VA_ARGS__); fflush(stdout); }
+
+
 using namespace engine;
 
 
 engine::IEngine* gEngine;
 
+
+struct TriangleMark {
+        int mMesh;
+        int mTriangle;
+        int mV[3];
+};
 
 
 class ExporterAsset: public Asset
@@ -35,6 +44,8 @@ class ExporterAsset: public Asset
 
         void                    ExportScene();
         void                    ExportSceneRecursively(MayaNode* parentNode, Clump* clump, Frame* parentFrame);
+        bool                    ExportModelAsBSP(Clump* clump, Frame* frame, MayaModel* model);
+        bool                    ExportModelAsBSPRecursively(BSPSector* sector, Clump* clump, Frame* frame, MayaModel* model, std::vector<TriangleMark>* triangles);
         bool                    ExportModel(Clump* clump, Frame* frame, MayaModel* model);
         void                    ExportMesh(Geometry* geometry, MayaMesh* mesh, int materialId, int* vertexOffset, int* triangleOffset);
 //        Geometry*               ExportMesh(MayaMesh* mesh);
@@ -55,7 +66,7 @@ Matrix4f MayaToBaMatrix(MMatrix matrix) {
         int x, y;
         for (y = 0; y < 4; ++y) {
                 for (x = 0; x < 4; ++x) {
-                        m[x][y] = matrix.matrix[x][y];
+                        m[x][y] = (float)matrix.matrix[x][y];
                 }
         }
 
@@ -65,16 +76,19 @@ Matrix4f MayaToBaMatrix(MMatrix matrix) {
 
 void ExporterAsset::ExportScene()
 {
-        AABB boundingBox( wrap( Vector3f(-1000000.0f, -1000000.0f, -1000000.0f) ), wrap( Vector3f(1000000.0f, 1000000.0f, 1000000.0f) ) );
-
-        BSP* bsp = new BSP( "blabsp", boundingBox, 0 );
-        _bsps.push_back(bsp);
-        BSPSector* rootSector = new BSPSector( bsp, NULL, boundingBox, NULL );
-
         int i;
         int count = mRootNode->mChilds.size();
         for (i = 0; i < count; ++i) {
                 MayaNode* node = mRootNode->mChilds[i];
+
+                if (node->mModel) {
+                        if (node->mModel->m_strName == "Terrain") {
+                                assert(_bsps.size() == 0);
+                                ExportModelAsBSP(0, 0, node->mModel);
+                                continue;
+                        }
+                }
+
 
                 Clump* clump = new Clump(node->mName.asChar());
                 Frame* frame = new Frame(node->mName.asChar());
@@ -90,6 +104,15 @@ void ExporterAsset::ExportScene()
                 _clumps.push_back(clump);
 
                 ExportSceneRecursively(node, clump, frame);
+        }
+
+        // Add dummy bsp
+        if (_bsps.size() == 0) {
+                AABB boundingBox( wrap( Vector3f(-1000000.0f, -1000000.0f, -1000000.0f) ), wrap( Vector3f(1000000.0f, 1000000.0f, 1000000.0f) ) );
+
+                BSP* bsp = new BSP( "blabsp", boundingBox, 0 );
+                _bsps.push_back(bsp);
+                BSPSector* rootSector = new BSPSector( bsp, NULL, boundingBox, NULL );
         }
 }
 
@@ -119,6 +142,163 @@ void ExporterAsset::ExportSceneRecursively(MayaNode* parentNode, Clump* clump, F
         if (parentNode->mLight) {
                 ExportLight(clump, parentFrame, parentNode->mLight);
         }
+}
+
+
+bool ExporterAsset::ExportModelAsBSP(Clump* clump, Frame* frame, MayaModel* model)
+{
+        LOG("Exporting model: %s as BSP\n", model->m_strName.asChar());
+
+        AABB boundingBox(wrap( Vector3f(100000000.0f, 100000000.0f, 100000000.0f) ), wrap( Vector3f(-100000000.0f, -100000000.0f, -100000000.0f) ) );
+        int numShaders = model->m_apcMeshes.size();
+        std::vector<TriangleMark> triangles;
+
+        LOG("  Gather triangles\n");
+        int m;
+        for (m = 0; m < model->m_apcMeshes.size(); ++m) {
+                int count = model->m_apcMeshes[m]->m_acTriangles.size();
+                int t;
+                for (t = 0; t < count; ++t) {
+                        TriangleMark triangle;
+                        triangle.mMesh = m;
+                        triangle.mTriangle = t;
+                        triangles.push_back(triangle);
+                }
+
+                std::vector<MayaVertex>& vertices = model->m_apcMeshes[m]->m_acVertices;
+                int v;
+                count = vertices.size();
+                for (v = 0; v < count; ++v) {
+                        boundingBox.addPoint(Vector(vertices[v].x, vertices[v].y, vertices[v].z));
+                }
+        }
+
+        BSP* bsp = new BSP("blabsp", boundingBox, numShaders);
+        _bsps.push_back(bsp);
+        BSPSector* rootSector = new BSPSector(bsp, NULL, boundingBox, NULL);
+        BSPSector::subdivide(rootSector);
+
+
+        LOG("  Start recursive sector export\n");
+        ExportModelAsBSPRecursively(bsp->getRoot(), clump, frame, model, &triangles);
+
+        // Setup shaders
+        int i;
+        for (i = 0; i < numShaders; ++i) {
+                Shader* shader = ExportMayaMaterial(model->m_apcMeshes[i]->m_pcMaterial);
+                bsp->setShader(i, shader);
+        }
+
+        return true;
+}
+
+
+bool ExporterAsset::ExportModelAsBSPRecursively(BSPSector* sector, Clump* clump, Frame* frame, MayaModel* model, std::vector<TriangleMark>* triangles)
+{
+        if (!sector->isLeaf()) {
+                ExportModelAsBSPRecursively(sector->getLeftSector(), clump, frame, model, triangles);
+                ExportModelAsBSPRecursively(sector->getRightSector(), clump, frame, model, triangles);
+        }
+
+        std::vector<TriangleMark> geometryTriangles;
+
+        int i;
+        for (i = 0; i < triangles->size();) {
+                const TriangleMark& mark = (*triangles)[i];
+                const MayaMesh* mesh = model->m_apcMeshes[mark.mMesh];
+                const MayaTriangle& triangle = mesh->m_acTriangles[mark.mTriangle];
+                const MayaVertex& v0 = mesh->m_acVertices[triangle.v[0]];
+                const MayaVertex& v1 = mesh->m_acVertices[triangle.v[1]];
+                const MayaVertex& v2 = mesh->m_acVertices[triangle.v[2]];
+
+                bool isInside = 
+                        sector->getBoundingBox()->isInside(Vector(v0.x, v0.y, v0.z)) ||
+                        sector->getBoundingBox()->isInside(Vector(v1.x, v1.y, v1.z)) ||
+                        sector->getBoundingBox()->isInside(Vector(v2.x, v2.y, v2.z));
+
+                if (isInside) {
+                        geometryTriangles.push_back(mark);
+
+                        triangles->erase(triangles->begin() + i);
+                } else {
+                        ++i;
+                }
+        }
+
+        if (geometryTriangles.size() == 0) {
+                return true;
+        }
+
+        LOG("  Sector: %x, tris: %d\n", sector, geometryTriangles.size());
+        assert(sector->isLeaf());
+
+        std::vector<MayaVertex> geometryVertices;
+        int shaders = model->m_apcMeshes.size();
+
+        for (i = 0; i < geometryTriangles.size(); ++i) {
+                TriangleMark& mark = geometryTriangles[i];
+                const MayaMesh* mesh = model->m_apcMeshes[mark.mMesh];
+                const MayaTriangle& triangle = mesh->m_acTriangles[mark.mTriangle];
+
+                int vi;
+                for (vi = 0; vi < 3; ++vi) {
+                        const MayaVertex& v = mesh->m_acVertices[triangle.v[vi]];
+
+                        int id;
+                        for (id = 0; id < geometryVertices.size(); ++id) {
+                                if (v == geometryVertices[id]) {
+                                        break;
+                                } 
+                        }
+                        if (id == geometryVertices.size()) {
+                                geometryVertices.push_back(v);
+                        }
+
+                        mark.mV[vi] = id;
+                }
+        }
+
+        Geometry* geometry = new Geometry(geometryVertices.size(), geometryTriangles.size(), 1, model->m_apcMeshes.size(), 0, true, model->m_strName.asChar());
+
+        // Fill vertex data
+        Vector* vertices = geometry->getVertices();
+        Vector* normals = geometry->getNormals();
+        Flector* uvs = geometry->getUVSet(0);
+        for (i = 0; i < geometryVertices.size(); ++i) {
+                vertices[i].x = geometryVertices[i].x;
+                vertices[i].y = geometryVertices[i].y;
+                vertices[i].z = geometryVertices[i].z;
+
+                normals[i].x = geometryVertices[i].nx;
+                normals[i].y = geometryVertices[i].ny;
+                normals[i].z = geometryVertices[i].nz;
+
+                uvs[i].x = geometryVertices[i].u;
+                uvs[i].y = geometryVertices[i].v;
+        }
+
+        // Fill triangle data
+        Triangle* gtriangles = geometry->getTriangles();
+        for (i = 0; i < geometryTriangles.size(); i++) {
+                const TriangleMark& triangle = geometryTriangles[i];
+                gtriangles[i].set(
+                        triangle.mV[0], 
+                        triangle.mV[1], 
+                        triangle.mV[2], 
+                        triangle.mMesh
+                );
+        }
+
+        // Setup shaders
+        //for (i = 0; i < shaders; ++i) {
+        //        Shader* shader = ExportMayaMaterial(model->m_apcMeshes[i]->m_pcMaterial);
+        //        geometry->setShader(i, shader);
+        //}
+        geometry->setShaders(sector->bsp()->getShaders());
+
+        sector->setGeometry(geometry);
+
+        return true;
 }
 
 
@@ -152,6 +332,7 @@ bool ExporterAsset::ExportModel(Clump* clump, Frame* frame, MayaModel* model)
         atomic->setFrame(frame);
         atomic->setGeometry(geometry);
         clump->add(atomic);
+
         return true;
 }
 
@@ -339,7 +520,7 @@ Shader* ExporterAsset::ExportMayaMaterial(MayaMaterial* material)
         for (i = 0; i < textureCount; ++i) {
                 ITexture* texture = gEngine->getTexture(Texture::getTextureNameFromFilePath(material->mTextures[i]->mName.asChar()).c_str());
                 if (texture == 0) {
-                        texture = gEngine->createTexture(material->mTextures[i]->mName.asChar());
+                        texture = gEngine->createTexture(material->mTextures[i]->mName.asChar(), false);
                 }
                 shader->setLayerTexture(i, texture);
         }

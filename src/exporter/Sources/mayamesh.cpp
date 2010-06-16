@@ -21,6 +21,7 @@
 #include "mayamaterial.h"
 #include "profiler.h"
 
+#define LOG(...) { printf(__VA_ARGS__); fflush(stdout); }
 
 /*
 //bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &rvpkWeights);
@@ -30,17 +31,17 @@ bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &
 
 	MStatus kStatus;
 
-	printf("Extracting weights from skin cluster: %s\n", rkSkinCluster.name().asChar());
+	LOG("Extracting weights from skin cluster: %s\n", rkSkinCluster.name().asChar());
 
 	// Get the list of influences for skin cluster
 	MDagPathArray kInfluences;
 	unsigned int uiInfluences = rkSkinCluster.influenceObjects(kInfluences, &kStatus);
 	if(kStatus != MStatus::kSuccess) {
-		printf("ERROR: Unable to get influences for skin cluster: %s\n", rkSkinCluster.name().asChar());
+		LOG("ERROR: Unable to get influences for skin cluster: %s\n", rkSkinCluster.name().asChar());
 		return false;
 	}
 	if (uiInfluences == 0) {
-		printf("ERROR: No influences for skin cluster: %s\n", rkSkinCluster.name().asChar());
+		LOG("ERROR: No influences for skin cluster: %s\n", rkSkinCluster.name().asChar());
 		return false;
 	}
 
@@ -51,7 +52,7 @@ bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &
 		// Get geometry index
 		unsigned int uiGeometryIndex = rkSkinCluster.indexForOutputConnection(i, &kStatus);
 		if(kStatus != MStatus::kSuccess) {
-			printf("ERROR: Unable to get geometry index\n");
+			LOG("ERROR: Unable to get geometry index\n");
 			return false;
 		}
 
@@ -59,7 +60,7 @@ bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &
 		MDagPath kSkinPath;
 		kStatus = rkSkinCluster.getPathAtIndex(uiGeometryIndex, kSkinPath);
 		if(kStatus != MStatus::kSuccess) {
-			printf("ERROR: Unable to get geometry path\n");
+			LOG("ERROR: Unable to get geometry path\n");
 			return false;
 		}
 
@@ -69,7 +70,7 @@ bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &
 		for (; !kVertexIter.isDone(); kVertexIter.next() ) {
 			MObject kVertex = kVertexIter.component(&kStatus);
 			if(kStatus != MStatus::kSuccess) {
-				printf("ERROR: Unable to get vertex for geometry: %s\n", kSkinPath.partialPathName().asChar());
+				LOG("ERROR: Unable to get vertex for geometry: %s\n", kSkinPath.partialPathName().asChar());
 				return false;
 			} 
 
@@ -78,11 +79,11 @@ bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &
 			unsigned int uiVertexInfluences;
 			kStatus = rkSkinCluster.getWeights(kSkinPath, kVertex, kafWeights, uiVertexInfluences);
 			if(kStatus != MStatus::kSuccess) {
-				printf("WARNING: Unable to get weights for vertex: %d. Skipping!\n", kVertexIter.index());
+				LOG("WARNING: Unable to get weights for vertex: %d. Skipping!\n", kVertexIter.index());
 				return false;
 			} 
 			if (uiVertexInfluences == 0) {
-				printf("ERROR: No weights for vertex: %d\n", kVertexIter.index());
+				LOG("ERROR: No weights for vertex: %d\n", kVertexIter.index());
 				return false;
 			}
 
@@ -122,7 +123,7 @@ bool GetWeights(MFnSkinCluster &rkSkinCluster, std::vector<MayaVertexWeights*> &
 					kWeight.y = kPos.y;
 					kWeight.z = kPos.z;
 				} else {
-					printf("ERROR: can't find joint for influencer: %s\n", strInfluencer.c_str());
+					LOG("ERROR: can't find joint for influencer: %s\n", strInfluencer.c_str());
 					continue;
 				}
 
@@ -144,7 +145,7 @@ MObject GetSkinCluster(MDagPath& rkDagPath)
 
 	MStatus kStatus;
 
-	printf("... Looking for skin cluster...\n");
+	LOG("... Looking for skin cluster...\n");
 
 	MItDependencyNodes kNodeIter(MFn::kSkinClusterFilter);
 	for(; !kNodeIter.isDone(); kNodeIter.next()) {
@@ -153,17 +154,17 @@ MObject GetSkinCluster(MDagPath& rkDagPath)
 		// Get skin cluster
 		MFnSkinCluster kSkinCluster(kObject, &kStatus);
 		if(kStatus != MStatus::kSuccess) {
-			printf("ERROR: Unable to get skin cluster object\n");
+			LOG("ERROR: Unable to get skin cluster object\n");
 			continue;
 		} 
-		printf("Skin cluster: %s\n", kSkinCluster.name().asChar());
+		LOG("Skin cluster: %s\n", kSkinCluster.name().asChar());
 
 		unsigned int uiConnections = kSkinCluster.numOutputConnections();
 		unsigned int i;
 		for (i = 0; i < uiConnections; i++) {
 			unsigned int uiGeometryIndex = kSkinCluster.indexForOutputConnection(i, &kStatus);
 			if(kStatus != MStatus::kSuccess) {
-				printf("ERROR: Unable to get geometry index\n");
+				LOG("ERROR: Unable to get geometry index\n");
 				continue;
 			}
 
@@ -171,14 +172,14 @@ MObject GetSkinCluster(MDagPath& rkDagPath)
 			MDagPath kSkinPath;
 			kStatus = kSkinCluster.getPathAtIndex(uiGeometryIndex, kSkinPath);
 			if(kStatus != MStatus::kSuccess) {
-				printf("ERROR: Unable to get geometry path\n");
+				LOG("ERROR: Unable to get geometry path\n");
 				continue;
 			}
 
-			printf("1: %s\n", rkDagPath.fullPathName().asChar());
-			printf("2: %s\n", kSkinPath.fullPathName().asChar());
+			LOG("1: %s\n", rkDagPath.fullPathName().asChar());
+			LOG("2: %s\n", kSkinPath.fullPathName().asChar());
 			if (rkDagPath == kSkinPath) {
-				printf("Found skin\n");
+				LOG("Found skin\n");
 				return kObject;
 			}
 		}
@@ -202,11 +203,11 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 	ritPolygon.getTriangle(iTriangleId, kPoints, kVerticeIdList, MSpace::kObject);
 
 	if (kPoints.length() != 3) {
-		printf("WARNING: Triangle has %d points instead of 3. Skipping!\n", kPoints.length());
+		LOG("WARNING: Triangle has %d points instead of 3. Skipping!\n", kPoints.length());
 		return;
 	}
 	if (kVerticeIdList.length() != 3) {
-		printf("WARNING: Triangle has %d vertices instead of 3. Skipping!\n", kVerticeIdList.length());
+		LOG("WARNING: Triangle has %d vertices instead of 3. Skipping!\n", kVerticeIdList.length());
 		return;
 	}
 
@@ -223,7 +224,7 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 		kVertex.z = float(kPoint.z);
 
 		kVertex.m_uiMayaVertexIndex = iVertexId;
-//					printf("vl: %d\n", kVerticeList[uiPoint]);
+//					LOG("vl: %d\n", kVerticeList[uiPoint]);
 		// Get the local (face) vertex index for our current point
 		// we need it to get UVs
 		unsigned int uiLocalVertexId;
@@ -272,7 +273,7 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 MString GetShaderName(MObject& rcShader)
 {
 	if (!rcShader.hasFn(MFn::kShadingEngine)) {
-		printf("WARNING!: Not a MFn::kShaderEngine in shader: %s\n", rcShader.apiTypeStr());
+		LOG("WARNING!: Not a MFn::kShaderEngine in shader: %s\n", rcShader.apiTypeStr());
 	}
 
 	MFnDependencyNode node(rcShader);
@@ -281,7 +282,7 @@ MString GetShaderName(MObject& rcShader)
 
 	plug.connectedTo(input, true, false);
 	if (input.length() != 1) {
-		printf("WARNING!: surfaceShader is not connected for: %s\n", rcShader.apiTypeStr());
+		LOG("WARNING!: surfaceShader is not connected for: %s\n", rcShader.apiTypeStr());
 		return "-invalid-";
 	}
 
@@ -290,7 +291,7 @@ MString GetShaderName(MObject& rcShader)
 		MFnLambertShader lambert(material);
 		return lambert.name();
 	} else {
-		printf("WARNING!: Unsupported shader: %s\n", material.apiTypeStr());
+		LOG("WARNING!: Unsupported shader: %s\n", material.apiTypeStr());
 	}
 
 	return "";
@@ -327,7 +328,10 @@ void ExtractTriangles(MayaModel* pcModel, MFnMesh& rkMeshFn, MObjectArray& racSh
 			apcMeshes[i] = new MayaMesh();
 //			apcMeshes[i]->m_strMaterial = GetShaderName(racShaders[i]);
 			apcMeshes[i]->m_pcMaterial = GetMaterial(papcMayaMaterial, GetShaderName(racShaders[i]));
-			assert(apcMeshes[i]->m_pcMaterial); // Materials are parsed before, and should be there!
+                        if (apcMeshes[i]->m_pcMaterial == 0) {
+                                LOG(("Couldn't found shader: %s, for mesh: %s\n", GetShaderName(racShaders[i]).asChar(), apcMeshes[i]->mName.asChar()));
+		        	assert(apcMeshes[i]->m_pcMaterial); // Materials are parsed before, and should be there!
+                        }
 		}
 	}
 	
@@ -339,7 +343,7 @@ void ExtractTriangles(MayaModel* pcModel, MFnMesh& rkMeshFn, MObjectArray& racSh
 	rkMeshFn.getPath(path);
 	MItMeshPolygon kPolygonIter(path, MObject::kNullObj, &status);
 	if (status != MStatus::kSuccess) {
-		printf("ERROR: Unable to get polygon iterator\n");
+		LOG("ERROR: Unable to get polygon iterator\n");
 		goto CLEANUP;
 	}
 
@@ -347,7 +351,7 @@ void ExtractTriangles(MayaModel* pcModel, MFnMesh& rkMeshFn, MObjectArray& racSh
 //	unsigned int uiNumVerticesSaved = 0;
 	for (; !kPolygonIter.isDone(); kPolygonIter.next()) {
 		if (!kPolygonIter.hasValidTriangulation()) {
-			printf("WARNING: polygon %d doesn't have valid triangulation! Skipped.\n", kPolygonIter.index());
+			LOG("WARNING: polygon %d doesn't have valid triangulation! Skipped.\n", kPolygonIter.index());
 			continue;
 		}
 
@@ -385,8 +389,8 @@ void ExtractTriangles(MayaModel* pcModel, MFnMesh& rkMeshFn, MObjectArray& racSh
                 }
 	}
 
-//	printf("\tTriangles: %d, Optimized vertices: %d\n", uiNumTriangles, uiNumVerticesSaved);
-	printf("\tTriangles: %d\n", uiNumTriangles);
+//	LOG("\tTriangles: %d, Optimized vertices: %d\n", uiNumTriangles, uiNumVerticesSaved);
+	LOG("\tTriangles: %d\n", uiNumTriangles);
 
 CLEANUP:
 	delete[] apcMeshes;
@@ -416,12 +420,12 @@ bool ExtractMayaMesh(std::vector<MayaMaterial*>* papcMayaMaterial, MayaModel* pc
 	}
 
 	// Finally we have a mesh to export...
-	printf("Exporting mesh: %s\n", kMeshFn.partialPathName().asChar());
+	LOG("Exporting mesh: %s\n", kMeshFn.partialPathName().asChar());
 
 	rkDagPath.extendToShape();
 	unsigned int uiInstanceId = 0;
 	if (rkDagPath.isInstanced()) {
-		printf("... Mesh is instanced\n");
+		LOG("... Mesh is instanced\n");
 		uiInstanceId = rkDagPath.instanceNumber();
 	}
 
@@ -430,14 +434,14 @@ bool ExtractMayaMesh(std::vector<MayaMaterial*>* papcMayaMaterial, MayaModel* pc
 	MObject kObject = GetSkinCluster(rkDagPath);
 	MFnSkinCluster kSkinCluster(kObject, &kStatus);
 	if(kStatus == MStatus::kSuccess) {
-		printf("... Found skin for mesh.\n");
-		printf("TODO SKELETONS ARE NOT EXPORTED.\n");
+		LOG("... Found skin for mesh.\n");
+		LOG("TODO SKELETONS ARE NOT EXPORTED.\n");
 //		ExportSkeletons(kSkinCluster);
 //		bHasSkin = true;
 //		GetWeights(kSkinCluster, vpkWeights);
 		
 	} else {
-		printf("... Skin not found. Exporting as static.\n");
+		LOG("... Skin not found. Exporting as static.\n");
 	}
 
 	//if (!fMesh->getConnectedSetsAndMembers(instanceNum, fPolygonSets, fPolygonComponents, true)) {

@@ -24,8 +24,8 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.Debug|Win32.ActiveCfg = Release|Win32
-		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.Debug|Win32.Build.0 = Release|Win32
+		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.Debug|Win32.Build.0 = Debug|Win32
 		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.FakeRelease|Win32.ActiveCfg = Release|Win32
 		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.FakeRelease|Win32.Build.0 = Release|Win32
 		{5F48FD1B-7B8C-4BA0-8D96-5FF66AC0E6F7}.Release|Win32.ActiveCfg = Release|Win32
@@ -36,14 +36,14 @@ Global
 		{8CACD851-2149-467B-A426-FCCCD6ABB76B}.FakeRelease|Win32.Build.0 = FakeRelease|Win32
 		{8CACD851-2149-467B-A426-FCCCD6ABB76B}.Release|Win32.ActiveCfg = Release|Win32
 		{8CACD851-2149-467B-A426-FCCCD6ABB76B}.Release|Win32.Build.0 = Release|Win32
-		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.Debug|Win32.ActiveCfg = Release|Win32
-		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.Debug|Win32.Build.0 = Release|Win32
+		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.Debug|Win32.Build.0 = Debug|Win32
 		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.FakeRelease|Win32.ActiveCfg = FakeRelease|Win32
 		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.FakeRelease|Win32.Build.0 = FakeRelease|Win32
 		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.Release|Win32.ActiveCfg = Release|Win32
 		{FAD43593-6E3A-4C9B-9591-AF5CB35BA3D5}.Release|Win32.Build.0 = Release|Win32
-		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.Debug|Win32.ActiveCfg = Release|Win32
-		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.Debug|Win32.Build.0 = Release|Win32
+		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.Debug|Win32.ActiveCfg = Debug|Win32
+		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.Debug|Win32.Build.0 = Debug|Win32
 		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.FakeRelease|Win32.ActiveCfg = FakeRelease|Win32
 		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.FakeRelease|Win32.Build.0 = FakeRelease|Win32
 		{34E5B3B5-2ABC-4761-B06C-2E51D4FC0013}.Release|Win32.ActiveCfg = Release|Win32
