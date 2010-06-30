@@ -276,7 +276,11 @@ Texture* Texture::createCubeRenderTarget(int size, int depth, const char* name)
 Texture* Texture::createTexture(const char* fileName, bool keepFullName)
 {
     // read surface format
-    IResource* resource = getCore()->getResource( fileName, "rb" ); assert( resource );
+    IResource* resource = getCore()->getResource( fileName, "rb" ); 
+    if (resource == 0) {
+        getCore()->logMessage("Error: can't find texture: %s", fileName);
+    }
+    assert( resource );
     DWORD magicValue;
     fread( &magicValue, sizeof(DWORD), 1, resource->getFile() );
     DDSURFACEDESC2 surfaceDesc;

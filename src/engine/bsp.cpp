@@ -10,6 +10,7 @@
 BSP*       BSP::currentBSP = NULL;
 BSPSector* BSPSector::currentSector = NULL;
 
+
 void BSPSector::subdivide(BSPSector* sector)
 {
     AABB aabbLeft, aabbRight; 
@@ -18,7 +19,7 @@ void BSPSector::subdivide(BSPSector* sector)
     sector->_leftSubset  = new BSPSector( sector->_bsp, sector, aabbLeft, NULL );
     sector->_rightSubset = new BSPSector( sector->_bsp, sector, aabbRight, NULL );
 
-    if( sector->getSectorLevel() < 10 )
+    if( sector->getSectorLevel() < 3 )
     {
         subdivide( sector->_leftSubset );
         subdivide( sector->_rightSubset );
@@ -74,6 +75,17 @@ BSPSector::~BSPSector()
         _lightmap->release();
     }
 }
+
+
+void BSPSector::setGeometry(Geometry* geometry)
+{
+        assert(_geometry == 0);
+        _geometry = geometry;
+        if(_geometry) {
+                _geometry->_numReferences++;
+        }
+}
+
 
 BSPSector* BSPSector::getSectorAroundPoint(const Vector& point)
 {
