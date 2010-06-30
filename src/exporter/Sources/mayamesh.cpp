@@ -243,6 +243,7 @@ void ExtractTriangle(MayaMesh* pcPolygonMesh, MFnMesh& rcMeshFn, MItMeshPolygon&
 		// Get UVs
 		int iUVIndex = -1;
 		ritPolygon.getUVIndex(uiLocalVertexId, iUVIndex, kVertex.u, kVertex.v, NULL);
+                kVertex.v = 1.0f - kVertex.v;
 
                 // TODO: check this out if we need it
 		// Transform UVs based on place 2d texture settings

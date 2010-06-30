@@ -521,6 +521,8 @@ Shader* ExporterAsset::ExportMayaMaterial(MayaMaterial* material)
                 ITexture* texture = gEngine->getTexture(Texture::getTextureNameFromFilePath(material->mTextures[i]->mName.asChar()).c_str());
                 if (texture == 0) {
                         texture = gEngine->createTexture(material->mTextures[i]->mName.asChar(), false);
+                        texture->setMagFilter(ftAnisotropic);
+                        texture->setMinFilter(ftAnisotropic);
                 }
                 shader->setLayerTexture(i, texture);
         }
