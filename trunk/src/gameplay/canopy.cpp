@@ -984,6 +984,7 @@ void CanopySimulator::onUpdatePhysics(void)
 
     // average deep of brakes affects the lift & drag force and also attack angle
     float avgDeep = max(modeLeftDeep * modeRightDeep, _backLeftRiserDeep * _backRightRiserDeep * 0.8f);
+    avgDeep -= _frontLeftRiserDeep * _frontRightRiserDeep;
     //float avgDeep = max(modeLeftDeep * modeRightDeep, 0.0f);
     attackAngle += _gearRecord->AAdeep * avgDeep;
 
@@ -1080,6 +1081,7 @@ void CanopySimulator::onUpdatePhysics(void)
 
 
     // simulate risers
+    //*
     {
         NxVec3 backLeftPoint = wrap( CanopySimulator::getPhysicsJointRearLeft( _canopyClump )->getPos() );
         NxVec3 backRightPoint = wrap( CanopySimulator::getPhysicsJointRearRight( _canopyClump )->getPos() );
@@ -1129,6 +1131,7 @@ void CanopySimulator::onUpdatePhysics(void)
             _nxCanopy->addForceAtPos( force, frontRightPoint );
         }
     }
+    //*/
 
     assert(_nxCanopy->getLinearVelocity().isFinite());
     assert(_nxCanopy->getLinearVelocity().magnitude() < 300.0f);
@@ -1206,7 +1209,11 @@ void CanopySimulator::updateInflation(void)
     }
 
     // inflation by velocity
-    _inflation += averageTension * ::simulationStepTime * openingK;
+    if (_inflation < 0.5f) {
+        _inflation += averageTension * ::simulationStepTime * openingK;
+    } else {
+        _inflation += max(averageTension * ::simulationStepTime * openingK, 0.3f * ::simulationStepTime);
+    }
     if( _inflation > 1 ) _inflation = 1;
 
     // enable collision generation for canopy and base jumper

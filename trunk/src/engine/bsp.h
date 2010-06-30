@@ -72,9 +72,12 @@ public:
 public:
     // module local : inlines
     inline AABB* getBoundingBox(void) { return &_boundingBox; }
+    void setGeometry(Geometry* geometry);
     inline Geometry* geometry(void) { return _geometry; }
     inline BSP* bsp(void) { return _bsp; }
     inline Texture* lightmap(void) { return _lightmap; }
+    inline BSPSector* getLeftSector() { return _leftSubset; }
+    inline BSPSector* getRightSector() { return _rightSubset; }
 public:
     // module local
     BSPSector* getSectorAroundPoint(const Vector& point);

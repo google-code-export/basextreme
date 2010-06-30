@@ -119,4 +119,15 @@ void Jumper::Pull::update(float dt)
         animCtrl->setTrackWeight( 0, weight );
         animCtrl->setTrackWeight( 1, 1.0f - weight );
     }
+
+
+    float steering = 0.0f;
+    steering += _jumper->getSpinalCord()->left;
+    steering -= _jumper->getSpinalCord()->right;
+    _phActor->addTorque(NxVec3(_steering, 0.0f, 0.0f));
+
+    float heading = 0.0f;
+    heading += _jumper->getSpinalCord()->up;
+    heading -= _jumper->getSpinalCord()->down;
+    _phActor->addTorque(NxVec3(0.0f, 0.0f, heading));
 }

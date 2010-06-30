@@ -305,7 +305,10 @@ void Scene::load(void)
     _stage = *( bsps.begin() );
     for( clumpI = clumps.begin(); clumpI != clumps.end(); clumpI++ ) 
     {
-        _stage->add( *( clumpI ) );
+            if (strcmp ((*clumpI)->getName(), "CollisionGeometry") == 0) {
+                    continue;
+            }
+            _stage->add( *( clumpI ) );
     }
     bsps.clear();
     clumps.clear();   
