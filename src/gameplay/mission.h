@@ -17,7 +17,15 @@ class Mission : public Mode
 private:
     class FollowCamera : public Actor
     {
-    private:      
+            enum Mode {
+                FeetLeft,
+                FeetRight,
+                Back,
+
+                _NumModes
+            };
+    private:
+        Mode     _mode;
         Actor*   _target;
         bool     _positionMode;
         float    _positionModeTimeout;

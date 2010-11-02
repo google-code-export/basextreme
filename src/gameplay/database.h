@@ -128,6 +128,7 @@ public:
     float        Kda;              // coefficient of damage absorbtion
     float        Kage;             // coefficient of ageing (damage - to - state reduction)
     unsigned int modelId;          // 3d model identifier
+    std::string  type;           // model type
     std::string  name;             // model name    
     std::wstring wname;            // model name
     unsigned int descriptionId;    // (language id) model description
@@ -135,6 +136,7 @@ public:
     unsigned int manufacturerId;   // (language id) manufacturer name
     std::string  texture;
 public:
+    static unsigned int oldHelmetIdToNewId(unsigned int oldId);
     static unsigned int getNumRecords(void);
     static Helmet*      getRecord(unsigned int id);
     static int          getRecordId(char* name);
@@ -153,6 +155,7 @@ public:
     float        cost;                // suit cost
     bool         wingsuit;            // suit have wings
     unsigned int modelId;             // model identified, see Jumper::getBody()
+    std::string  type;                // model type    
     std::string  name;                // model name    
     std::wstring wname;               // model name
     unsigned int descriptionId;       // (language id) model description
@@ -186,6 +189,7 @@ public:
     float        mDragCoeffTrackTop; 
 
 public:
+    static unsigned int oldSuitIdToNewId(unsigned int oldId);
     static unsigned int getNumRecords(void);    
     static Suit*        getRecord(unsigned int id);
     static int          getRecordId(char* name);
@@ -203,6 +207,7 @@ public:
     bool         trade;          // rig is tradeable
     float        cost;           // cost of the rig
     bool         skydiving;      // true if rig for skydiving only
+    std::string  type;           // model type
     std::string  name;           // model name    
     std::wstring wname;          // model name
     unsigned int descriptionId;  // (language id) model description
@@ -215,6 +220,7 @@ public:
     float        Kmaxoverb;      // maximal ageing overburden
     float        Kmaxage;        // maximal ageing (per second)    
 public:
+    static unsigned int oldRigIdToNewId(unsigned int oldId);
     static unsigned int getNumRecords(void);
     static Rig*         getRecord(unsigned int id);
     static int          getRecordId(char* name);
@@ -315,6 +321,7 @@ public:
     float        cost;           // cost
     const char*  templateName;   // canopy 3d model template name    
 public:
+    std::string  type;
     std::string  name;                // model name    
     std::wstring wname;               // model name
     std::string  sizeName;                // model size name    
@@ -375,6 +382,7 @@ public:
     unsigned int numPilots; // number of avaiable pilotchute options
     Pilotchute*  pilots;    // avaiable pilotchute options
 public:
+    static unsigned int oldCanopyIdToNewId(unsigned int oldId);
     static unsigned int getNumRecords(void);
     static Canopy*      getRecord(unsigned int id);
     static float        getOptimalCanopySquare(float weight, float wind);
@@ -499,6 +507,7 @@ public:
 struct LocationInfo
 {
 public:
+    std::string   id;          // unique id (folder name)
     std::string   nameId;      // id of text, naming the location
     int           worldX;      // "longitude"
     int           worldY;      // "lattitude"
@@ -613,8 +622,9 @@ public:
 public:
     static unsigned int         getNumRecords(void);
     static LocationInfo*        getRecord(unsigned int id);
+    static LocationInfo*        getRecord(std::string locationName);
     static void                 loadLocations(const char* fileName);
-    static LocationInfo*        loadLocation(const char* fileName);
+    static LocationInfo*        loadLocation(std::string locationId, const char* fileName);
     static void                 deleteLocations();
 };
 

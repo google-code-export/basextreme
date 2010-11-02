@@ -14,8 +14,6 @@
 
 void Gameplay::generateUserCommunityEvents(void)
 {    
-// TODO
-/*
     WIN32_FIND_DATA fileFindData;
     HANDLE fileFindHandle;
     std::string filePath;
@@ -114,9 +112,8 @@ void Gameplay::generateUserCommunityEvents(void)
                     asciizToUnicode( static_cast<TiXmlElement*>( child )->Attribute( "brief" ) ).c_str()
                 );
                 // tournament location
-                static_cast<TiXmlElement*>( child )->Attribute( "locationId", &ivalue );
-                // TODO:
-                //tournamentInfo.locationId = ivalue;
+                const char* locationName = static_cast<TiXmlElement*>( child )->Attribute("locationId");
+
                 // gamedata identifier
                 pstr = new std::string;
                 *pstr = static_cast<TiXmlElement*>( child )->Attribute( "gameData" );
@@ -133,13 +130,15 @@ void Gameplay::generateUserCommunityEvents(void)
                 generateMissions( static_cast<TiXmlElement*>(child), &tournamentInfo );
                 unsigned int numMissions = tournamentInfo.getNumMissions();
                 // update list of tournaments
-                database::TournamentInfo::addRecord( &tournamentInfo );
+
+                //database::TournamentInfo::addRecord( &tournamentInfo );
+                database::LocationInfo *location = database::LocationInfo::getRecord(locationName);
+                location->tournaments.push_back(tournamentInfo);
             }
             child = child->NextSibling();
         }
         while( child != NULL );
     }
-*/
 }
 
 void Gameplay::generateMissions(TiXmlElement* node, database::TournamentInfo* tournamentInfo)

@@ -35,6 +35,7 @@ enum InputAction
     iaCameraMode2,
     iaCameraMode3,
     iaCameraMode4, // follow
+    iaCutaway,
     iaPhase,
     iaModifier,  
     iaGlobalDeceleration,

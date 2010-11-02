@@ -15,7 +15,22 @@ public:
         Gear ConvertToGear() {
                 Gear gear;
                 gear.type = type;
-                gear.id = id;
+                switch (type) {
+                        case gtCanopy: 
+                                gear.id = database::Canopy::oldCanopyIdToNewId(id); 
+                                break;
+                        case gtSuit:
+                                gear.id = database::Suit::oldSuitIdToNewId(id);
+                                break;
+                        case gtHelmet:
+                                gear.id = database::Helmet::oldHelmetIdToNewId(id);
+                                break;
+                        case gtRig:
+                                gear.id = database::Rig::oldRigIdToNewId(id);
+                                break;
+                        default: 
+                                gear.id = id;
+                }
                 gear.state = state;
                 gear.age = age;
                 gear.updateNameFromId();

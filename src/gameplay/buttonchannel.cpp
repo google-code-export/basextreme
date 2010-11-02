@@ -90,6 +90,9 @@ void ButtonChannel::setupDefault(void)
     case iaCameraMode3:
         _keyCode = 0x58; // F12
         break;
+    case iaCutaway:
+        _keyCode = 0x0E; // Backspace
+        break;
     case iaPhase:
         _keyCode = 0x39; // Space
         break;

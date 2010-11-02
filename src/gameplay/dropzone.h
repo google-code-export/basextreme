@@ -52,6 +52,7 @@ void castingCallback_Freejump_1500(Actor* parent);
 void castingCallback_Freejump_2000(Actor* parent);
 void castingCallback_Freejump_2500(Actor* parent);
 void castingCallback_Freejump_3000(Actor* parent);
+void castingCallback_Freejump_3950(Actor* parent);
 
 bool equipCallback_Freejump(Career* career, float windAmbient, float windBlast, database::MissionInfo* missionInfo);
 bool equipCallback_FreejumpCommonSuit(Career* career, float windAmbient, float windBlast, database::MissionInfo* missionInfo);

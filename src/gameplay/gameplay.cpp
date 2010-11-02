@@ -199,6 +199,11 @@ void Gameplay::createActionMap(void)
     buttonChannel->setup( 0, getActionCode( _config, "iaRightWarp" ) );
     _actionChannels.insert( ActionChannelT( iaRightWarp, buttonChannel ) );
 
+    // create cutaway channel
+    buttonChannel = new ButtonChannel( iaCutaway, 1, 4 );
+    buttonChannel->setup( 0, getActionCode( _config, "iaCutaway" ) );
+    _actionChannels.insert( ActionChannelT( iaCutaway, buttonChannel ) );
+
     // create phase channel
     buttonChannel = new ButtonChannel( iaPhase, 1, 4 );
     buttonChannel->setup( 0, getActionCode( _config, "iaPhase" ) );

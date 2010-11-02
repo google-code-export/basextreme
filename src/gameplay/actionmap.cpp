@@ -24,6 +24,7 @@ const wchar_t* ActionChannel::getInputActionDescription(void)
     case iaCameraMode2 : return L"iaCameraMode2<unassigned>"; // flyby camera
     case iaCameraMode4 : return L"iaCameraMode4<unassigned>"; // follow camera
     case iaCameraMode3 : return L"iaCameraMode3<unassigned>"; // free camera
+    case iaCutaway : return Gameplay::iLanguage->getUnicodeString(Gameplay::iLanguage->parseTranslationString("Cutaway=Cutaway"));
     case iaPhase : return Gameplay::iLanguage->getUnicodeString(141);
     case iaModifier : return Gameplay::iLanguage->getUnicodeString(142);
     case iaGlobalDeceleration: return Gameplay::iLanguage->getUnicodeString(148);

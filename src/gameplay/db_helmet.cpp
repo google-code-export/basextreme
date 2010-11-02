@@ -64,6 +64,33 @@ static std::vector<Helmet> helmets;
 };
 #endif
 
+unsigned int Helmet::oldHelmetIdToNewId(unsigned int oldId)
+{
+        string type;
+
+        if (oldId >= 0 && oldId <= 13) {
+                type = "Syndrome";
+        } else if (oldId >= 14 && oldId <= 22) {
+                type = "Tensor";
+        } else if (oldId >= 23 && oldId <= 31) {
+                type = "Shooter";
+        } else if (oldId >= 32 && oldId <= 32) {
+                type = "Syndrome";
+        } else {
+                assert("Shouldn't happen");
+                type = "Shooter"; // Safe choise :-D
+        }
+
+        int i;
+        for (i = 0; i < helmets.size(); ++i) {
+                if (helmets[i].type == type) {
+                        return i;
+                }
+        }
+
+        assert("Shouldn't happen");
+        return 0;
+}
 
 unsigned int Helmet::getNumRecords(void)
 {
@@ -116,20 +143,18 @@ void Helmet::initHelmets()
         getCore()->logMessage("Info: Loading helmets.");
 
         Helmet prototypes[] = {
-                { COST_SYNDROME, PROPS_SYNDROME, MODELID_SYNDROME, "Syndrome", L"Syndrome", DESCRIPTIONID_SYNDROME, CLID_WHITE, MFRID_D3, "" },
-                { COST_TENSOR,   PROPS_TENSOR,   MODELID_TENSOR,   "Tensor", L"Tensor",     DESCRIPTIONID_TENSOR,   CLID_WHITE, MFRID_D3, "" },
-                { COST_SHOOTER,  PROPS_SHOOTER,  MODELID_SHOOTER,  "Shooter", L"Shooter",   DESCRIPTIONID_SHOOTER,  CLID_WHITE, MFRID_D3, "" },
+                { COST_SYNDROME, PROPS_SYNDROME, MODELID_SYNDROME, "AFF Helmet", "AFF Helmet", L"AFF Helmet", DESCRIPTIONID_SYNDROME, CLID_WHITE, MFRID_D3, "./res/Gear/Special/AFF Suit.dds" },
+                { COST_SYNDROME, PROPS_SYNDROME, MODELID_SYNDROME, "Syndrome", "Syndrome", L"Syndrome", DESCRIPTIONID_SYNDROME, CLID_WHITE, MFRID_D3, "" },
+                { COST_TENSOR,   PROPS_TENSOR,   MODELID_TENSOR,   "Tensor", "Tensor", L"Tensor",     DESCRIPTIONID_TENSOR,   CLID_WHITE, MFRID_D3, "" },
+                { COST_SHOOTER,  PROPS_SHOOTER,  MODELID_SHOOTER,  "Shooter", "Shooter", L"Shooter",   DESCRIPTIONID_SHOOTER,  CLID_WHITE, MFRID_D3, "" },
         };
 
         // Add helmet 0 - AFF helmet
-        prototypes[0].texture = "./res/Gear/Special/AFF Suit.dds";
-        prototypes[0].name = "AFF Helmet";
-        prototypes[0].wname = L"AFF Helmet";
         helmets.push_back(prototypes[0]);
 
-        loadHelmets(prototypes[0], "./res/Gear/Helmets/Syndrome/", "./res/Gear/Helmets/Syndrome/*.dds");
-        loadHelmets(prototypes[1], "./res/Gear/Helmets/Tensor/", "./res/Gear/Helmets/Tensor/*.dds");
-        loadHelmets(prototypes[2], "./res/Gear/Helmets/Shooter/", "./res/Gear/Helmets/Shooter/*.dds");
+        loadHelmets(prototypes[1], "./res/Gear/Helmets/Syndrome/", "./res/Gear/Helmets/Syndrome/*.dds");
+        loadHelmets(prototypes[2], "./res/Gear/Helmets/Tensor/", "./res/Gear/Helmets/Tensor/*.dds");
+        loadHelmets(prototypes[3], "./res/Gear/Helmets/Shooter/", "./res/Gear/Helmets/Shooter/*.dds");
  
         getCore()->logMessage("Info: Helmets loaded.");
 }
@@ -140,6 +165,9 @@ void Helmet::loadHelmets(Helmet& helmetPrototype, string textureBase, const char
         std::vector<string> files;
         
         if (getdir(dir, &files)) {
+                string baseName = helmetPrototype.name;
+                wstring baseWName = helmetPrototype.wname;
+
                 int i;
                 for (i = 0; i < (int)files.size(); ++i) {
                         helmetPrototype.texture = textureBase + files[i];
@@ -149,8 +177,8 @@ void Helmet::loadHelmets(Helmet& helmetPrototype, string textureBase, const char
                         wstring name(L" ", s.length());
                         copy(s.begin(), s.end(), name.begin());
 
-                        helmetPrototype.name = s;
-                        helmetPrototype.wname = name;
+                        helmetPrototype.name = baseName + " " + s;
+                        helmetPrototype.wname = baseWName + L" " + name;
                         helmets.push_back(helmetPrototype);
                 }
         } else {

@@ -60,7 +60,8 @@ static MissionInfo freeJumpingMissions[] =
     { 1, 491, 492, 0, 0, 65.0f, "./res/thumbnails/032.dds", weatherClearanceDropzone, windClearanceDropzone, castingCallback_Freejump_1500, equipCallback_Freejump, NULL },
     { 2, 495, 496, 0, 0, 70.0f, "./res/thumbnails/033.dds", weatherClearanceDropzone, windClearanceDropzone, castingCallback_Freejump_2000, equipCallback_Freejump, NULL },
     { 3, 497, 498, 0, 0, 75.0f, "./res/thumbnails/034.dds", weatherClearanceDropzone, windClearanceDropzone, castingCallback_Freejump_2500, equipCallback_Freejump, NULL },
-    { 4, 499, 500, 0, 0, 80.0f, "./res/thumbnails/035.dds", weatherClearanceDropzone, windClearanceDropzone, castingCallback_Freejump_3000, equipCallback_Freejump, NULL }
+    { 4, 499, 500, 0, 0, 80.0f, "./res/thumbnails/035.dds", weatherClearanceDropzone, windClearanceDropzone, castingCallback_Freejump_3000, equipCallback_Freejump, NULL },
+    { 4, 499, 500, 0, 0, 90.0f, "./res/thumbnails/031.dds", weatherClearanceDropzone, windClearanceDropzone, castingCallback_Freejump_3950, equipCallback_Freejump, NULL }
 };
 
 static MissionInfo skybaseMissions[] = 
@@ -245,7 +246,7 @@ TournamentInfo dropzoneTournaments[] =
 {
     { 125, 145, tfArbitrary, "T01", "./res/thumbnails/010.dds", std::vector<MissionInfo>(vffMissions, vffMissions + 8) },
     { 463, 464, tfArbitrary, "T02", "./res/thumbnails/020.dds", std::vector<MissionInfo>(baseVffMissions, baseVffMissions + 4) },
-    { 485, 486, tfArbitrary, "T03", "./res/thumbnails/030.dds", std::vector<MissionInfo>(freeJumpingMissions, freeJumpingMissions + 5) },
+    { 485, 486, tfArbitrary, "T03", "./res/thumbnails/030.dds", std::vector<MissionInfo>(freeJumpingMissions, freeJumpingMissions + 6) },
     { 501, 502, tfArbitrary, "T04", "./res/thumbnails/040.dds", std::vector<MissionInfo>(skybaseMissions, skybaseMissions + 2) },
     { 639, 640, tfSmokeball, "T05", "./res/thumbnails/050.dds", std::vector<MissionInfo>(cloudyRodeoMissions, cloudyRodeoMissions + 3) }
 };
@@ -356,8 +357,8 @@ unsigned int TournamentInfo::getMinimalRank(void)
 
 void TournamentInfo::initStaticTournaments()
 {
-    LocationInfo::getRecord(0)->tournaments = std::vector<TournamentInfo>(dropzoneTournaments, dropzoneTournaments + 5);
-    LocationInfo::getRecord(1)->tournaments = std::vector<TournamentInfo>(ostankinoTournaments, ostankinoTournaments + 3);
+    LocationInfo::getRecord(0)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, dropzoneTournaments);
+    LocationInfo::getRecord(1)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, ostankinoTournaments);
     LocationInfo::getRecord(2)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, caveOfSwallowsTournaments);
     LocationInfo::getRecord(3)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, trollVeggenTournaments);
     LocationInfo::getRecord(4)->tournaments = INIT_STD_VECTOR_WITH_ARRAY(TournamentInfo, royalGorgeTournaments);
@@ -468,6 +469,7 @@ CastingCallback MissionCastingCallbackFromString(const char* str)
     else if (name == "castingCallback_Freejump_2000") { return castingCallback_Freejump_2000; }
     else if (name == "castingCallback_Freejump_2500") { return castingCallback_Freejump_2500; }
     else if (name == "castingCallback_Freejump_3000") { return castingCallback_Freejump_3000; }
+    else if (name == "castingCallback_Freejump_3950") { return castingCallback_Freejump_3950; }
 
     else if (name == "castingCallback_Skybase_250") { return castingCallback_Skybase_250; }
     else if (name == "castingCallback_Skybase_500") { return castingCallback_Skybase_500; }

@@ -6,6 +6,7 @@
 #include "ccor/Core.h"
 
 int PASCAL WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdLine, int cmdShow) {
+#if defined(_DEBUG)
         AllocConsole();
 
         int hCrt, i;
@@ -14,6 +15,7 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdLine, in
         hf = _fdopen( hCrt, "w" );
         *stdout = *hf;
         i = setvbuf( stdout, NULL, _IONBF, 0 );
+#endif
 
         CoreRunEngine(instance, prevInstance, cmdLine, cmdShow);
 }

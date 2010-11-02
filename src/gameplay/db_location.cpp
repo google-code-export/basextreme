@@ -349,7 +349,7 @@ static LocationInfo gStaticLocations[] =
 {
     // 0 - home dropzone
     { 
-        "N88", 0, 0, "LGD00", "./res/thumbnails/000.dds", true,
+        "dropzone", "N88", 0, 0, "LGD00", "./res/thumbnails/000.dds", true,
         0.0f, // no stay-in-location fee
         0, // no boogies
         0, // no festivals
@@ -372,7 +372,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 1 - ostankino tv tower
     { 
-        "N89", 1243, 179, "LGD01", "./res/thumbnails/100.dds", true,
+        "ostankino", "N89", 1243, 179, "LGD01", "./res/thumbnails/100.dds", true,
         20.0f,
         0, // no boogies
         522, // festival event name
@@ -395,7 +395,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 2 - cave of swallows
     { 
-        "N90", 460, 394, "LGD02", "./res/thumbnails/400.dds", false,
+        "cave", "N90", 460, 394, "LGD02", "./res/thumbnails/400.dds", false,
         15.0f,
         254, // boogie event
         0, // no festivals
@@ -418,7 +418,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 3 - trollveggen
     { 
-        "N91", 1047, 153, "LGD03", "./res/thumbnails/300.dds", true,
+        "trollveggen", "N91", 1047, 153, "LGD03", "./res/thumbnails/300.dds", true,
         30.0f,
         253, // boogie event
         0,   // no festivals
@@ -441,7 +441,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 4 - royal gorge bridge
     { 
-        "N92", 398, 303, "LGD04", "./res/thumbnails/500.dds", false,
+        "royalgorge", "N92", 398, 303, "LGD04", "./res/thumbnails/500.dds", false,
         25.0f,
         0,   // no boogies
         596, // festival event
@@ -464,7 +464,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 5 - kvly-tv mast
     { 
-        "N768", 464, 256, "LGD05", "./res/thumbnails/600.dds", true,
+        "kvly", "N768", 464, 256, "LGD05", "./res/thumbnails/600.dds", true,
         25.0f,
         773, // boogie event
         0, // no festival
@@ -487,7 +487,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 6 - kjerag
     { 
-        "N784", 1094, 185, "LGD06", "./res/thumbnails/700.dds", true,
+        "kjerag", "N784", 1094, 185, "LGD06", "./res/thumbnails/700.dds", true,
         25.0f,
         799, // boogie event
         0, // no festivals
@@ -510,7 +510,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 7 - angel falls
     { 
-        "N832", 328*2, 241*2, "LGD07", "./res/thumbnails/800.dds", true,
+        "angelfalls", "N832", 328*2, 241*2, "LGD07", "./res/thumbnails/800.dds", true,
         25.0f,
         842, // angel falls boogie
         0, // no festivals
@@ -533,7 +533,7 @@ static LocationInfo gStaticLocations[] =
     },
     // 8 - el capitan
     { 
-        "N846", 340, 301, "LGD08", "./res/thumbnails/900.dds", true,
+        "elcapitan", "N846", 340, 301, "LGD08", "./res/thumbnails/900.dds", true,
         25.0f,
         0, // el capitan boogie
         0, // no festivals
@@ -554,7 +554,7 @@ static LocationInfo gStaticLocations[] =
         { 1.0f, 0.419f, 1.740f, 0.158f },
         std::vector<TournamentInfo>()
     },
-    { "", 0, 0 }
+    { "", "", 0, 0 }
 };
 
 std::vector<LocationInfo*> gLocations;
@@ -571,6 +571,17 @@ LocationInfo* LocationInfo::getRecord(unsigned int id)
     return gLocations[id];
 }
 
+LocationInfo* LocationInfo::getRecord(std::string locationName) {
+    int i;
+    int count = gLocations.size();
+    for (i = 0; i < count; ++i) {
+        if (gLocations[i]->id == locationName) {
+            return gLocations[i];
+        }
+    }
+
+    return 0;
+}
 
 void LocationInfo::loadLocations(const char* fileName)
 {
@@ -587,13 +598,14 @@ void LocationInfo::loadLocations(const char* fileName)
 
     while (cfg.PeekKey()) {
         if (string("Location") == cfg.PeekKey()) {
-            string locationFile = cfg.ReadString("Location");
+            string locationId = cfg.ReadString("Location");
+            string locationFile = locationId;
             locationFile.insert(0, "./res/");
             string missionsFile(locationFile);
             locationFile.append("/location.cfg");
             missionsFile.append("/missions.cfg");
 
-            LocationInfo* location = loadLocation(locationFile.c_str());
+            LocationInfo* location = loadLocation(locationId, locationFile.c_str());
             if (location != 0) {
                 gLocations.push_back(location);
                 database::TournamentInfo::loadMissions(location, missionsFile.c_str());
@@ -634,16 +646,45 @@ CastingCallback CastingCallbackFromString(const char* str) {
     else return casting::castingCallbackTestLevel;
 }
 
-LocationInfo* LocationInfo::loadLocation(const char* fileName)
+
+static LocationInfo gEmptyLocation = 
+{
+    "null", "", 0, 0, "LGDNULL", "./res/thumbnails/000.dds", true,
+    0.0f, // no stay-in-location fee
+    0, // no boogies
+    0, // no festivals
+    0, // no climbings
+    639, // smokeball event
+    824, // community event
+    { 1000,1000,1000,1000,1000 },        
+    { "./null.ba", 10, 1100000 },
+    { "./null.ba", 0, 0 },
+    std::vector<LocationInfo::AssetInfo>(),
+    std::vector<string>(),
+    { 0.03f, 0.73f },
+    { NULL, "", "", "", "", 0.0f, 0.0f },
+    std::vector<LocationInfo::ExitPoint>(),
+    casting::castingCallbackDropzone,
+    { 100.0f, 20000.0f, 1.0f, 1.25f, 0.9f, 1.0f, "./null.ogg", "./null.ogg" },
+    std::vector<LocationInfo::Weather>(),
+    { 1.0f, 0.33f, 0.125f, 0.25f },
+    std::vector<TournamentInfo>()
+};
+
+
+LocationInfo* LocationInfo::loadLocation(std::string locationId, const char* fileName)
 {
     LocationInfo* locationInfo = new LocationInfo();
-    memset(locationInfo, 0, sizeof(LocationInfo));
+    *locationInfo = gEmptyLocation;
+    //memset(locationInfo, 0, sizeof(LocationInfo));
 
     ConfigReader cfg(fileName);
     if (!cfg.IsFileOpen()) {
         delete locationInfo;
         return 0;
     }
+
+    locationInfo->id = locationId;
 
     while (cfg.PeekKey()) {
         string key = cfg.PeekKey();

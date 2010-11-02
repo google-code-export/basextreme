@@ -128,6 +128,7 @@ CanopySimulator::CanopySimulator(Actor* jumper, Gear* gear, bool sliderUp) :
 {
     assert( _gear );
 
+    _cutAway = false;
     _name = "CanopySimulator";
     _gear = gear; 
     _collideJumper = false;
@@ -533,6 +534,273 @@ void CanopySimulator::connect(
     delete[] canopyJoints;
 }
 
+void CanopySimulator::cutAway()
+{
+    _cutAway = true;
+
+///////////////////////////////////////////////////////////
+/*
+    Jumper* jumper = dynamic_cast<Jumper*>( _parent );
+
+    // setup burden calculation
+    _bcPrevVel = velocity;
+
+    // setup lineovers
+    _leftLOW = leftLOW;
+    _rightLOW = rightLOW;
+    // setup lineover flag
+    if( _leftLOW > 0 || _rightLOW > 0 ) _lineoverIsEliminated = false;
+    // setup WLO effectiviness flag
+    if( jumper )
+    {        
+        float dice = getCore()->getRandToolkit()->getUniform( 0, 1 );
+        _wloIsEffective = ( dice < jumper->getVirtues()->getRiggingSkill() );
+        // second chance! ( +50% of base probability )
+        if( !_wloIsEffective )
+        {
+            dice = getCore()->getRandToolkit()->getUniform( 0, 1 );
+            _wloIsEffective = ( dice < jumper->getVirtues()->getRiggingSkill() );
+        }
+    }
+
+    // disable lineover if malfunctions disabled
+    if( jumper && !jumper->getVirtues()->equipment.malfunctions )
+    {
+        _leftLOW = 0.0f;
+        _rightLOW = 0.0f;
+    }
+
+    // disable lineover is canopy is skydiving
+    if( _gearRecord->skydiving )
+    {
+        _leftLOW = 0.0f;
+        _rightLOW = 0.0f;
+    }
+
+    // setup linetwists
+    _linetwists = linetwists;
+    // disable linetwists if malfunctions disabled
+    if( jumper && !jumper->getVirtues()->equipment.malfunctions )
+    {
+        _linetwists = 0.0f;
+    }
+
+    if( jumper && jumper->isPlayer() )
+    {
+        Gameplay::iGui->getDesktop()->insertPanel( _signature->getPanel() );
+    }
+
+    _scene->getStage()->add( _canopyClump );
+    if( _sliderUp )
+    {
+        _scene->getStage()->add( _sliderClump );
+        _scene->getStage()->add( _sliderCordFL );
+        _scene->getStage()->add( _sliderCordFR );
+        _scene->getStage()->add( _sliderCordRL );
+        _scene->getStage()->add( _sliderCordRR );
+    }
+    
+    // initialize canopy physics simulator
+    NxBodyDesc nxBodyDesc;
+    nxBodyDesc.massSpaceInertia.set( 0,0,0 ); // tensor will be computed automatically
+    nxBodyDesc.mass = _gearRecord->mass;
+    nxBodyDesc.linearDamping = 0.0f;
+    nxBodyDesc.angularDamping = 0.0f;
+    nxBodyDesc.flags = NX_BF_VISUALIZATION;
+    nxBodyDesc.solverIterationCount = 32;
+    Vector3f aabbScale(
+        getCollisionGeometry( _canopyClump )->getFrame()->getRight().length(),
+        getCollisionGeometry( _canopyClump )->getFrame()->getUp().length(),
+        getCollisionGeometry( _canopyClump )->getFrame()->getAt().length()
+    );
+    Vector3f aabbInf = getCollisionGeometry( _canopyClump )->getGeometry()->getAABBInf();
+    Vector3f aabbSup = getCollisionGeometry( _canopyClump )->getGeometry()->getAABBSup();
+    Vector3f aabbDim = ( aabbSup - aabbInf );
+    aabbDim[0] *= aabbScale[0] * 0.5f,
+    aabbDim[1] *= aabbScale[1] * 0.5f,
+    aabbDim[2] *= aabbScale[2] * 0.5f;
+    NxBoxShapeDesc nxBoxDesc;
+    nxBoxDesc.dimensions = wrap( aabbDim );
+    nxBoxDesc.materialIndex = _scene->getPhClothMaterial()->getMaterialIndex();
+    NxActorDesc nxActorDesc;
+    nxActorDesc.userData = this;
+    nxActorDesc.shapes.pushBack( &nxBoxDesc );
+    nxActorDesc.body = &nxBodyDesc;        
+    nxActorDesc.globalPose = pose;
+    _nxCanopy = _scene->getPhScene()->createActor( nxActorDesc );
+    assert( _nxCanopy );
+    unsigned int flags = _scene->getPhScene()->getActorPairFlags( *_scene->getPhTerrain(), *_nxCanopy );
+    flags = flags | NX_NOTIFY_ON_START_TOUCH | NX_NOTIFY_ON_TOUCH;
+    _scene->getPhScene()->setActorPairFlags( *_scene->getPhTerrain(), *_nxCanopy, flags );
+
+    // disable collision btw. canopy and base jumper
+    flags = _scene->getPhScene()->getActorPairFlags( *_nxCanopy, *jumper->getFlightActor() );
+    flags = flags | NX_IGNORE_PAIR;
+    _scene->getPhScene()->setActorPairFlags( *_nxCanopy, *jumper->getFlightActor(), flags );
+
+    // initialize velocity
+    _nxCanopy->addForce( velocity, NX_VELOCITY_CHANGE );
+    
+    // initialize PTV transformation
+    Matrix4f viewLTM = _canopyClump->getFrame()->getLTM();
+    Matrix4f canopyLTM = getCollisionGeometry( _canopyClump )->getFrame()->getLTM();
+    // this is due to max pivot placement specific
+    canopyLTM[3][2] += aabbDim[2];
+    _mcCanopy.setup( canopyLTM, viewLTM );
+
+    // synchronize physics & rendering structures to achieve valid data for joint
+    _canopyClump->getFrame()->setMatrix( _mcCanopy.convert( wrap( _nxCanopy->getGlobalPose() ) ) );
+    _canopyClump->getFrame()->getLTM();
+
+    // initialize rough joints
+    float rjMultiplier = 1.125f;
+    NxDistanceJointDesc jointDesc;
+    jointDesc.actor[0]   = _nxConnected;
+    jointDesc.actor[1]   = _nxCanopy;    
+    jointDesc.flags      = NX_DJF_MAX_DISTANCE_ENABLED;
+    jointDesc.jointFlags = NX_JF_VISUALIZATION | NX_JF_COLLISION_ENABLED;
+
+    jointDesc.localAnchor[0] = _frontLeftAnchor[0];
+    jointDesc.localAnchor[1] = _frontLeftAnchor[1];
+    jointDesc.maxDistance    = _gearRecord->frontCord * rjMultiplier;
+    jointDesc.minDistance    = 0.0f;
+    _roughJoints[0] = _scene->getPhScene()->createJoint( jointDesc );
+    assert( _roughJoints[0] );
+
+    jointDesc.localAnchor[0] = _frontRightAnchor[0];
+    jointDesc.localAnchor[1] = _frontRightAnchor[1];
+    jointDesc.maxDistance    = _gearRecord->frontCord * rjMultiplier;
+    jointDesc.minDistance    = 0.0f;
+    _roughJoints[1] = _scene->getPhScene()->createJoint( jointDesc );
+    assert( _roughJoints[1] );
+
+    jointDesc.localAnchor[0] = _rearLeftAnchor[0];
+    jointDesc.localAnchor[1] = _rearLeftAnchor[1];
+    jointDesc.maxDistance    = _gearRecord->rearCord * rjMultiplier;
+    jointDesc.minDistance    = 0.0f;
+    _roughJoints[2] = _scene->getPhScene()->createJoint( jointDesc );
+    assert( _roughJoints[2] );
+
+    jointDesc.localAnchor[0] = _rearRightAnchor[0];
+    jointDesc.localAnchor[1] = _rearRightAnchor[1];
+    jointDesc.maxDistance    = _gearRecord->rearCord * rjMultiplier;
+    jointDesc.minDistance    = 0.0f;
+    _roughJoints[3] = _scene->getPhScene()->createJoint( jointDesc );
+    assert( _roughJoints[3] );
+
+    // initialize ropes
+    unsigned int ropeJoints = jumper->isPlayer() ? 5 : 2;
+    float        ropeMass = 0.5f;
+    _frontLeftRope  = new Rope( ropeJoints, ropeMass, _gearRecord->frontCord, _scene->getPhScene() );
+    _frontRightRope = new Rope( ropeJoints, ropeMass, _gearRecord->frontCord, _scene->getPhScene() );
+    _rearLeftRope  = new Rope( ropeJoints, ropeMass, _gearRecord->rearCord, _scene->getPhScene() );
+    _rearRightRope = new Rope( ropeJoints, ropeMass, _gearRecord->rearCord, _scene->getPhScene() );
+    _frontLeftRope->initialize( _nxConnected, _frontLeftAnchor[0], _nxCanopy, _frontLeftAnchor[1] );
+    _frontRightRope->initialize( _nxConnected, _frontRightAnchor[0], _nxCanopy, _frontRightAnchor[1] );
+    _rearLeftRope->initialize( _nxConnected, _rearLeftAnchor[0], _nxCanopy, _rearLeftAnchor[1] );
+    _rearRightRope->initialize( _nxConnected, _rearRightAnchor[0], _nxCanopy, _rearRightAnchor[1] );
+*/
+/*
+    _roughJoints[0] = _scene->getPhScene()->createJoint( jointDesc );
+    _roughJoints[1] = _scene->getPhScene()->createJoint( jointDesc );
+    _roughJoints[2] = _scene->getPhScene()->createJoint( jointDesc );
+    _roughJoints[3] = _scene->getPhScene()->createJoint( jointDesc );
+*/
+    if (_frontLeftRope) { delete _frontLeftRope; _frontLeftRope = 0 ; }
+    if (_frontRightRope) { delete _frontRightRope; _frontRightRope = 0; }
+    if (_rearLeftRope) { delete _rearLeftRope; _rearLeftRope = 0; }
+    if (_rearRightRope) { delete _rearRightRope; _rearRightRope = 0; }
+    if (_roughJoints[0]) { _scene->getPhScene()->releaseJoint(*_roughJoints[0]); _roughJoints[0] = 0; }
+    if (_roughJoints[1]) { _scene->getPhScene()->releaseJoint(*_roughJoints[1]); _roughJoints[1] = 0; }
+    if (_roughJoints[2]) { _scene->getPhScene()->releaseJoint(*_roughJoints[2]); _roughJoints[2] = 0; }
+    if (_roughJoints[3]) { _scene->getPhScene()->releaseJoint(*_roughJoints[3]); _roughJoints[3] = 0; }
+    if (_cohesionJoint) { _scene->getPhScene()->releaseJoint(*_cohesionJoint); _cohesionJoint = 0; }
+
+///////////////////////////////////////////////////////////
+
+    //int i;
+    //for( i=0; i<_gearRecord->riserScheme->getNumCords(); i++ )
+    //{
+    //        delete _cords[i];
+    //        _cords[i] = 0;
+    //}
+/*
+    _nxConnected = 0;
+    _frontLeftRiser = 0;
+    _frontRightRiser = 0;
+    _rearLeftRiser = 0;
+    _rearRightRiser = 0;
+*/
+/*
+    Jumper* jumper = dynamic_cast<Jumper*>( _parent ); assert( jumper );
+
+    // calculate number of cord instances
+    unsigned int numCordInstances;
+    numCordInstances = _gearRecord->riserScheme->getNumCords() * 4 * 3 +
+                       ( _gearRecord->riserScheme->getNumBrakes() + 1 ) * 2;
+
+    // obtain cord template
+    engine::IClump* cordTemplate = Gameplay::iGameplay->findClump( "Cord" ); assert( cordTemplate );
+    callback::AtomicL atomics;
+    cordTemplate->forAllAtomics( callback::enumerateAtomics, &atomics );
+    assert( atomics.size() == 1 );
+
+    // build batch scheme
+    engine::BatchScheme cordBatchScheme;
+    cordBatchScheme.numLods = 1;
+    cordBatchScheme.lodGeometry[0] = (*atomics.begin())->getGeometry();
+    cordBatchScheme.lodDistance[0] = 1000000;
+    assert( cordBatchScheme.isValid() );
+
+    // create cord batch
+    _cordBatch = Gameplay::iEngine->createBatch( numCordInstances, &cordBatchScheme );
+    assert( _cordBatch );
+    getScene()->getStage()->add( _cordBatch );
+
+    // create cords
+    float cascade = _gearRecord->cascade * 100.0f;
+    unsigned int cordId = 0;
+    unsigned int instanceId = 0;
+    engine::IFrame* innerJoint;
+    engine::IFrame* outerJoint;
+    unsigned int i;
+    for( i=0; i<_gearRecord->riserScheme->getNumCords(); i++ )
+    {
+        innerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtInnerFrontLeft, i ) );
+        outerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtOuterFrontLeft, i ) );
+        _cords[cordId] = new CordSimulator( cascade, _sliderUp ? getSliderJointFrontLeft( _sliderClump ) : _frontLeftRiser, innerJoint, outerJoint, _cordBatch, instanceId );
+        cordId++;
+        innerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtInnerFrontRight, i ) );
+        outerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtOuterFrontRight, i ) );
+        _cords[cordId] = new CordSimulator( cascade, _sliderUp ? getSliderJointFrontRight( _sliderClump ) : _frontRightRiser, innerJoint, outerJoint, _cordBatch, instanceId );
+        cordId++;
+        innerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtInnerRearLeft, i ) );
+        outerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtOuterRearLeft, i ) );
+        _cords[cordId] = new CordSimulator( cascade, _sliderUp ? getSliderJointRearLeft( _sliderClump ) : _rearLeftRiser, innerJoint, outerJoint, _cordBatch, instanceId );
+        cordId++;
+        innerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtInnerRearRight, i ) );
+        outerJoint = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtOuterRearRight, i ) );
+        _cords[cordId] = new CordSimulator( cascade, _sliderUp ? getSliderJointRearRight( _sliderClump ) : _rearRightRiser, innerJoint, outerJoint, _cordBatch, instanceId );
+        cordId++;
+    }
+
+    // create brakes
+    float brakeAspect = 0.85f;
+    engine::IFrame** canopyJoints = new engine::IFrame*[_gearRecord->riserScheme->getNumBrakes()];
+    for( i=0; i<_gearRecord->riserScheme->getNumBrakes(); i++ )
+    {
+        canopyJoints[i] = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtBrakeLeft, i ) );
+    }
+    _leftBrake = new BrakeSimulator( brakeAspect, _gearRecord->riserScheme->getNumBrakes(), _sliderUp ? getSliderJointRearLeft( _sliderClump ) : _rearLeftRiser, canopyJoints, _cordBatch, instanceId );
+    for( i=0; i<_gearRecord->riserScheme->getNumBrakes(); i++ )
+    {
+        canopyJoints[i] = Gameplay::iEngine->findFrame( _canopyClump->getFrame(), _gearRecord->riserScheme->getJointName( database::RiserScheme::rtBrakeRight, i ) );
+    }
+    _rightBrake = new BrakeSimulator( brakeAspect, _gearRecord->riserScheme->getNumBrakes(), _sliderUp ? getSliderJointRearRight( _sliderClump ) : _rearRightRiser, canopyJoints, _cordBatch, instanceId );
+    delete[] canopyJoints;
+*/
+}
+
 #define MAX(X,Y) ( X > Y ? X : Y )
 
 void CanopySimulator::open(const NxMat34& pose, const NxVec3& velocity, float leftLOW, float rightLOW, float linetwists)
@@ -809,16 +1077,19 @@ void CanopySimulator::onUpdateActivity(float dt)
         _canopyClump->getFrame()->getLTM();
         
         // specific behaviour
-        updateWarp( dt );
-        updateSlider( dt );
+        if (!_cutAway) { updateWarp( dt ); }
+        if (!_cutAway) { updateSlider( dt ); }
         updateProceduralAnimation( dt );
         _canopyClump->getFrame()->getLTM();
 
         // place cords
-        for( unsigned int i=0; i<_numCords; i++ ) _cords[i]->update( dt );        
+        for( unsigned int i=0; i<_numCords; i++ ) {
+                _cords[i]->update( dt );        
+        }
         _leftBrake->update( dt );
         _rightBrake->update( dt );
-        if( _sliderUp )
+
+        if( _sliderUp && !_cutAway)
         {
             Jumper::placeCord( _sliderCordFL, _frontLeftRiser->getPos(), getSliderJointFrontLeft( _sliderClump )->getPos(), 2.0f );
             Jumper::placeCord( _sliderCordFR, _frontRightRiser->getPos(), getSliderJointFrontRight( _sliderClump )->getPos(), 2.0f );
@@ -1356,11 +1627,23 @@ void CanopySimulator::updateSlider(float dt)
     Vector3f canopyFL = CanopySimulator::getPhysicsJointFrontLeft( _canopyClump )->getPos();    
     Vector3f canopyFR = CanopySimulator::getPhysicsJointFrontRight( _canopyClump )->getPos();
     Vector3f canopyRL = CanopySimulator::getPhysicsJointRearLeft( _canopyClump )->getPos();    
-    Vector3f canopyRR = CanopySimulator::getPhysicsJointRearRight( _canopyClump )->getPos();    
-    Vector3f jumperFL = _frontLeftRiser->getPos();
-    Vector3f jumperFR = _frontRightRiser->getPos();
-    Vector3f jumperRL = _rearLeftRiser->getPos();
-    Vector3f jumperRR = _rearRightRiser->getPos();
+    Vector3f canopyRR = CanopySimulator::getPhysicsJointRearRight( _canopyClump )->getPos();
+    Vector3f jumperFL;
+    Vector3f jumperFR;
+    Vector3f jumperRL;
+    Vector3f jumperRR;
+//    if (!_cutAway) {
+    if (true) {
+            jumperFL = _frontLeftRiser->getPos();
+            jumperFR = _frontRightRiser->getPos();
+            jumperRL = _rearLeftRiser->getPos();
+            jumperRR = _rearRightRiser->getPos();
+    } else {
+            jumperFL.set(0, 0, 0);
+            jumperFR.set(0, 0, 0);
+            jumperRL.set(0, 0, 0);
+            jumperRR.set(0, 0, 0);
+    }
     Vector3f posFL    = (canopyFL - jumperFL); posFL *= pSliderPosFL; posFL = jumperFL + posFL;
     Vector3f posFR    = (canopyFR - jumperFR); posFR *= pSliderPosFR; posFR = jumperFR + posFR;
     Vector3f posRL    = (canopyRL - jumperRL); posRL *= pSliderPosRL; posRL = jumperRL + posRL;
