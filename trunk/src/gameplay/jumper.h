@@ -121,6 +121,7 @@ public:
     float backRightRiser;  // right warp channel
     float frontLeftRiser;  // left warp channel
     float frontRightRiser; // right warp channel
+    bool  cutAway;   // cutaway channel
     bool  phase;     // phase channel (jump/pull)
     bool  modifier;  // context modifier channel (run/track)
     bool  wlo;       // wlo toggles channel
@@ -128,7 +129,7 @@ public:
 public:
     SpinalCord() : left(0), right(0), up(0), down(0), leftWarp(0), rightWarp(0),
                    backLeftRiser(0), backRightRiser(0), frontLeftRiser(0), frontRightRiser(0), 
-                   phase(0), modifier(0), wlo(0), hook(0) {}
+                   cutAway(false), phase(0), modifier(0), wlo(0), hook(0) {}
 public:
     void mapActionChannels(void);
     void reset(void);
@@ -466,8 +467,12 @@ private:
     NxVec3               _pilotAnchor;
     bool                 _player;
     SpinalCord*          _spinalCord;
-    PilotchuteSimulator* _pilotchuteSimulator;
-    CanopySimulator*     _canopySimulator;
+    PilotchuteSimulator* _pilotchuteSimulatorMain;
+    PilotchuteSimulator* _pilotchuteSimulatorReserve;
+    PilotchuteSimulator* _pilotchuteSimulatorCurrent;
+    CanopySimulator*     _canopySimulatorMain;
+    CanopySimulator*     _canopySimulatorReserve;
+    CanopySimulator*     _canopySimulatorCurrent;
     unsigned int         _bcStep;     // burden calculator: counter
     NxVec3               _bcPrevVel;  // burden calculator: previous velocity
     NxVec3               _bcBurden;   // burden calculator: overburden in mts/sq.sec.
@@ -539,8 +544,12 @@ public:
     inline Enclosure* getEnclosure(void) { return _enclosure; }
     inline SpinalCord* getSpinalCord(void) { return _spinalCord; }
     inline Virtues* getVirtues(void) { return _virtues; }
-    inline PilotchuteSimulator* getPilotchuteSimulator(void) { return _pilotchuteSimulator; }
-    inline CanopySimulator* getCanopySimulator(void) { return _canopySimulator; }
+    inline PilotchuteSimulator* getPilotchuteSimulator(void) { return _pilotchuteSimulatorCurrent; }
+    inline PilotchuteSimulator* getPilotchuteSimulatorMain(void) { return _pilotchuteSimulatorMain; }
+    inline PilotchuteSimulator* getPilotchuteSimulatorReserve(void) { return _pilotchuteSimulatorReserve; }
+    inline CanopySimulator* getCanopySimulator(void) { return _canopySimulatorCurrent; }
+    inline CanopySimulator* getCanopySimulatorMain(void) { return _canopySimulatorMain; }
+    inline CanopySimulator* getCanopySimulatorReserve(void) { return _canopySimulatorReserve; }
     inline NxVec3 getOverburden(void) { return _bcBurden; }
     inline NxActor* getFreefallActor(void) { return _phFreeFall; }
     inline NxActor* getFlightActor(void) { return _phFlight; }

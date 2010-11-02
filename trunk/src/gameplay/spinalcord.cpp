@@ -15,6 +15,7 @@ void SpinalCord::mapActionChannels(void)
     backRightRiser  = Gameplay::iGameplay->getActionChannel( iaBackRightRiser )->getAmplitude();
     frontLeftRiser  = Gameplay::iGameplay->getActionChannel( iaFrontLeftRiser )->getAmplitude();
     frontRightRiser = Gameplay::iGameplay->getActionChannel( iaFrontRightRiser )->getAmplitude();
+    cutAway   = Gameplay::iGameplay->getActionChannel( iaCutaway )->getTrigger();
     phase     = Gameplay::iGameplay->getActionChannel( iaPhase )->getTrigger();
     modifier  = Gameplay::iGameplay->getActionChannel( iaModifier )->getTrigger();
     wlo       = Gameplay::iGameplay->getActionChannel( iaWLO )->getTrigger();
@@ -35,6 +36,7 @@ void SpinalCord::reset(void)
     frontLeftRiser = 0.0f;
     frontRightRiser = 0.0f;
 
+    cutAway   = false;
     phase     = false;
     modifier  = false;
     wlo       = false;

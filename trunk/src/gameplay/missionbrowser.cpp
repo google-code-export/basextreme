@@ -545,7 +545,7 @@ engine::ITexture* MissionBrowser::getThumbnail(const char* resource)
     ThumbnailI thumbnailI = _thumbnails.find( resource );
     if( thumbnailI == _thumbnails.end() )
     {
-        engine::ITexture* texture = Gameplay::iEngine->createTexture( resource, false ); assert( texture, false );
+        engine::ITexture* texture = Gameplay::iEngine->createTexture( resource, false ); assert( texture );
         _thumbnails.insert( Thumbnail( resource, texture ) );
         return texture;
     }

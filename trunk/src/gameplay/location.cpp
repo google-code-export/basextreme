@@ -41,6 +41,7 @@ Location::Location(Geoscape* geoscape, unsigned int databaseId)
 
     // create location window
     _window = Gameplay::iGui->createWindow("CareerLocation");
+    _window->getPanel()->find( "Action" )->setRect(gui::Rect(0, 0, 20, 20));
 
     // setup caption
     gui::IGuiPanel* caption       = _window->getPanel()->find( "Caption" );

@@ -63,6 +63,39 @@ static std::vector<Rig> rigs;
 #endif
 
 
+unsigned int Rig::oldRigIdToNewId(unsigned int oldId)
+{
+        string type;
+
+        if (oldId >= 0 && oldId <= 9) {
+                type = "Vector Velcro";
+        } else if (oldId >= 10 && oldId <= 16) {
+                type = "Vector Pin";
+        } else if (oldId >= 17 && oldId <= 20) {
+                type = "Harpy";
+        } else if (oldId >= 21 && oldId <= 21) {
+                type = "Vector Pin";
+        } else if (oldId >= 22 && oldId <= 22) {
+                type = "Vector Pin";
+        } else if (oldId >= 23 && oldId <= 23) {
+                type = "Harpy";
+        } else {
+                assert("Shouldn't happen");
+                type = "Vector Pin"; // Safe choise :-D
+        }
+
+        int i;
+        for (i = 0; i < rigs.size(); ++i) {
+                if (rigs[i].type == type) {
+                        return i;
+                }
+        }
+
+        assert("Shouldn't happen");
+        return 0;
+}
+
+
 unsigned int Rig::getNumRecords(void)
 {
         return rigs.size();
@@ -116,24 +149,22 @@ void Rig::initRigs()
         getCore()->logMessage("Info: Loading rigs.");
 
         Rig prototypes[] = {
-                { true, COST_VECTOR_VELCRO, false, "Vector Velcro", L"Vector Velcro", DESCRIPTIONID_VECTOR_VELCRO, CLID_WHITE, MFRID_D3, "", PROPS_VECTOR_VELCRO },
-                { true, COST_VECTOR_PIN,    false, "Vector Pin", L"Vector Pin",       DESCRIPTIONID_VECTOR_PIN,    CLID_WHITE, MFRID_D3, "", PROPS_VECTOR_PIN },
-                { true, COST_HARPY,         true,  "Harpy", L"Harpy",                 DESCRIPTIONID_HARPY,         CLID_WHITE, MFRID_D3, "", PROPS_HARPY }
+                { true, COST_VECTOR_VELCRO, false, "AFF Container", "AFF Container", L"AFF Container", DESCRIPTIONID_VECTOR_VELCRO, CLID_WHITE, MFRID_D3, "./res/Gear/Special/AFF Suit.dds", PROPS_VECTOR_VELCRO },
+                { true, COST_VECTOR_VELCRO, false, "Vector Velcro", "Vector Velcro", L"Vector Velcro", DESCRIPTIONID_VECTOR_VELCRO, CLID_WHITE, MFRID_D3, "", PROPS_VECTOR_VELCRO },
+                { true, COST_VECTOR_PIN,    false, "Vector Pin", "Vector Pin", L"Vector Pin",       DESCRIPTIONID_VECTOR_PIN,    CLID_WHITE, MFRID_D3, "", PROPS_VECTOR_PIN },
+                { true, COST_HARPY,         true,  "Harpy", "Harpy", L"Harpy",                 DESCRIPTIONID_HARPY,         CLID_WHITE, MFRID_D3, "", PROPS_HARPY }
         };
 
 //    /* 022 */ { false, COST_FB_BASE, false, MODELID_FB_BASE, DESCRIPTIONID_FB_BASE, CLID_WHITE, MFRID_D3, 70, PROPS_FB_BASE },
 //    /* 023 */ { false, COST_FB_SKYDIVING, true, MODELID_FB_SKYDIVING, DESCRIPTIONID_FB_SKYDIVING, CLID_WHITE, MFRID_D3, 70, PROPS_FB_SKYDIVING },
 
 
-        // Add suit 0 - AFF suit
-        prototypes[0].texture = "./res/Gear/Special/AFF Suit.dds";
-        prototypes[0].name = "AFF Container";
-        prototypes[0].wname = L"AFF Container";
+        // Add rig 0 - AFF rig
         rigs.push_back(prototypes[0]);
 
-        loadRigs(prototypes[0], "./res/Gear/Containers/Vector Velcro/", "./res/Gear/Containers/Vector Velcro/*.dds");
-        loadRigs(prototypes[1], "./res/Gear/Containers/Vector Pin/", "./res/Gear/Containers/Vector Pin/*.dds");
-        loadRigs(prototypes[2], "./res/Gear/Containers/Harpy/", "./res/Gear/Containers/Harpy/*.dds");
+        loadRigs(prototypes[1], "./res/Gear/Containers/Vector Velcro/", "./res/Gear/Containers/Vector Velcro/*.dds");
+        loadRigs(prototypes[2], "./res/Gear/Containers/Vector Pin/", "./res/Gear/Containers/Vector Pin/*.dds");
+        loadRigs(prototypes[3], "./res/Gear/Containers/Harpy/", "./res/Gear/Containers/Harpy/*.dds");
  
         getCore()->logMessage("Info: Rigs loaded.");
 }
@@ -144,6 +175,9 @@ void Rig::loadRigs(Rig& rigPrototype, string textureBase, const char* dir)
         std::vector<string> files;
         
         if (getdir(dir, &files)) {
+                string baseName = rigPrototype.name;
+                wstring baseWName = rigPrototype.wname;
+
                 int i;
                 for (i = 0; i < (int)files.size(); ++i) {
                         rigPrototype.texture = textureBase + files[i];
@@ -153,8 +187,8 @@ void Rig::loadRigs(Rig& rigPrototype, string textureBase, const char* dir)
                         wstring name(L" ", s.length());
                         copy(s.begin(), s.end(), name.begin());
 
-                        rigPrototype.name = s;
-                        rigPrototype.wname = name;
+                        rigPrototype.name = baseName + " " + s;
+                        rigPrototype.wname = baseWName + L" " + name;
                         rigs.push_back(rigPrototype);
                 }
         } else {

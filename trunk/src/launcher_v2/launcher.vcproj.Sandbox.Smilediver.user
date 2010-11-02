@@ -6,11 +6,11 @@
 	>
 	<Configurations>
 		<Configuration
-			Name="Release|Win32"
+			Name="Debug|Win32"
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="e:\Projects\Base eXtreme\Work\game"
+				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -20,9 +20,9 @@
 				HttpUrl=""
 				PDBPath=""
 				SQLDebugging=""
-				Environment="_NO_DEBUG_HEAP=1"
+				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor="0"
+				DebuggerFlavor=""
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""
@@ -34,11 +34,11 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Release|Win32"
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="e:\Projects\Base eXtreme\Work\game"
+				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -48,9 +48,9 @@
 				HttpUrl=""
 				PDBPath=""
 				SQLDebugging=""
-				Environment="_NO_DEBUG_HEAP=1"
+				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor="0"
+				DebuggerFlavor=""
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""

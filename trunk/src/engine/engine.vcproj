@@ -177,88 +177,6 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
-		<Configuration
-			Name="FakeRelease|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/engine.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=".\;..\;..\Includes\DirectX\Include;..\Includes\TinyXML\include;..\Includes\Novodex\Cooking\include;..\Includes\Novodex\Foundation\include;..\Includes\Novodex\Physics\include\fluids;&quot;$(PHYSXSDK)\PhysXLoader\include\&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RWDEBUG"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="3"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="headers.h"
-				PrecompiledHeaderFile=".\Debug/engine.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1049"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -311,18 +229,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="camera.h"
@@ -351,18 +257,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -396,19 +290,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						UsePrecompiledHeader="1"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\depthmap.cpp"
@@ -439,18 +320,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="effect.h"
@@ -479,18 +348,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -535,18 +392,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="frame.h"
@@ -579,18 +424,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -663,18 +496,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\intersection.h"
@@ -729,18 +550,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\rain.cpp"
@@ -773,18 +582,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -837,18 +634,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="xasset.cpp"
@@ -873,18 +658,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1021,18 +794,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="atomic.h"
@@ -1061,18 +822,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1105,18 +854,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="clump.h"
@@ -1145,18 +882,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1197,18 +922,6 @@
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="mesh.h"
@@ -1241,18 +954,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1299,18 +1000,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_MBCS;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FakeRelease|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;RWDEBUG;$(NoInherit)"
-						BasicRuntimeChecks="0"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>

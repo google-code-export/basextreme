@@ -266,6 +266,7 @@ private:
     CordSimulator**   _cords;
     BrakeSimulator*   _leftBrake;
     BrakeSimulator*   _rightBrake;
+    bool              _cutAway;
     float             _opening;
     float             _inflation;
     float             _leftDeep;      // deep of left brake
@@ -341,6 +342,8 @@ public:
         NxVec3 fla, NxVec3 fra, NxVec3 rla, NxVec3 rra, // quartet of local anchors for physics simulation
         engine::IFrame* flr, engine::IFrame* frr, engine::IFrame* rlr, engine::IFrame* rrr  // quartet of joints to place cord connections
     );
+    bool isCutAway() { return _cutAway; }
+    void cutAway();
     void open(const NxMat34& pose, const NxVec3& velocity, float leftLOW, float rightLOW, float linetwists);
     void reset(void);
     void setLeftDeep(float value);

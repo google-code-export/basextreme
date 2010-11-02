@@ -478,17 +478,17 @@ Jumper::Jumper(Actor* parent, Airplane* airplane, Enclosure* enclosure, Virtues*
     }
 
     // create canopy simulator
-    _canopySimulator = new CanopySimulator( 
-        this, 
-        &_virtues->equipment.canopy,
-        ( _virtues->equipment.sliderOption == ::soUp )
-    );
+    _canopySimulatorMain = new CanopySimulator(this, &_virtues->equipment.canopy, ( _virtues->equipment.sliderOption == ::soUp ));
+    _canopySimulatorReserve = new CanopySimulator(this, &_virtues->equipment.canopy, ( _virtues->equipment.sliderOption == ::soUp ));
+    _canopySimulatorCurrent = _canopySimulatorMain;
 
     // create pilotchute simulator
     database::Canopy* canopyInfo = database::Canopy::getRecord( _virtues->equipment.canopy.id );
     assert( canopyInfo->numPilots > _virtues->equipment.pilotchute );
     database::Pilotchute* pcInfo = canopyInfo->pilots + _virtues->equipment.pilotchute;
-    _pilotchuteSimulator = new PilotchuteSimulator( this, canopyInfo, pcInfo );
+    _pilotchuteSimulatorMain = new PilotchuteSimulator( this, canopyInfo, pcInfo );
+    _pilotchuteSimulatorReserve = new PilotchuteSimulator( this, canopyInfo, pcInfo );
+    _pilotchuteSimulatorCurrent = _pilotchuteSimulatorMain;
 
     // register in tricklist
     _jumperL.push_back( this );
@@ -929,8 +929,11 @@ void Jumper::onFreeFalling(float dt)
         !actionIs(OutOfControl) && !actionIs(Pull) &&
         !actionIs(Flip) )
     {
+        if (_canopySimulatorMain->isCutAway()) {
+            _pilotchuteSimulatorCurrent = _pilotchuteSimulatorReserve;
+        }
         delete _action;
-        _action = new Pull( this, _phFreeFall, &_mcFreeFall, _pilotchuteSimulator, _pilotAnchor );
+        _action = new Pull( this, _phFreeFall, &_mcFreeFall, _pilotchuteSimulatorCurrent, _pilotAnchor );
         _phase = jpFlight;
         // event
         happen( this, EVENT_DELAY_STOP );
@@ -940,10 +943,13 @@ void Jumper::onFreeFalling(float dt)
     if( _action->isEndOfAction() )
     {
         // distatch
-        if( _pilotchuteSimulator->isPulled() && !actionIs(Pull) )
+        if( _pilotchuteSimulatorCurrent->isPulled() && !actionIs(Pull) )
         {
+            if (_canopySimulatorMain->isCutAway()) {
+                _pilotchuteSimulatorCurrent = _pilotchuteSimulatorReserve;
+            }
             delete _action;
-            _action = new Pull( this, _phFreeFall, &_mcFreeFall, _pilotchuteSimulator, _pilotAnchor );
+            _action = new Pull( this, _phFreeFall, &_mcFreeFall, _pilotchuteSimulatorCurrent, _pilotAnchor );
             _phase = jpFlight;
             // event
             happen( this, EVENT_DELAY_STOP );
@@ -1038,8 +1044,35 @@ void Jumper::onFreeFalling(float dt)
 
 void Jumper::onFlight(float dt)
 {
+    // dispatch cutaway
+    if( _spinalCord->cutAway && !_canopySimulatorMain->isCutAway())
+    {
+        _canopySimulatorMain->cutAway();
+
+        // wakeup freefall actor
+        {
+            _phFreeFall->setGlobalPose(_phFlight->getGlobalPose());
+            _phFreeFall->setLinearVelocity(_phFlight->getLinearVelocity());
+            _phFreeFall->wakeUp();
+            _phFlight->putToSleep();
+        }
+
+        // hide effectors & risers
+        hideEffectors( _clump );
+        getRisers( _clump )->setFlags( 0 );
+
+
+        delete _action;
+        _action = new Tracking( this, _phFreeFall, &_mcFreeFall );
+        _phase = jpFreeFalling;
+        // event
+        happen( this, EVENT_JUMPER_BEGIN_FREEFALL );
+
+        return;
+    }
+
     // dispatch linetwists
-    if( ( _canopySimulator->getLinetwists() != 0 ) && !actionIs(Linetwists) )
+    if( ( _canopySimulatorCurrent->getLinetwists() != 0 ) && !actionIs(Linetwists) )
     {
         CanopyOpening* canopyOpening = dynamic_cast<CanopyOpening*>( _action );
         if( canopyOpening && !canopyOpening->isCriticalAnimationRange() )
@@ -1051,7 +1084,7 @@ void Jumper::onFlight(float dt)
             happen( this, EVENT_JUMPER_END_FREEFALL );
         }
     }
-    if( ( _canopySimulator->getLinetwists() == 0 ) && actionIs(Linetwists) )
+    if( ( _canopySimulatorCurrent->getLinetwists() == 0 ) && actionIs(Linetwists) )
     {
         // start flight action
         delete _action;
@@ -1065,7 +1098,12 @@ void Jumper::onFlight(float dt)
         {
             // start opening action
             delete _action;
-            _action = new Jumper::CanopyOpening( this, _phFreeFall, _phFlight, &_mcFlight, _pilotchuteSimulator, _canopySimulator, _frontLeftAnchor, _frontRightAnchor, _rearLeftAnchor, _rearRightAnchor );            
+            if (!_canopySimulatorMain->isCutAway()) {
+                _action = new Jumper::CanopyOpening( this, _phFreeFall, _phFlight, &_mcFlight, _pilotchuteSimulatorMain, _canopySimulatorMain, _frontLeftAnchor, _frontRightAnchor, _rearLeftAnchor, _rearRightAnchor );            
+            } else {
+                _canopySimulatorCurrent = _canopySimulatorReserve;
+                _action = new Jumper::CanopyOpening( this, _phFreeFall, _phFlight, &_mcFlight, _pilotchuteSimulatorReserve, _canopySimulatorReserve, _frontLeftAnchor, _frontRightAnchor, _rearLeftAnchor, _rearRightAnchor );
+            }
         }
         else if( actionIs(CanopyOpening) )
         {
@@ -1315,7 +1353,7 @@ void Jumper::onContact(NxContactPair &pair, NxU32 events)
                 else if( _phFlight->getLinearVelocity().magnitude() < 8.0f )
                 {
                     // reset canopy controls
-                    _canopySimulator->reset();
+                    _canopySimulatorCurrent->reset();
 
                     // check landing angle
                     Vector3f charUp = _clump->getFrame()->getUp();
@@ -1947,7 +1985,7 @@ void Jumper::onCameraIsActual(void)
 
     // canopy info
     panel = _signature->getPanel()->find( "Canopy" ); assert( panel && panel->getStaticText() );
-    if( _signatureType == stFull && _canopySimulator->getInflation() == 0 )
+    if( _signatureType == stFull && _canopySimulatorCurrent->getInflation() == 0 )
     {
         database::Canopy* canopyInfo = database::Canopy::getRecord( _virtues->equipment.canopy.id );
         std::wstring text = canopyInfo->wname;
@@ -1977,7 +2015,7 @@ void Jumper::onCameraIsActual(void)
 
     // piliotchute info
     panel = _signature->getPanel()->find( "PC" ); assert( panel && panel->getStaticText() );
-    if( _signatureType == stFull && !_pilotchuteSimulator->isPulled() )
+    if( _signatureType == stFull && !_pilotchuteSimulatorCurrent->isPulled() )
     {
         database::Canopy* canopyInfo = database::Canopy::getRecord( _virtues->equipment.canopy.id );
         database::Pilotchute* pcInfo = canopyInfo->pilots + _virtues->equipment.pilotchute;

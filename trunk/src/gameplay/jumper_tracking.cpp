@@ -436,6 +436,8 @@ void Jumper::Tracking::updatePhysics(void)
                 lift *= wingLiftBackTrackEfficiency;
         }
 
+        lift *= 0.4f + 0.6f * _jumper->getVirtues()->equipment.suit.state;
+
         NxVec3 side = y.cross(airFlowDirection);
         if (!side.isZero()) {
                 Flift = airFlowDirection.cross(side);

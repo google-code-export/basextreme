@@ -88,6 +88,35 @@ static std::vector<Suit> suits;
 //    { 0.0f, 0,0,0,0 }
 //};
 
+unsigned int Suit::oldSuitIdToNewId(unsigned int oldId)
+{
+        string type;
+
+        if (oldId >= 0 && oldId <= 9) {
+                type = "Altitude";
+        } else if (oldId >= 10 && oldId <= 16) {
+                type = "Subterminal";
+        } else if (oldId >= 17 && oldId <= 26) {
+                type = "Falco";
+        } else if (oldId >= 27 && oldId <= 27) {
+                type = "Subterminal";
+        } else {
+                assert("Shouldn't happen");
+                type = "Subterminal"; // Safe choise :-D
+        }
+
+        int i;
+        for (i = 0; i < suits.size(); ++i) {
+                if (suits[i].type == type) {
+                        return i;
+                }
+        }
+
+        assert("Shouldn't happen");
+        return 0;
+}
+
+
 unsigned int Suit::getNumRecords(void)
 {
         return suits.size();
@@ -141,22 +170,20 @@ void Suit::initSuits()
         getCore()->logMessage("Info: Loading suits.");
 
         Suit prototypes[] = {
-                { true, COST_SOLIFUGE_ALTITUDE, false, 0, "Solifuge Altitude", L"Solifuge Altitude", DESCRIPTION_SOLIFUGE_ALTITUDE, CLID_DARK_BLUE, MFRID_D3, "", PROPERTIES_SOLIFUGE_ALTITUDE },
-                { true, COST_SOLIFUGE_SUBTERMINAL, false, 0, "Solifuge Subterminal", L"Solifuge Subterminal", DESCRIPTION_SOLIFUGE_SUBTERMINAL, CLID_YELLOW, MFRID_D3, "", PROPERTIES_SOLIFUGE_SUBTERMINAL },
-                { true, COST_FALCO_WINGSUIT, true, 1, "Falco", L"Falco", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_FALCO_WINGSUIT },
-                { true, COST_XWING_WINGSUIT, true, 1, "X Wing", L"X Wing", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_XWING_WINGSUIT }
+                { true, COST_SOLIFUGE_ALTITUDE, false, 0, "AFF Suit", "AFF Suit", L"AFF Suit", DESCRIPTION_SOLIFUGE_ALTITUDE, CLID_DARK_BLUE, MFRID_D3, "./res/Gear/Special/AFF Suit.dds", PROPERTIES_SOLIFUGE_ALTITUDE },
+                { true, COST_SOLIFUGE_ALTITUDE, false, 0, "Altitude", "Altitude", L"Altitude", DESCRIPTION_SOLIFUGE_ALTITUDE, CLID_DARK_BLUE, MFRID_D3, "", PROPERTIES_SOLIFUGE_ALTITUDE },
+                { true, COST_SOLIFUGE_SUBTERMINAL, false, 0, "Subterminal", "Subterminal", L"Subterminal", DESCRIPTION_SOLIFUGE_SUBTERMINAL, CLID_YELLOW, MFRID_D3, "", PROPERTIES_SOLIFUGE_SUBTERMINAL },
+                { true, COST_FALCO_WINGSUIT, true, 1, "Falco", "Falco", L"Falco", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_FALCO_WINGSUIT },
+                { true, COST_XWING_WINGSUIT, true, 1, "X Wing", "X Wing", L"X Wing", DESCRIPTION_FALCO_WINGSUIT, CLID_CRIMSON, MFRID_D3, "", PROPERTIES_XWING_WINGSUIT }
         };
 
         // Add suit 0 - AFF suit
-        prototypes[0].texture = "./res/Gear/Special/AFF Suit.dds";
-        prototypes[0].name = "AFF Suit";
-        prototypes[0].wname = L"AFF Suit";
         suits.push_back(prototypes[0]);
 
-        loadSuits(prototypes[0], "./res/Gear/Suits/Altitude/", "./res/Gear/Suits/Altitude/*.dds");
-        loadSuits(prototypes[1], "./res/Gear/Suits/Subterminal/", "./res/Gear/Suits/Subterminal/*.dds");
-        loadSuits(prototypes[2], "./res/Gear/Suits/Falco/", "./res/Gear/Suits/Falco/*.dds");
-        loadSuits(prototypes[3], "./res/Gear/Suits/X-Wing/", "./res/Gear/Suits/X-Wing/*.dds");
+        loadSuits(prototypes[1], "./res/Gear/Suits/Altitude/", "./res/Gear/Suits/Altitude/*.dds");
+        loadSuits(prototypes[2], "./res/Gear/Suits/Subterminal/", "./res/Gear/Suits/Subterminal/*.dds");
+        loadSuits(prototypes[3], "./res/Gear/Suits/Falco/", "./res/Gear/Suits/Falco/*.dds");
+        loadSuits(prototypes[4], "./res/Gear/Suits/X-Wing/", "./res/Gear/Suits/X-Wing/*.dds");
  
         getCore()->logMessage("Info: Suits loaded.");
 }
@@ -167,6 +194,9 @@ void Suit::loadSuits(Suit& suitPrototype, string textureBase, const char* dir)
         std::vector<string> files;
         
         if (getdir(dir, &files)) {
+                string baseName = suitPrototype.name;
+                wstring baseWName = suitPrototype.wname;
+
                 int i;
                 for (i = 0; i < (int)files.size(); ++i) {
                         suitPrototype.texture = textureBase + files[i];
@@ -176,8 +206,8 @@ void Suit::loadSuits(Suit& suitPrototype, string textureBase, const char* dir)
                         wstring name(L" ", s.length());
                         copy(s.begin(), s.end(), name.begin());
 
-                        suitPrototype.name = s;
-                        suitPrototype.wname = name;
+                        suitPrototype.name = baseName + " " + s;
+                        suitPrototype.wname = baseWName + L" " + name;
                         suits.push_back(suitPrototype);
                 }
         } else {

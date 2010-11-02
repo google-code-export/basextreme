@@ -124,6 +124,11 @@ void castingCallback_Freejump_3000(Actor* parent)
     castFreejump( parent, 300000.0f );
 }
 
+void castingCallback_Freejump_3950(Actor* parent)
+{
+    castFreejump( parent, 395000.0f );
+}
+
 /**
  * equip callback
  */
