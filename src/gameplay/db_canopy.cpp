@@ -655,7 +655,7 @@ unsigned int Canopy::oldCanopyIdToNewId(unsigned int oldId)
         } else if (oldId >= 20 && oldId <= 29) {
                 type = "Psychonaut";
         } else if (oldId >= 30 && oldId <= 34) {
-                type = "Jahnhle";
+                type = "Jahncle";
         } else if (oldId >= 35 && oldId <= 39) {
                 type = "Haibane";
         } else if (oldId >= 40 && oldId <= 49) {
@@ -694,9 +694,24 @@ unsigned int Canopy::oldCanopyIdToNewId(unsigned int oldId)
         }
 
         int i;
+        int count = 0;
+        // count
         for (i = 0; i < canopies.size(); ++i) {
                 if (canopies[i].type == type) {
-                        return i;
+                        ++count;
+                }
+        }
+        // select random
+        int choose = (rand() >> 4) % count;
+        count = 0;
+        // find it
+        for (i = 0; i < canopies.size(); ++i) {
+                if (canopies[i].type == type) {
+                        if (count != choose) {
+                                ++count;
+                        } else {
+                                return i;
+                        }
                 }
         }
 

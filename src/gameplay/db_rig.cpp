@@ -85,9 +85,24 @@ unsigned int Rig::oldRigIdToNewId(unsigned int oldId)
         }
 
         int i;
+        int count = 0;
+        // count
         for (i = 0; i < rigs.size(); ++i) {
                 if (rigs[i].type == type) {
-                        return i;
+                        ++count;
+                }
+        }
+        // select random
+        int choose = (rand() >> 4) % count;
+        count = 0;
+        // find it
+        for (i = 0; i < rigs.size(); ++i) {
+                if (rigs[i].type == type) {
+                        if (count != choose) {
+                                ++count;
+                        } else {
+                                return i;
+                        }
                 }
         }
 
