@@ -221,7 +221,7 @@ void Airplane::onUpdateActivity(float dt)
     // place plane on to waypoint
     if( _desc.waypoints.size() )
     {
-        getCore()->logMessage( "%3.3f", _waypointFactor );
+        //getCore()->logMessage( "%3.3f", _waypointFactor );
 
         while( _waypointFactor > 1 )
         {

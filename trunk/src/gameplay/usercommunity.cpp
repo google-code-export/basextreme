@@ -38,7 +38,6 @@ void Gameplay::generateUserCommunityEvents(void)
 
     // generate tournaments    
     database::NPCInfo        npcInfo;
-    database::TournamentInfo tournamentInfo;    
     std::string*             pstr;
     int                      ivalue;
     double                   fvalue;
@@ -102,7 +101,9 @@ void Gameplay::generateUserCommunityEvents(void)
             }
             // event node?
             else if( child->Type() == TiXmlNode::ELEMENT && strcmp( child->Value(), "pack" ) == 0 )
-            {                
+            {        
+                database::TournamentInfo tournamentInfo;    
+
                 // tournament name
                 tournamentInfo.nameId = Gameplay::iLanguage->addUnicodeString(
                     asciizToUnicode( static_cast<TiXmlElement*>( child )->Attribute( "name" ) ).c_str()
@@ -133,7 +134,11 @@ void Gameplay::generateUserCommunityEvents(void)
 
                 //database::TournamentInfo::addRecord( &tournamentInfo );
                 database::LocationInfo *location = database::LocationInfo::getRecord(locationName);
-                location->tournaments.push_back(tournamentInfo);
+                if (location) {
+                    location->tournaments.push_back(tournamentInfo);
+                } else {
+                    getCore()->logMessage("ERROR: user missions: Invalid location: %s in '%s'", locationName, _userTournaments[i]->FirstChildElement("pack")->Attribute("name"));
+                }
             }
             child = child->NextSibling();
         }
